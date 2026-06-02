@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../providers/database_provider.dart';
 import '../../widgets/common_widgets.dart';
 
@@ -18,6 +19,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController(text: '0');
   final _slotsController = TextEditingController(text: '10');
+  DateTime? _selectedExpiryDate;
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -32,8 +34,27 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
     super.dispose();
   }
 
+  Future<void> _selectExpiryDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: now.add(const Duration(days: 7)),
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      helpText: '¿Hasta cuándo es válida esta mentoría?',
+    );
+
+    if (picked != null) {
+      setState(() => _selectedExpiryDate = picked);
+    }
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_selectedExpiryDate == null) {
+      setState(() => _errorMessage = 'Por favor selecciona una fecha de vigencia');
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -48,6 +69,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
         description: _descriptionController.text.trim(),
         price: double.parse(_priceController.text),
         availableSlots: int.parse(_slotsController.text),
+        expiresAt: _selectedExpiryDate,
       );
 
       ref.invalidate(mentorshipSessionsProvider);
@@ -125,6 +147,37 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                     icon: Icons.category_outlined,
                     controller: _specialtyController,
                     validator: (value) => value == null || value.isEmpty ? 'Requerido' : null,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Selector de Fecha de Vigencia
+                  InkWell(
+                    onTap: _selectExpiryDate,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.event_available, color: colorScheme.primary),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _selectedExpiryDate == null 
+                                  ? 'Fecha límite de la mentoría' 
+                                  : 'Válido hasta: ${DateFormat('dd/MM/yyyy').format(_selectedExpiryDate!)}',
+                              style: TextStyle(
+                                color: _selectedExpiryDate == null ? Colors.grey.shade700 : Colors.black,
+                              ),
+                            ),
+                          ),
+                          const Icon(Icons.calendar_month, color: Colors.grey),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 16),
 

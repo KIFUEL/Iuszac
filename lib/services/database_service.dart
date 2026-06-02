@@ -90,9 +90,11 @@ class DatabaseService {
   }
 
   Future<List<MentorshipSession>> getMentorshipSessions() async {
+    final now = DateTime.now().toIso8601String();
     final response = await _supabase
         .from('mentorship_sessions')
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
+        .or('expires_at.is.null,expires_at.gt.$now')
         .order('created_at', ascending: false);
 
     return (response as List)
@@ -131,6 +133,7 @@ class DatabaseService {
     required String specialty,
     required double price,
     required int availableSlots,
+    DateTime? expiresAt,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -146,6 +149,7 @@ class DatabaseService {
           'specialty': specialty,
           'price': price,
           'available_slots': availableSlots,
+          'expires_at': expiresAt?.toIso8601String(),
         })
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
         .single();

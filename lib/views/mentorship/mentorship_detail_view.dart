@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../providers/database_provider.dart';
 import '../../models/mentorship_session.dart';
 
@@ -92,6 +93,19 @@ class MentorshipDetailView extends ConsumerWidget {
                   session.description ?? 'Sin descripción disponible.',
                   style: const TextStyle(height: 1.5, color: Colors.black87),
                 ),
+                if (session.expiresAt != null) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Icon(Icons.timer_outlined, color: Colors.orange, size: 16),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Válido hasta el ${DateFormat('dd/MM/yyyy').format(session.expiresAt!)}',
+                        style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 32),
                 
                 // Calendario / Horarios

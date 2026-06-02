@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/database_provider.dart';
 import '../../models/mentorship_session.dart';
@@ -181,8 +182,12 @@ class _MentorshipViewState extends ConsumerState<MentorshipView>
                 const Spacer(),
                 const Icon(Icons.schedule, size: 14, color: Colors.grey),
                 const SizedBox(width: 4),
-                const Text('Proximamente',
-                    style: TextStyle(color: Colors.grey, fontSize: 11)),
+                Text(
+                  session.expiresAt != null 
+                      ? 'Hasta: ${DateFormat('dd/MM').format(session.expiresAt!)}' 
+                      : 'Proximamente',
+                  style: const TextStyle(color: Colors.grey, fontSize: 11),
+                ),
               ],
             ),
             const Divider(height: 24),

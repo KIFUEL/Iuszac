@@ -151,6 +151,7 @@ CREATE TABLE public.mentorship_sessions (
   price NUMERIC DEFAULT 0,
   available_slots INT DEFAULT 10,
   schedule JSONB,
+  expires_at TIMESTAMP WITH TIME ZONE,
   is_community_verified BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
