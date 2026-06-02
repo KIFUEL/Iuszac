@@ -9,11 +9,12 @@ Este documento sirve como bitácora de progreso tras la transformación integral
 - **Contenido Legal:** Home rediseñado, Catálogo de Códigos y Detalle de Artículo con resaltado de términos.
 - **Alertas:** Feed cronológico y comparador semántico de reformas (Rojo/Verde).
 - **Foros:** Rediseño simplificado con buscador de **Hashtags** en tiempo real y marcador de urgencia.
-- **Mentorías:** Sistema de pestañas (**Todas / Mías / Participo**) y flujo completo de inscripción.
+- **Mentorías:** Sistema de pestañas (**Todas / Mías / Participo**), flujo completo de inscripción y **vencimiento automático** de sesiones.
 - **Perfil Pro:** Estadísticas de usuario, insignias de rol y ajustes granulares de notificaciones.
 
 ### 2. Nuevas Funcionalidades (Post-MVP)
-- **Creación de Mentorías:** Cualquier usuario con rol profesional puede ahora publicar sus propias sesiones.
+- **Vigencia de Mentorías:** Implementado sistema de caducidad con Soft-Delete automático (las sesiones desaparecen del catálogo al expirar).
+- **Creación de Mentorías:** Cualquier usuario con rol profesional puede ahora publicar sus propias sesiones con fecha límite.
 - **Buscador Inteligente:** Implementado en Foros y Mentorías para filtrado dinámico.
 - **Identidad Visual:** Generación automatizada de iconos (PWA) y Favicon a partir de `LuZac.png`.
 
@@ -36,4 +37,4 @@ Este documento sirve como bitácora de progreso tras la transformación integral
 - La navegación es 100% responsiva, adaptándose entre `NavigationRail` (Web) y `NavigationBar` (Móvil).
 
 ---
-*Última actualización: 2 de Junio, 2026 - Versión 3.5 estable*
+*Última actualización: 2 de Junio, 2026 - Versión 3.6 estable*
