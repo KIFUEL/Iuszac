@@ -22,14 +22,13 @@ Este documento sirve como bitácora de progreso para asegurar la continuidad del
     - Creación de flujo de CI/CD con GitHub Actions (`deploy.yml`) para GitHub Pages.
     - Configuración de `.gitignore`.
     - Script SQL para base de datos Supabase con RLS y Triggers (`supabase_schema.sql`).
+- **Lógica de UI (Mentorías):** Implementación completa del directorio de mentores en [mentorship_view.dart](file:///home/kifuel/Documents/law_app/lib/views/mentorship/mentorship_view.dart) con diseño de tarjetas responsivo (cuadrícula/lista), filtros (por especialidad, verificación y años de experiencia), búsqueda en tiempo real, hoja de detalles inferior (BottomSheet) e integración con `url_launcher` para contacto directo vía WhatsApp y Correo Electrónico.
 
 ## 🟡 En Progreso / Requiere Acción Manual
 - **Modo Oscuro:** Implementado soporte adaptativo según el sistema operativo.
 
 ## 🔴 Pendiente (Backlog)
-1.  **Lógica de UI:**
-    - Diseño de tarjetas de mentores con enlaces externos (WhatsApp/Email) en la sección de Mentorías.
-2.  **Despliegue Final:** Verificar que GitHub Actions construya y publique la app correctamente en GitHub Pages.
+1. **Despliegue Final:** Verificar que GitHub Actions construya y publique la app correctamente en GitHub Pages.
 
 ## 🛠️ Notas Técnicas
 - **Flutter SDK:** Se intentó instalación local vía `paru`, pero hay conflictos de versiones de Dart en el sistema. Se recomienda que el usuario gestione el SDK localmente.
@@ -37,4 +36,4 @@ Este documento sirve como bitácora de progreso para asegurar la continuidad del
 - **Estado:** Se ha configurado `flutter_riverpod` para el manejo de estado global.
 
 ---
-*Última actualización: 1 de Junio, 2026*
+*Última actualización: 2 de Junio, 2026*

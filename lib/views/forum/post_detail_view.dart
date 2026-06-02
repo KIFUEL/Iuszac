@@ -178,11 +178,11 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 12.0),
                                   child: Card(
-                                    color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                                    color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                                     elevation: 0,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16),
-                                      side: BorderSide(color: Colors.grey.withOpacity(0.05)),
+                                      side: BorderSide(color: Colors.grey.withValues(alpha: 0.05)),
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.all(16.0),
@@ -254,7 +254,7 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       border: Border(
-                        top: BorderSide(color: Colors.grey.withOpacity(0.15)),
+                        top: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
                       ),
                     ),
                     child: SafeArea(

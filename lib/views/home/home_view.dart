@@ -34,7 +34,7 @@ class HomeView extends ConsumerWidget {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.3),
+                    color: Colors.grey.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -163,7 +163,7 @@ class HomeView extends ConsumerWidget {
                                       ? Icon(
                                           Icons.gavel_rounded,
                                           size: 48,
-                                          color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
+                                          color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.5),
                                         )
                                       : null,
                                 ),

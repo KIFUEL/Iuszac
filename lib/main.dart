@@ -6,7 +6,7 @@ import 'core/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Supabase.initialize(
     url: 'https://cnzjucawwpswdwpxbtmj.supabase.co',
     anonKey: 'sb_publishable_vPBj4ExScRtYyL7KfyPkTw_Aj51j-tR',
