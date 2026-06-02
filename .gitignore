@@ -1,0 +1,58 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks.json with
+# secrets and internal details.
+.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Android related
+**/android/**/generated/
+**/android/gen/
+**/android/out/
+
+# iOS related
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.[mh]
+
+# Symbolication related
+app.*.symbols
+
+# Executable plugin binary
+linux/flutter/ephemeral
+linux/flutter/generated_config
+windows/flutter/ephemeral
+windows/flutter/generated_config
+
+# Exceptions to above rules
+!**/android/gradle-wrapper.properties
+!**/android/gradle.properties
+!**/ios/Runner/Info.plist
+!**/ios/Runner/Base.lproj/LaunchScreen.storyboard
+!**/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json
