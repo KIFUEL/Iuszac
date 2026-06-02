@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/database_provider.dart';
 import '../../models/mentorship_session.dart';
 import '../../widgets/common_widgets.dart';
@@ -12,13 +13,21 @@ class MentorshipView extends ConsumerStatefulWidget {
   ConsumerState<MentorshipView> createState() => _MentorshipViewState();
 }
 
-class _MentorshipViewState extends ConsumerState<MentorshipView> {
+class _MentorshipViewState extends ConsumerState<MentorshipView>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final _searchController = TextEditingController();
   String _searchQuery = '';
-  String _selectedCommunity = 'Todos';
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
   @override
   void dispose() {
+    _tabController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -26,13 +35,26 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
   @override
   Widget build(BuildContext context) {
     final sessionsAsync = ref.watch(mentorshipSessionsProvider);
+    final enrolledAsync = ref.watch(enrolledSessionsProvider);
+    final user = ref.watch(currentUserProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mentorías'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'Todas'),
+            Tab(text: 'Mías'),
+            Tab(text: 'Participo'),
+          ],
+        ),
         actions: [
           IconButton(
-            onPressed: () => ref.invalidate(mentorshipSessionsProvider),
+            onPressed: () {
+              ref.invalidate(mentorshipSessionsProvider);
+              ref.invalidate(enrolledSessionsProvider);
+            },
             icon: const Icon(Icons.refresh_rounded),
           ),
           const SizedBox(width: 8),
@@ -40,62 +62,44 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
       ),
       body: Column(
         children: [
-          // Buscador y Filtro
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                LawTextField(
-                  label: 'Buscar materia o mentor...',
-                  icon: Icons.search,
-                  controller: _searchController,
-                  onChanged: (val) =>
-                      setState(() => _searchQuery = val.toLowerCase()),
-                ),
-                const SizedBox(height: 12),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _buildFilterChip('Todos'),
-                      const SizedBox(width: 8),
-                      _buildFilterChip('Apoyo UAZ'),
-                      const SizedBox(width: 8),
-                      _buildFilterChip('ApoyoZac'),
-                    ],
-                  ),
-                ),
-              ],
+            child: LawTextField(
+              label: 'Buscar materia o mentor...',
+              icon: Icons.search,
+              controller: _searchController,
+              onChanged: (val) =>
+                  setState(() => _searchQuery = val.toLowerCase()),
             ),
           ),
-
           Expanded(
-            child: sessionsAsync.when(
-              data: (sessions) {
-                final filtered = sessions.where((s) {
-                  final matchesSearch =
-                      s.title.toLowerCase().contains(_searchQuery) ||
-                          s.specialty.toLowerCase().contains(_searchQuery);
-                  final matchesComm = _selectedCommunity == 'Todos' ||
-                      (_selectedCommunity == 'Apoyo UAZ' &&
-                          s.isCommunityVerified);
-                  return matchesSearch && matchesComm;
-                }).toList();
-
-                if (filtered.isEmpty) {
-                  return const Center(
-                      child: Text('No se encontraron sesiones.'));
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: filtered.length,
-                  itemBuilder: (context, index) =>
-                      _buildSessionCard(context, filtered[index]),
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('Error: $err')),
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // Tab: Todas
+                sessionsAsync.when(
+                  data: (sessions) => _buildSessionList(sessions),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (err, _) => Center(child: Text('Error: $err')),
+                ),
+                // Tab: Mías
+                sessionsAsync.when(
+                  data: (sessions) {
+                    final mySessions = sessions
+                        .where((s) => s.mentorId == user?.id)
+                        .toList();
+                    return _buildSessionList(mySessions);
+                  },
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (err, _) => Center(child: Text('Error: $err')),
+                ),
+                // Tab: Donde participo
+                enrolledAsync.when(
+                  data: (sessions) => _buildSessionList(sessions),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (err, _) => Center(child: Text('Error: $err')),
+                ),
+              ],
             ),
           ),
         ],
@@ -107,13 +111,21 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
     );
   }
 
-  Widget _buildFilterChip(String label) {
-    return FilterChip(
-      label: Text(label),
-      selected: _selectedCommunity == label,
-      onSelected: (val) {
-        if (val) setState(() => _selectedCommunity = label);
-      },
+  Widget _buildSessionList(List<MentorshipSession> sessions) {
+    final filtered = sessions.where((s) {
+      return s.title.toLowerCase().contains(_searchQuery) ||
+          s.specialty.toLowerCase().contains(_searchQuery);
+    }).toList();
+
+    if (filtered.isEmpty) {
+      return const Center(child: Text('No hay sesiones disponibles.'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: filtered.length,
+      itemBuilder: (context, index) =>
+          _buildSessionCard(context, filtered[index]),
     );
   }
 
@@ -133,7 +145,7 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
                 CircleAvatar(
                   radius: 24,
                   backgroundColor: colorScheme.primaryContainer,
-                  child: Text(mentorName[0]),
+                  child: Text(mentorName.isNotEmpty ? mentorName[0] : 'U'),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -169,7 +181,7 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
                 const Spacer(),
                 const Icon(Icons.schedule, size: 14, color: Colors.grey),
                 const SizedBox(width: 4),
-                const Text('Lun-Vie 18:00',
+                const Text('Proximamente',
                     style: TextStyle(color: Colors.grey, fontSize: 11)),
               ],
             ),
@@ -207,12 +219,10 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
                   ),
                 const Spacer(),
                 ElevatedButton(
-                  onPressed: () {
-                    // Navegar a detalle
-                  },
+                  onPressed: () => context.go('/mentorship/${session.id}'),
                   style: ElevatedButton.styleFrom(
                       visualDensity: VisualDensity.compact),
-                  child: const Text('Unirme'),
+                  child: const Text('Ver más'),
                 ),
               ],
             ),

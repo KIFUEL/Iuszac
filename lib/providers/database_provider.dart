@@ -46,6 +46,13 @@ final mentorshipSessionsProvider =
   return await dbService.getMentorshipSessions();
 });
 
+// Proveedor para obtener las sesiones donde participa el usuario
+final enrolledSessionsProvider =
+    FutureProvider<List<MentorshipSession>>((ref) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getEnrolledSessions();
+});
+
 // Proveedor para obtener los códigos legales
 final legalCodesProvider = FutureProvider<List<LegalCode>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);

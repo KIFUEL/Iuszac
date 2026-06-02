@@ -87,19 +87,44 @@ class DatabaseService {
 
     return (response as List).map((json) => Mentor.fromJson(json)).toList();
   }
+Future<List<MentorshipSession>> getMentorshipSessions() async {
+  final response = await _supabase
+      .from('mentorship_sessions')
+      .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
+      .order('created_at', ascending: false);
 
-  Future<List<MentorshipSession>> getMentorshipSessions() async {
-    final response = await _supabase
-        .from('mentorship_sessions')
-        .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
-        .order('created_at', ascending: false);
+  return (response as List)
+      .map((json) => MentorshipSession.fromJson(json))
+      .toList();
+}
 
-    return (response as List)
-        .map((json) => MentorshipSession.fromJson(json))
-        .toList();
-  }
+Future<List<MentorshipSession>> getEnrolledSessions() async {
+  final userId = _supabase.auth.currentUser?.id;
+  if (userId == null) return [];
 
-  Future<MentorshipSession> createMentorshipSession({
+  final response = await _supabase
+      .from('mentorship_enrollments')
+      .select('mentorship_sessions(*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*))')
+      .eq('user_id', userId);
+
+  return (response as List)
+      .map((json) => MentorshipSession.fromJson(json['mentorship_sessions']))
+      .toList();
+}
+
+Future<void> enrollInSession(String sessionId) async {
+  final userId = _supabase.auth.currentUser?.id;
+  if (userId == null) throw Exception('Inicia sesión para inscribirte');
+
+  await _supabase.from('mentorship_enrollments').insert({
+    'session_id': sessionId,
+    'user_id': userId,
+  });
+}
+
+Future<MentorshipSession> createMentorshipSession({
+...
+
     required String title,
     required String description,
     required String specialty,
