@@ -91,7 +91,7 @@ class DatabaseService {
   Future<List<MentorshipSession>> getMentorshipSessions() async {
     final response = await _supabase
         .from('mentorship_sessions')
-        .select('*, profiles(*)')
+        .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
         .order('created_at', ascending: false);
 
     return (response as List)
