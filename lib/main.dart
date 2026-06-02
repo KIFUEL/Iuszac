@@ -30,6 +30,8 @@ class LawApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Law App',
       theme: LawTheme.lightTheme,
+      darkTheme: LawTheme.darkTheme,
+      themeMode: ThemeMode.system,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
