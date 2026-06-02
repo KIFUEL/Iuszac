@@ -9,6 +9,9 @@ class LegalUpdate {
   final DateTime createdAt;
   final String? authorId;
   final Profile? author;
+  final String? articleId;
+  final String? oldContent;
+  final String? newContent;
 
   LegalUpdate({
     required this.id,
@@ -19,6 +22,9 @@ class LegalUpdate {
     required this.createdAt,
     this.authorId,
     this.author,
+    this.articleId,
+    this.oldContent,
+    this.newContent,
   });
 
   factory LegalUpdate.fromJson(Map<String, dynamic> json) {
@@ -28,13 +34,15 @@ class LegalUpdate {
       content: json['content'] ?? '',
       category: json['category'] ?? 'General',
       imageUrl: json['image_url'],
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
           : DateTime.now(),
       authorId: json['author_id'],
-      author: json['profiles'] != null 
-          ? Profile.fromJson(json['profiles']) 
-          : null,
+      author:
+          json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
+      articleId: json['article_id'],
+      oldContent: json['old_content'],
+      newContent: json['new_content'],
     );
   }
 
@@ -47,6 +55,9 @@ class LegalUpdate {
       'image_url': imageUrl,
       'created_at': createdAt.toIso8601String(),
       'author_id': authorId,
+      'article_id': articleId,
+      'old_content': oldContent,
+      'new_content': newContent,
     };
   }
 }

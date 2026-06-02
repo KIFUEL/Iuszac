@@ -7,6 +7,7 @@ class ForumComment {
   final String content;
   final DateTime createdAt;
   final Profile? author;
+  final bool isSolution;
 
   ForumComment({
     required this.id,
@@ -15,20 +16,21 @@ class ForumComment {
     required this.content,
     required this.createdAt,
     this.author,
+    this.isSolution = false,
   });
 
   factory ForumComment.fromJson(Map<String, dynamic> json) {
     return ForumComment(
       id: json['id'],
-      postId: json['post_id'] ?? '',
-      userId: json['user_id'] ?? '',
+      postId: json['post_id'],
+      userId: json['user_id'],
       content: json['content'] ?? '',
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
           : DateTime.now(),
-      author: json['profiles'] != null 
-          ? Profile.fromJson(json['profiles']) 
-          : null,
+      author:
+          json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
+      isSolution: json['is_solution'] ?? false,
     );
   }
 

@@ -39,7 +39,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      // GoRouter redirect will automatically send the user to '/'
     } catch (e) {
       setState(() {
         _errorMessage = e.toString().replaceAll('Exception:', '').trim();
@@ -58,6 +57,12 @@ class _LoginViewState extends ConsumerState<LoginView> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/splash'),
+        ),
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -69,7 +74,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Logo/Icono de la App
                   Icon(
                     Icons.gavel_rounded,
                     size: 64,
@@ -77,7 +81,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'LawApp',
+                    'IusZac',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -86,7 +90,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Actualización y red legal profesional',
+                    'Ingresa a tu cuenta',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.grey,
@@ -94,17 +98,14 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   ),
                   const SizedBox(height: 32),
                   
-                  // Campos de Texto
                   LawTextField(
                     label: 'Correo Electrónico',
                     icon: Icons.email_outlined,
                     controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'Por favor ingresa tu correo';
-                      }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
-                        return 'Ingresa un correo electrónico válido';
                       }
                       return null;
                     },
@@ -119,15 +120,21 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingresa tu contraseña';
                       }
-                      if (value.length < 6) {
-                        return 'La contraseña debe tener al menos 6 caracteres';
-                      }
                       return null;
                     },
                   ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // Flujo de recuperación
+                      },
+                      child: const Text('¿Olvidaste tu contraseña?'),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   
-                  // Mensaje de Error
                   if (_errorMessage != null) ...[
                     Text(
                       _errorMessage!,
@@ -137,15 +144,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     const SizedBox(height: 12),
                   ],
                   
-                  // Botón de Envío
                   LawButton(
-                    label: 'Iniciar Sesión',
+                    label: 'Ingresar',
                     isLoading: _isLoading,
                     onPressed: _submit,
                   ),
                   const SizedBox(height: 24),
                   
-                  // Enlace a Registro
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

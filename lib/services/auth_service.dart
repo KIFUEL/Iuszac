@@ -14,12 +14,22 @@ class AuthService {
     required String email,
     required String password,
     required String fullName,
+    String? lastName,
+    String? role,
+    String? institution,
+    String? semesterDegree,
+    bool subscribeAlerts = true,
   }) async {
     return await _supabase.auth.signUp(
       email: email,
       password: password,
       data: {
         'full_name': fullName,
+        'last_name': lastName,
+        'role': role ?? 'user',
+        'institution': institution,
+        'semester_degree': semesterDegree,
+        'alerts_push': subscribeAlerts,
       },
     );
   }

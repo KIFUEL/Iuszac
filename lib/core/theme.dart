@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LawTheme {
   static const primaryColor = Color(0xFF1A237E); // Navy Blue
-  static const accentColor = Color(0xFFC5A059);  // Gold/Bronze
+  static const accentColor = Color(0xFFC5A059); // Gold/Bronze
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -41,7 +41,8 @@ class LawTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
       navigationRailTheme: const NavigationRailThemeData(

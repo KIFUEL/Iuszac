@@ -1,11 +1,11 @@
 {
-    "name": "law_app",
-    "short_name": "law_app",
+    "name": "LawApp",
+    "short_name": "LawApp",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1A237E",
+    "theme_color": "#1A237E",
+    "description": "Una aplicación web para la comunidad legal.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -3,6 +3,9 @@ import '../models/legal_update.dart';
 import '../models/forum_post.dart';
 import '../models/forum_comment.dart';
 import '../models/mentor.dart';
+import '../models/legal_code.dart';
+import '../models/legal_article.dart';
+import '../models/mentorship_session.dart';
 
 class DatabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -13,8 +16,10 @@ class DatabaseService {
         .from('legal_updates')
         .select('*, profiles(*)')
         .order('created_at', ascending: false);
-    
-    return (response as List).map((json) => LegalUpdate.fromJson(json)).toList();
+
+    return (response as List)
+        .map((json) => LegalUpdate.fromJson(json))
+        .toList();
   }
 
   // 2. Foro (Publicaciones)
@@ -52,7 +57,9 @@ class DatabaseService {
         .eq('post_id', postId)
         .order('created_at', ascending: true);
 
-    return (response as List).map((json) => ForumComment.fromJson(json)).toList();
+    return (response as List)
+        .map((json) => ForumComment.fromJson(json))
+        .toList();
   }
 
   Future<ForumComment> createComment(String postId, String content) async {
@@ -72,12 +79,63 @@ class DatabaseService {
     return ForumComment.fromJson(response);
   }
 
-  // 4. Directorio de Mentores
+  // 4. Directorio de Mentores / Sesiones
   Future<List<Mentor>> getMentors() async {
-    final response = await _supabase
-        .from('mentors')
-        .select('*, profiles(*)');
+    final response = await _supabase.from('mentors').select('*, profiles(*)');
 
     return (response as List).map((json) => Mentor.fromJson(json)).toList();
+  }
+
+  Future<List<MentorshipSession>> getMentorshipSessions() async {
+    final response = await _supabase
+        .from('mentorship_sessions')
+        .select('*, profiles(*)')
+        .order('created_at', ascending: false);
+
+    return (response as List)
+        .map((json) => MentorshipSession.fromJson(json))
+        .toList();
+  }
+
+  // 5. Códigos y Artículos
+  Future<List<LegalCode>> getLegalCodes() async {
+    final response = await _supabase
+        .from('legal_codes')
+        .select('*, article_count:legal_articles(count)')
+        .order('name', ascending: true);
+
+    return (response as List).map((json) {
+      final data = Map<String, dynamic>.from(json);
+      if (data['article_count'] is List &&
+          (data['article_count'] as List).isNotEmpty) {
+        data['article_count'] = data['article_count'][0]['count'];
+      } else {
+        data['article_count'] = 0;
+      }
+      return LegalCode.fromJson(data);
+    }).toList();
+  }
+
+  Future<List<LegalArticle>> getArticlesByCode(String codeId) async {
+    final response = await _supabase
+        .from('legal_articles')
+        .select('*, legal_codes(*)')
+        .eq('code_id', codeId)
+        .order('number', ascending: true);
+
+    return (response as List)
+        .map((json) => LegalArticle.fromJson(json))
+        .toList();
+  }
+
+  Future<LegalArticle?> getFeaturedArticle() async {
+    final response = await _supabase
+        .from('legal_articles')
+        .select('*, legal_codes(*)')
+        .limit(1)
+        .maybeSingle();
+
+    if (response == null) return null;
+    return LegalArticle.fromJson(response);
   }
 }

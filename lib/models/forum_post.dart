@@ -7,6 +7,9 @@ class ForumPost {
   final String userId;
   final DateTime createdAt;
   final Profile? author;
+  final bool isUrgent;
+  final List<String> tags;
+  final int replyCount;
 
   ForumPost({
     required this.id,
@@ -15,6 +18,9 @@ class ForumPost {
     required this.userId,
     required this.createdAt,
     this.author,
+    this.isUrgent = false,
+    this.tags = const [],
+    this.replyCount = 0,
   });
 
   factory ForumPost.fromJson(Map<String, dynamic> json) {
@@ -22,13 +28,15 @@ class ForumPost {
       id: json['id'],
       title: json['title'] ?? '',
       content: json['content'] ?? '',
-      userId: json['user_id'] ?? '',
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
+      userId: json['user_id'],
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
           : DateTime.now(),
-      author: json['profiles'] != null 
-          ? Profile.fromJson(json['profiles']) 
-          : null,
+      author:
+          json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
+      isUrgent: json['is_urgent'] ?? false,
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
+      replyCount: json['reply_count'] ?? 0,
     );
   }
 

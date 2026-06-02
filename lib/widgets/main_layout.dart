@@ -13,8 +13,9 @@ class MainLayout extends StatelessWidget {
     int getIndex() {
       if (location == '/') return 0;
       if (location.startsWith('/forum')) return 1;
-      if (location.startsWith('/mentorship')) return 2;
-      if (location.startsWith('/profile')) return 3;
+      if (location.startsWith('/alerts')) return 2;
+      if (location.startsWith('/mentorship')) return 3;
+      if (location.startsWith('/profile')) return 4;
       return 0;
     }
 
@@ -30,16 +31,21 @@ class MainLayout extends StatelessWidget {
                     NavigationRailDestination(
                       icon: Icon(Icons.home_outlined),
                       selectedIcon: Icon(Icons.home),
-                      label: Text('Actualizaciones'),
+                      label: Text('Inicio'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.forum_outlined),
                       selectedIcon: Icon(Icons.forum),
-                      label: Text('Foro'),
+                      label: Text('Foros'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.people_outlined),
-                      selectedIcon: Icon(Icons.people),
+                      icon: Icon(Icons.notifications_outlined),
+                      selectedIcon: Icon(Icons.notifications),
+                      label: Text('Alertas'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.school_outlined),
+                      selectedIcon: Icon(Icons.school),
                       label: Text('Mentorías'),
                     ),
                     NavigationRailDestination(
@@ -53,8 +59,9 @@ class MainLayout extends StatelessWidget {
                     switch (index) {
                       case 0: context.go('/'); break;
                       case 1: context.go('/forum'); break;
-                      case 2: context.go('/mentorship'); break;
-                      case 3: context.go('/profile'); break;
+                      case 2: context.go('/alerts'); break;
+                      case 3: context.go('/mentorship'); break;
+                      case 4: context.go('/profile'); break;
                     }
                   },
                 ),
@@ -70,8 +77,9 @@ class MainLayout extends StatelessWidget {
                 switch (index) {
                   case 0: context.go('/'); break;
                   case 1: context.go('/forum'); break;
-                  case 2: context.go('/mentorship'); break;
-                  case 3: context.go('/profile'); break;
+                  case 2: context.go('/alerts'); break;
+                  case 3: context.go('/mentorship'); break;
+                  case 4: context.go('/profile'); break;
                 }
               },
               destinations: const [
@@ -83,11 +91,16 @@ class MainLayout extends StatelessWidget {
                 NavigationDestination(
                   icon: Icon(Icons.forum_outlined),
                   selectedIcon: Icon(Icons.forum),
-                  label: 'Foro',
+                  label: 'Foros',
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.people_outlined),
-                  selectedIcon: Icon(Icons.people),
+                  icon: Icon(Icons.notifications_outlined),
+                  selectedIcon: Icon(Icons.notifications),
+                  label: 'Alertas',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.school_outlined),
+                  selectedIcon: Icon(Icons.school),
                   label: 'Mentorías',
                 ),
                 NavigationDestination(

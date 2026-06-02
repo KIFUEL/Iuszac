@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/auth_service.dart';
+import '../models/profile.dart';
 
 // Provider para el servicio de autenticación
 final authServiceProvider = Provider<AuthService>((ref) {
@@ -15,4 +16,19 @@ final authStateProvider = StreamProvider<AuthState>((ref) {
 // Provider para obtener los datos del usuario actual de Supabase Auth
 final currentUserProvider = Provider<User?>((ref) {
   return ref.watch(authServiceProvider).currentUser;
+});
+
+// Provider para obtener el perfil extendido del usuario desde la tabla 'profiles'
+final userProfileProvider = FutureProvider<Profile?>((ref) async {
+  final user = ref.watch(currentUserProvider);
+  if (user == null) return null;
+
+  final response = await Supabase.instance.client
+      .from('profiles')
+      .select()
+      .eq('id', user.id)
+      .maybeSingle();
+
+  if (response == null) return null;
+  return Profile.fromJson(response);
 });

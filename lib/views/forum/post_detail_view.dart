@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../providers/database_provider.dart';
 import '../../models/forum_post.dart';
+import '../../models/forum_comment.dart';
 import '../../widgets/common_widgets.dart';
 
 class PostDetailView extends ConsumerStatefulWidget {
@@ -18,7 +19,6 @@ class PostDetailView extends ConsumerStatefulWidget {
 class _PostDetailViewState extends ConsumerState<PostDetailView> {
   final _commentController = TextEditingController();
   bool _isSubmitting = false;
-  String? _commentError;
 
   @override
   void dispose() {
@@ -32,20 +32,15 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
 
     setState(() {
       _isSubmitting = true;
-      _commentError = null;
     });
 
     try {
       final dbService = ref.read(databaseServiceProvider);
       await dbService.createComment(widget.postId, text);
-      
-      // Limpia el input y recarga los comentarios
       _commentController.clear();
       ref.invalidate(forumCommentsProvider(widget.postId));
     } catch (e) {
-      setState(() {
-        _commentError = e.toString().replaceAll('Exception:', '').trim();
-      });
+      // Manejar error de publicación
     } finally {
       if (mounted) {
         setState(() {
@@ -57,10 +52,9 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    // Para mostrar los datos del post, podemos buscarlo de la lista que ya cargamos
-    // o hacer un fetch. Una manera sencilla es obtenerlo del listado completo.
     final postsAsync = ref.watch(forumPostsProvider);
     final commentsAsync = ref.watch(forumCommentsProvider(widget.postId));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +66,6 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
       ),
       body: postsAsync.when(
         data: (posts) {
-          // Buscar el post correspondiente en la lista de posts en caché
           ForumPost? post;
           try {
             post = posts.firstWhere((p) => p.id == widget.postId);
@@ -81,235 +74,214 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
           }
 
           if (post == null) {
-            return const Center(child: Text('El post no existe o fue eliminado.'));
+            return const Center(child: Text('El post no existe.'));
           }
 
           final postDate = DateFormat('dd/MM/yyyy HH:mm').format(post.createdAt);
           final postAuthor = post.author?.fullName ?? 'Usuario';
+          final postSemester = post.author?.semesterDegree ?? 'N/A';
 
-          return Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.all(16.0),
-                      children: [
-                        // Tarjeta Principal del Post
-                        LawCard(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                                    child: Text(
-                                      postAuthor[0].toUpperCase(),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(postAuthor, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                        Text(
-                                          postDate,
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Text(
-                                post.title,
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                post.content,
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        
-                        // Sección de Respuestas
-                        Text(
-                          'Respuestas y Aportaciones',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 12),
-                        
-                        // Listado de Comentarios
-                        commentsAsync.when(
-                          data: (comments) {
-                            if (comments.isEmpty) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 24.0),
-                                child: Center(
-                                  child: Text(
-                                    'Aún no hay respuestas. ¡Sé el primero en aportar!',
-                                    style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
-                                  ),
-                                ),
-                              );
-                            }
-
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: comments.length,
-                              itemBuilder: (context, index) {
-                                final comment = comments[index];
-                                final commentAuthor = comment.author?.fullName ?? 'Colega';
-                                final commentDate = DateFormat('dd/MM/yyyy HH:mm').format(comment.createdAt);
-
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 12.0),
-                                  child: Card(
-                                    color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                      side: BorderSide(color: Colors.grey.withValues(alpha: 0.05)),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-                                                child: Text(
-                                                  commentAuthor[0].toUpperCase(),
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                commentAuthor,
-                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                              ),
-                                              const Spacer(),
-                                              Text(
-                                                commentDate,
-                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11, color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            comment.content,
-                                            style: const TextStyle(height: 1.4),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          loading: () => const Center(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24.0),
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          error: (err, stack) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 24.0),
-                            child: Center(
-                              child: Text(
-                                'Error al cargar respuestas: ${err.toString()}',
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  // Caja de Texto Inferior para comentar
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      border: Border(
-                        top: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
-                      ),
-                    ),
-                    child: SafeArea(
+          return Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(16.0),
+                  children: [
+                    // Tarjeta Principal del Post
+                    LawCard(
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (_commentError != null) ...[
-                            Text(
-                              _commentError!,
-                              style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12),
-                            ),
-                            const SizedBox(height: 8),
-                          ],
                           Row(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _commentController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Aporta tu opinión o fundamento legal...',
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                    filled: true,
-                                    fillColor: Theme.of(context).colorScheme.surface,
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: colorScheme.primaryContainer,
+                                child: Text(
+                                  postAuthor[0].toUpperCase(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: colorScheme.onPrimaryContainer,
                                   ),
-                                  maxLines: null,
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              _isSubmitting
-                                  ? const SizedBox(
-                                      height: 24,
-                                      width: 24,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : CircleAvatar(
-                                      backgroundColor: Theme.of(context).colorScheme.primary,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.send_rounded, color: Colors.white, size: 18),
-                                        onPressed: _submitComment,
-                                      ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(postAuthor, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    Text(
+                                      '$postSemester · $postDate',
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                                     ),
+                                  ],
+                                ),
+                              ),
+                              if (post.isUrgent)
+                                const Icon(Icons.warning_amber_rounded, color: Colors.red),
                             ],
+                          ),
+                          const SizedBox(height: 20),
+                          if (post.tags.isNotEmpty) ...[
+                            Wrap(
+                              spacing: 8,
+                              children: post.tags.map((tag) => Chip(
+                                label: Text(tag, style: const TextStyle(fontSize: 10)),
+                                visualDensity: VisualDensity.compact,
+                              )).toList(),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+                          Text(
+                            post.title,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            post.content,
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 32),
+
+                    Text(
+                      'Respuestas',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Listado de Comentarios
+                    commentsAsync.when(
+                      data: (comments) {
+                        if (comments.isEmpty) {
+                          return const Center(child: Padding(
+                            padding: EdgeInsets.all(40.0),
+                            child: Text('Sin respuestas aún.', style: TextStyle(color: Colors.grey)),
+                          ));
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: comments.length,
+                          itemBuilder: (context, index) {
+                            final comment = comments[index];
+                            return _buildCommentCard(context, comment);
+                          },
+                        );
+                      },
+                      loading: () => const Center(child: CircularProgressIndicator()),
+                      error: (err, _) => Text('Error: $err'),
+                    ),
+                  ],
+                ),
               ),
-            ),
+
+              // Input Inferior
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  border: Border(top: BorderSide(color: Colors.grey.withValues(alpha: 0.1))),
+                ),
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: LawTextField(
+                          label: 'Escribe tu respuesta...',
+                          icon: Icons.chat_bubble_outline,
+                          controller: _commentController,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      _isSubmitting
+                          ? const CircularProgressIndicator()
+                          : FloatingActionButton.small(
+                              onPressed: _submitComment,
+                              child: const Icon(Icons.send_rounded),
+                            ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: ${err.toString()}')),
+        error: (err, _) => Center(child: Text('Error: $err')),
+      ),
+    );
+  }
+
+  Widget _buildCommentCard(BuildContext context, ForumComment comment) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final authorName = comment.author?.fullName ?? 'Colega';
+    final date = DateFormat('dd/MM/yyyy HH:mm').format(comment.createdAt);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Card(
+        elevation: 0,
+        color: comment.isSolution 
+            ? Colors.green.withValues(alpha: 0.05) 
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: comment.isSolution ? Colors.green.withValues(alpha: 0.3) : Colors.transparent,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (comment.isSolution)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green, size: 16),
+                      SizedBox(width: 6),
+                      Text(
+                        'SOLUCIÓN ACEPTADA',
+                        style: TextStyle(color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 14,
+                    backgroundColor: colorScheme.secondaryContainer,
+                    child: Text(authorName[0], style: const TextStyle(fontSize: 10)),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(authorName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  const Spacer(),
+                  Text(date, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(comment.content, style: const TextStyle(height: 1.4)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.thumb_up_alt_outlined, size: 14),
+                    label: const Text('Útil', style: TextStyle(fontSize: 12)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

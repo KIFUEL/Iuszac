@@ -1,40 +1,39 @@
-# Estado del Proyecto: LawApp (Iuszac)
+# Estado del Proyecto: IusZac — Derecho Digital
 
-Este documento sirve como bitácora de progreso para asegurar la continuidad del desarrollo por cualquier colaborador o IA.
+Este documento sirve como bitácora de progreso final tras la transformación integral basada en `IusZac_Pantallas.docx`.
 
 ## 🟢 Completado
-- **Planeación Estratégica:** Definición de objetivos, usuarios (personas) y alcance.
-- **Documentación Técnica:** Creación de `DOCUMENTATION.md` con requisitos funcionales, no funcionales (responsividad), flujo de navegación y modelo de datos.
-- **Estructura Base de Flutter:**
-    - Inicialización de carpetas (`core`, `services`, `views`, `widgets`, etc.).
-    - Configuración de `pubspec.yaml` con dependencias clave (Supabase, Riverpod, GoRouter).
-    - Implementación de Layout principal responsivo (`NavigationRail`).
-    - Configuración de tema profesional (Azul/Oro).
-    - Esqueleto de las 4 vistas principales (Home, Foro, Mentorías, Perfil).
-- **Modelos de Datos:** Creación de clases Dart completas para `Profile`, `LegalUpdate`, `ForumPost`, `ForumComment` y `Mentor` con soporte para relaciones JSON.
-- **Ajustes de Responsividad:** Implementación de navegación adaptativa en [main_layout.dart](file:///home/kifuel/Documents/law_app/lib/widgets/main_layout.dart) usando `NavigationRail` (pantallas >= 800px) y `NavigationBar` de Material 3 (pantallas < 800px).
-- **Flujo de Autenticación:** Creación de las vistas de [login_view.dart](file:///home/kifuel/Documents/law_app/lib/views/auth/login_view.dart) y [register_view.dart](file:///home/kifuel/Documents/law_app/lib/views/auth/register_view.dart), configuración de redirección de seguridad (Guards) con `GoRouterRefreshStream` en [router.dart](file:///home/kifuel/Documents/law_app/lib/core/router.dart) e integración interactiva en [profile_view.dart](file:///home/kifuel/Documents/law_app/lib/views/profile/profile_view.dart).
-- **Servicios de Backend:** Creación de [database_service.dart](file:///home/kifuel/Documents/law_app/lib/services/database_service.dart) y [database_provider.dart](file:///home/kifuel/Documents/law_app/lib/providers/database_provider.dart) para interactuar reactivamente mediante Riverpod con las colecciones de Supabase.
-- **Lógica de UI (Actualizaciones y Foro):** Conexión dinámica en tiempo real del feed de noticias en [home_view.dart](file:///home/kifuel/Documents/law_app/lib/views/home/home_view.dart) y del flujo de debates y respuestas en [forum_view.dart](file:///home/kifuel/Documents/law_app/lib/views/forum/forum_view.dart), [new_post_view.dart](file:///home/kifuel/Documents/law_app/lib/views/forum/new_post_view.dart) y [post_detail_view.dart](file:///home/kifuel/Documents/law_app/lib/views/forum/post_detail_view.dart).
-- **Git Remote:** Configuración de identidad de Git, creación de claves SSH para conexión segura y primer `push` exitoso a `git@github.com:KIFUEL/Iuszac.git`.
-- **Credenciales y Setup de Supabase:** Actualización exitosa de URL y Anon Key en [main.dart](file:///home/kifuel/Documents/law_app/lib/main.dart) y entrega del script SQL para la base de datos.
-- **Infraestructura de Despliegue:**
-    - Creación de flujo de CI/CD con GitHub Actions (`deploy.yml`) para GitHub Pages.
-    - Configuración de `.gitignore`.
-    - Script SQL para base de datos Supabase con RLS y Triggers (`supabase_schema.sql`).
-- **Lógica de UI (Mentorías):** Implementación completa del directorio de mentores en [mentorship_view.dart](file:///home/kifuel/Documents/law_app/lib/views/mentorship/mentorship_view.dart) con diseño de tarjetas responsivo (cuadrícula/lista), filtros (por especialidad, verificación y años de experiencia), búsqueda en tiempo real, hoja de detalles inferior (BottomSheet) e integración con `url_launcher` para contacto directo vía WhatsApp y Correo Electrónico.
-- **Configuración de Plataforma Web e Infraestructura de Despliegue (GitHub Actions):** Inicialización de la carpeta de plataforma `web/` que faltaba en el proyecto mediante `flutter create`, corrección del archivo de prueba roto `widget_test.dart` y validación exitosa de la compilación local (`flutter build web`). Finalmente, empuje de cambios a la rama principal (`main`) para activar y validar el flujo automático de GitHub Actions.
+- **Planeación y Análisis:** Extracción de requerimientos de 15 pantallas.
+- **Base de Datos (V2):** Implementación de tablas para Códigos, Artículos, Marcadores, Sesiones de Mentoría, Inscripciones y mejoras en Foros (Tags, Urgente, Solución).
+- **Fase 2: Autenticación y Onboarding:**
+    - Pantalla 01: Inicio (Splash / Landing) - **Completado**
+    - Pantalla 02: Registro (12 campos, roles, contexto académico) - **Completado**
+    - Pantalla 03: Login (Ajustes visuales y recuperación) - **Completado**
+- **Fase 3: Estructura y Navegación:**
+    - Layout de 5 pestañas (Inicio, Foros, Alertas, Mentorías, Perfil) - **Completado**
+    - Enrutamiento completo con guardias de seguridad - **Completado**
+- **Fase 4: Inicio y Contenido Legal:**
+    - Pantalla 04: Inicio (Home) con saludo dinámico y artículo destacado - **Completado**
+    - Pantalla 05: Catálogo de Códigos con badges de estado - **Completado**
+    - Pantalla 06: Detalle de Artículo con formato de penas y reformas - **Completado**
+    - Pantalla 15: Búsqueda Global en tiempo real - **Completado**
+- **Fase 5: Alertas y Reformas:**
+    - Pantalla 07: Alertas de Reforma agrupadas por fecha - **Completado**
+    - Pantalla 08: Detalle de Reforma Comparativo (Rojo/Verde) - **Completado**
+- **Fase 6: Foros:**
+    - Pantalla 09: Lista de hilos con filtros y badges de urgencia - **Completado**
+    - Pantalla 10: Detalle de hilo con "Solución Aceptada" - **Completado**
+- **Fase 7: Mentorías:**
+    - Pantalla 11: Lista de sesiones con precio y cupo - **Completado**
+    - Pantalla 12: Detalle de mentoría, calendario y reseñas - **Completado**
+- **Fase 8: Perfil y Ajustes:**
+    - Pantalla 13: Perfil de usuario con estadísticas y badges Pro - **Completado**
+    - Pantalla 14: Ajustes con toggles granulares de notificaciones - **Completado**
 
-## 🟡 En Progreso / Requiere Acción Manual
-- **Modo Oscuro:** Implementado soporte adaptativo según el sistema operativo.
-
-## 🔴 Pendiente (Backlog)
-*¡Todo el backlog inicial ha sido completado con éxito!*
-
-## 🛠️ Notas Técnicas
-- **Flutter SDK:** Se intentó instalación local vía `paru`, pero hay conflictos de versiones de Dart en el sistema. Se recomienda que el usuario gestione el SDK localmente.
-- **Navegación:** Se usa `go_router`. Las rutas están definidas en `lib/core/router.dart`.
-- **Estado:** Se ha configurado `flutter_riverpod` para el manejo de estado global.
+## 🛠️ Notas de Finalización
+- La aplicación ha sido alineada al 100% con la documentación de Derecho Digital Zacatecas.
+- Se recomienda ejecutar el script `update_schema_v2.sql` en Supabase para habilitar las nuevas columnas y tablas.
+- Se han utilizado extensiones de widgets para mantener la consistencia visual (`common_widgets.dart`).
 
 ---
-*Última actualización: 2 de Junio, 2026*
+*Proyecto entregado: 2 de Junio, 2026*

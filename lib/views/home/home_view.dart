@@ -1,250 +1,337 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/database_provider.dart';
-import '../../models/legal_update.dart';
+import '../../models/legal_article.dart';
+import '../../models/legal_code.dart';
 import '../../widgets/common_widgets.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
-  void _showDetailBottomSheet(BuildContext context, LegalUpdate update) {
-    final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(update.createdAt);
-    
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-          padding: const EdgeInsets.all(24.0),
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.85,
-            maxWidth: 600, // Ancho máximo centrado en escritorio
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Chip(
-                    label: Text(
-                      update.category.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onTertiaryContainer,
-                      ),
-                    ),
-                    backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  const Spacer(),
-                  Text(
-                    formattedDate,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                update.title,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              if (update.author != null)
-                Text(
-                  'Publicado por: ${update.author!.fullName}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                ),
-              const Divider(height: 32),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Text(
-                    update.content,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Buenos días';
+    if (hour < 18) return 'Buenas tardes';
+    return 'Buenas noches';
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final updatesAsync = ref.watch(legalUpdatesProvider);
+    final user = ref.watch(currentUserProvider);
+    final featuredAsync = ref.watch(featuredArticleProvider);
+    final codesAsync = ref.watch(legalCodesProvider);
+
+    final firstName = user?.userMetadata?['full_name'] ?? 'Usuario';
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          // Header con Saludo e Ícono de Notificaciones
           SliverAppBar.large(
-            title: const Text('Actualizaciones'),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${_getGreeting()},',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey,
+                      ),
+                ),
+                Text(
+                  firstName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
             actions: [
-              IconButton(
-                onPressed: () => ref.invalidate(legalUpdatesProvider),
-                icon: const Icon(Icons.refresh_rounded),
+              Stack(
+                children: [
+                  IconButton(
+                    onPressed: () => context.go('/alerts'),
+                    icon: const Icon(Icons.notifications_outlined),
+                  ),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: const Text(
+                        '3',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(width: 8),
             ],
           ),
-          updatesAsync.when(
-            data: (updates) {
-              if (updates.isEmpty) {
-                return const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.feed_outlined, size: 64, color: Colors.grey),
-                        SizedBox(height: 16),
-                        Text(
-                          'No hay actualizaciones publicadas aún.',
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
 
-              return SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final update = updates[index];
-                      final timeAgo = DateFormat('dd/MM/yyyy').format(update.createdAt);
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: InkWell(
-                          onTap: () => _showDetailBottomSheet(context, update),
-                          borderRadius: BorderRadius.circular(20),
-                          child: LawCard(
-                            padding: EdgeInsets.zero,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 140,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primaryContainer,
-                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                                    image: update.imageUrl != null
-                                        ? DecorationImage(
-                                            image: NetworkImage(update.imageUrl!),
-                                            fit: BoxFit.cover,
-                                          )
-                                        : null,
-                                  ),
-                                  child: update.imageUrl == null
-                                      ? Icon(
-                                          Icons.gavel_rounded,
-                                          size: 48,
-                                          color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.5),
-                                        )
-                                      : null,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Chip(
-                                            label: Text(
-                                              update.category.toUpperCase(),
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                                color: Theme.of(context).colorScheme.onTertiaryContainer,
-                                              ),
-                                            ),
-                                            backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-                                            visualDensity: VisualDensity.compact,
-                                          ),
-                                          const Spacer(),
-                                          Text(timeAgo, style: Theme.of(context).textTheme.bodySmall),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        update.title,
-                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        update.content,
-                                        style: Theme.of(context).textTheme.bodyMedium,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Row(
-                                        children: [
-                                          TextButton(
-                                            onPressed: () => _showDetailBottomSheet(context, update),
-                                            child: const Text('Leer más'),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    childCount: updates.length,
+          // Buscador Global
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: GestureDetector(
+                onTap: () => context.go('/search'),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-              );
-            },
-            loading: () => const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            error: (err, stack) => SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Text(
-                    'Error al cargar actualizaciones: ${err.toString()}',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.red),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.search, color: Colors.grey),
+                      SizedBox(width: 12),
+                      Text(
+                        'Busca artículos, códigos o foros...',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
+
+          // Artículo Destacado
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionHeader('Artículo Destacado', null),
+                  const SizedBox(height: 12),
+                  featuredAsync.when(
+                    data: (article) {
+                      if (article == null) return const SizedBox();
+                      return _buildFeaturedCard(context, article);
+                    },
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (err, _) => Text('Error: $err'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Códigos Disponibles
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildSectionHeader(
+                      'Códigos Disponibles',
+                      () => context.go('/codes'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 160,
+                    child: codesAsync.when(
+                      data: (codes) => ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: codes.length,
+                        itemBuilder: (context, index) =>
+                            _buildCodeCard(context, codes[index]),
+                      ),
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (err, _) => const SizedBox(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 40)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, VoidCallback? onAction) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        if (onAction != null)
+          TextButton(
+            onPressed: onAction,
+            child: const Text('Ver todos'),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildFeaturedCard(BuildContext context, LegalArticle article) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return LawCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.green.shade700,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: const Text(
+              'VIGENTE',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  article.code?.name ?? 'Código',
+                  style: TextStyle(
+                    color: colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${article.number}: ${article.title}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  article.content,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.grey, fontSize: 13),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber, size: 16),
+                        SizedBox(width: 4),
+                        Text('4.8',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Ver artículo'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCodeCard(BuildContext context, LegalCode code) {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      child: InkWell(
+        onTap: () {},
+        borderRadius: BorderRadius.circular(16),
+        child: LawCard(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.gavel_rounded,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                code.name,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: code.status == 'Vigente'
+                      ? Colors.green.withValues(alpha: 0.1)
+                      : Colors.blue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  code.status,
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    color: code.status == 'Vigente' ? Colors.green : Colors.blue,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
