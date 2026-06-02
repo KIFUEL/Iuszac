@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../providers/database_provider.dart';
 import '../../models/mentorship_session.dart';
 import '../../widgets/common_widgets.dart';
@@ -98,6 +99,10 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.go('/mentorship/new'),
+        child: const Icon(Icons.add_task_rounded),
       ),
     );
   }

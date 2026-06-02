@@ -11,6 +11,7 @@ import '../views/alerts/alerts_view.dart';
 import '../views/alerts/reform_detail_view.dart';
 import '../views/mentorship/mentorship_view.dart';
 import '../views/mentorship/mentorship_detail_view.dart';
+import '../views/mentorship/new_mentorship_view.dart';
 import '../views/profile/profile_view.dart';
 import '../views/profile/settings_view.dart';
 import '../views/auth/login_view.dart';
@@ -115,6 +116,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/mentorship',
             builder: (context, state) => const MentorshipView(),
             routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) => const NewMentorshipView(),
+              ),
               GoRoute(
                 path: ':id',
                 builder: (context, state) {

@@ -99,6 +99,32 @@ class DatabaseService {
         .toList();
   }
 
+  Future<MentorshipSession> createMentorshipSession({
+    required String title,
+    required String description,
+    required String specialty,
+    required double price,
+    required int availableSlots,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception('Inicia sesión para poder crear una mentoría');
+
+    final response = await _supabase
+        .from('mentorship_sessions')
+        .insert({
+          'mentor_id': userId,
+          'title': title,
+          'description': description,
+          'specialty': specialty,
+          'price': price,
+          'available_slots': availableSlots,
+        })
+        .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
+        .single();
+
+    return MentorshipSession.fromJson(response);
+  }
+
   // 5. Códigos y Artículos
   Future<List<LegalCode>> getLegalCodes() async {
     final response = await _supabase

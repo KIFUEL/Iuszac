@@ -174,7 +174,7 @@ class _NewPostViewState extends ConsumerState<NewPostView> {
                     title: const Text('Marcar como asunto urgente', style: TextStyle(fontSize: 14)),
                     subtitle: const Text('Añade un aviso visual para obtener ayuda rápida', style: TextStyle(fontSize: 11)),
                     value: _isUrgent,
-                    activeColor: Colors.red,
+                    activeThumbColor: Colors.red,
                     onChanged: (val) => setState(() => _isUrgent = val),
                     contentPadding: EdgeInsets.zero,
                   ),
