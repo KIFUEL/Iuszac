@@ -16,16 +16,15 @@ Este documento sirve como bitácora de progreso para asegurar la continuidad del
 - **Flujo de Autenticación:** Creación de las vistas de [login_view.dart](file:///home/kifuel/Documents/law_app/lib/views/auth/login_view.dart) y [register_view.dart](file:///home/kifuel/Documents/law_app/lib/views/auth/register_view.dart), configuración de redirección de seguridad (Guards) con `GoRouterRefreshStream` en [router.dart](file:///home/kifuel/Documents/law_app/lib/core/router.dart) e integración interactiva en [profile_view.dart](file:///home/kifuel/Documents/law_app/lib/views/profile/profile_view.dart).
 - **Servicios de Backend:** Creación de [database_service.dart](file:///home/kifuel/Documents/law_app/lib/services/database_service.dart) y [database_provider.dart](file:///home/kifuel/Documents/law_app/lib/providers/database_provider.dart) para interactuar reactivamente mediante Riverpod con las colecciones de Supabase.
 - **Lógica de UI (Actualizaciones y Foro):** Conexión dinámica en tiempo real del feed de noticias en [home_view.dart](file:///home/kifuel/Documents/law_app/lib/views/home/home_view.dart) y del flujo de debates y respuestas en [forum_view.dart](file:///home/kifuel/Documents/law_app/lib/views/forum/forum_view.dart), [new_post_view.dart](file:///home/kifuel/Documents/law_app/lib/views/forum/new_post_view.dart) y [post_detail_view.dart](file:///home/kifuel/Documents/law_app/lib/views/forum/post_detail_view.dart).
+- **Git Remote:** Configuración de identidad de Git, creación de claves SSH para conexión segura y primer `push` exitoso a `git@github.com:KIFUEL/Iuszac.git`.
+- **Credenciales y Setup de Supabase:** Actualización exitosa de URL y Anon Key en [main.dart](file:///home/kifuel/Documents/law_app/lib/main.dart) y entrega del script SQL para la base de datos.
 - **Infraestructura de Despliegue:**
     - Creación de flujo de CI/CD con GitHub Actions (`deploy.yml`) para GitHub Pages.
     - Configuración de `.gitignore`.
     - Script SQL para base de datos Supabase con RLS y Triggers (`supabase_schema.sql`).
 
 ## 🟡 En Progreso / Requiere Acción Manual
-- **Git Remote:** Se configuró el repositorio local y el primer commit. El usuario debe realizar el primer `push` manual a `https://github.com/KIFUEL/Iuszac.git` debido a requerimientos de autenticación (PAT).
-- **Setup de Supabase:** Se ha proporcionado la credencial de la base de datos y el script SQL de esquema. Pendiente confirmación de ejecución del script SQL y actualización de URL/Anon Key en el código.
 - **Modo Oscuro:** Implementado soporte adaptativo según el sistema operativo.
-- **Credenciales:** Pendiente actualizar `lib/main.dart` con la URL y Anon Key de Supabase.
 
 ## 🔴 Pendiente (Backlog)
 1.  **Lógica de UI:**
