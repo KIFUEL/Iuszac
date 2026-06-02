@@ -7,10 +7,9 @@ import 'core/router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // TODO: Reemplazar con tus credenciales de Supabase
   await Supabase.initialize(
-    url: 'YOUR_SUPABASE_URL',
-    anonKey: 'YOUR_SUPABASE_ANON_KEY',
+    url: 'https://cnzjucawwpswdwpxbtmj.supabase.co',
+    anonKey: 'sb_publishable_vPBj4ExScRtYyL7KfyPkTw_Aj51j-tR',
   );
 
   runApp(
