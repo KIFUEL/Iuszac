@@ -1,39 +1,39 @@
 # Estado del Proyecto: IusZac — Derecho Digital
 
-Este documento sirve como bitácora de progreso final tras la transformación integral basada en `IusZac_Pantallas.docx`.
+Este documento sirve como bitácora de progreso tras la transformación integral y los refinamientos de UX/UI.
 
-## 🟢 Completado
-- **Planeación y Análisis:** Extracción de requerimientos de 15 pantallas.
-- **Base de Datos (V2):** Implementación de tablas para Códigos, Artículos, Marcadores, Sesiones de Mentoría, Inscripciones y mejoras en Foros (Tags, Urgente, Solución).
-- **Fase 2: Autenticación y Onboarding:**
-    - Pantalla 01: Inicio (Splash / Landing) - **Completado**
-    - Pantalla 02: Registro (12 campos, roles, contexto académico) - **Completado**
-    - Pantalla 03: Login (Ajustes visuales y recuperación) - **Completado**
-- **Fase 3: Estructura y Navegación:**
-    - Layout de 5 pestañas (Inicio, Foros, Alertas, Mentorías, Perfil) - **Completado**
-    - Enrutamiento completo con guardias de seguridad - **Completado**
-- **Fase 4: Inicio y Contenido Legal:**
-    - Pantalla 04: Inicio (Home) con saludo dinámico y artículo destacado - **Completado**
-    - Pantalla 05: Catálogo de Códigos con badges de estado - **Completado**
-    - Pantalla 06: Detalle de Artículo con formato de penas y reformas - **Completado**
-    - Pantalla 15: Búsqueda Global en tiempo real - **Completado**
-- **Fase 5: Alertas y Reformas:**
-    - Pantalla 07: Alertas de Reforma agrupadas por fecha - **Completado**
-    - Pantalla 08: Detalle de Reforma Comparativo (Rojo/Verde) - **Completado**
-- **Fase 6: Foros:**
-    - Pantalla 09: Lista de hilos con filtros y badges de urgencia - **Completado**
-    - Pantalla 10: Detalle de hilo con "Solución Aceptada" - **Completado**
-- **Fase 7: Mentorías:**
-    - Pantalla 11: Lista de sesiones con precio y cupo - **Completado**
-    - Pantalla 12: Detalle de mentoría, calendario y reseñas - **Completado**
-- **Fase 8: Perfil y Ajustes:**
-    - Pantalla 13: Perfil de usuario con estadísticas y badges Pro - **Completado**
-    - Pantalla 14: Ajustes con toggles granulares de notificaciones - **Completado**
+## 🟢 Completado (Hitos de Desarrollo)
 
-## 🛠️ Notas de Finalización
-- La aplicación ha sido alineada al 100% con la documentación de Derecho Digital Zacatecas.
-- Se recomienda ejecutar el script `update_schema_v2.sql` en Supabase para habilitar las nuevas columnas y tablas.
-- Se han utilizado extensiones de widgets para mantener la consistencia visual (`common_widgets.dart`).
+### 1. Transformación de Interfaz (15 Pantallas)
+- **Autenticación:** Splash, Registro extendido (12 campos) y Login profesional con recuperación.
+- **Contenido Legal:** Home rediseñado, Catálogo de Códigos y Detalle de Artículo con resaltado de términos.
+- **Alertas:** Feed cronológico y comparador semántico de reformas (Rojo/Verde).
+- **Foros:** Rediseño simplificado con buscador de **Hashtags** en tiempo real y marcador de urgencia.
+- **Mentorías:** Sistema de pestañas (**Todas / Mías / Participo**) y flujo completo de inscripción.
+- **Perfil Pro:** Estadísticas de usuario, insignias de rol y ajustes granulares de notificaciones.
+
+### 2. Nuevas Funcionalidades (Post-MVP)
+- **Creación de Mentorías:** Cualquier usuario con rol profesional puede ahora publicar sus propias sesiones.
+- **Buscador Inteligente:** Implementado en Foros y Mentorías para filtrado dinámico.
+- **Identidad Visual:** Generación automatizada de iconos (PWA) y Favicon a partir de `LuZac.png`.
+
+### 3. Infraestructura y Base de Datos (Checkpoint)
+- **Despliegue:** CI/CD configurado con GitHub Actions hacia **GitHub Pages**.
+- **Seguridad:** Políticas RLS robustas para proteger datos de usuarios y permitir interacciones seguras.
+- **Scripts de Mantenimiento (Unificados):**
+  - `database_init.sql`: Recreación total del sistema.
+  - `database_clean_content.sql`: Limpieza de datos preservando usuarios.
+  - `database_fix_permissions.sql`: Reparación definitiva de permisos y políticas.
+
+## 🟡 En Progreso / Siguientes Pasos
+- [ ] **Soporte Markdown:** Implementar renderizado de Markdown en el cuerpo de los artículos legales para mejor legibilidad.
+- [ ] **Editor Enriquecido:** Añadir formato de texto al crear posts en el foro.
+- [ ] **Validación Documental:** Subida de archivos PDF para evidencias en el foro o materiales de mentoría.
+
+## 🛠️ Notas Técnicas Finales
+- La aplicación es una **PWA completa**, instalable en móviles y escritorio.
+- El backend en Supabase está optimizado con Triggers para la creación automática de perfiles.
+- La navegación es 100% responsiva, adaptándose entre `NavigationRail` (Web) y `NavigationBar` (Móvil).
 
 ---
-*Proyecto entregado: 2 de Junio, 2026*
+*Última actualización: 2 de Junio, 2026 - Versión 3.5 estable*
