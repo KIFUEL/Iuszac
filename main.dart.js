@@ -96122,7 +96122,7 @@ yG(){var s=0,r=A.J(t.gl),q,p=this,o,n
 var $async$yG=A.K(function(a,b){if(a===1)return A.G(b,r)
 for(;;)switch(s){case 0:n=J
 s=3
-return A.y(p.a.lK("mentorship_sessions").kr("*, profiles(*)").xR("created_at",!1),$async$yG)
+return A.y(p.a.lK("mentorship_sessions").kr("*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)").xR("created_at",!1),$async$yG)
 case 3:o=n.iF(b,new A.a7A(),t.uI)
 o=A.Z(o,o.$ti.i("ak.E"))
 q=o
