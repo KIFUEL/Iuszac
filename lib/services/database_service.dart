@@ -32,7 +32,7 @@ class DatabaseService {
     return (response as List).map((json) => ForumPost.fromJson(json)).toList();
   }
 
-  Future<ForumPost> createForumPost(String title, String content) async {
+  Future<ForumPost> createForumPost(String title, String content, {List<String> tags = const [], bool isUrgent = false}) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) throw Exception('Inicia sesión para poder publicar');
 
@@ -42,6 +42,8 @@ class DatabaseService {
           'title': title,
           'content': content,
           'user_id': userId,
+          'tags': tags,
+          'is_urgent': isUrgent,
         })
         .select('*, profiles(*)')
         .single();
