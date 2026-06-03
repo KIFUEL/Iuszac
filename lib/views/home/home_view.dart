@@ -87,23 +87,30 @@ class HomeView extends ConsumerWidget {
           // Buscador Global
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: GestureDetector(
                 onTap: () => context.go('/search'),
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+                      width: 1,
+                    ),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.search, color: Colors.grey),
-                      SizedBox(width: 12),
+                      Icon(Icons.search, color: colorScheme.onSurfaceVariant),
+                      const SizedBox(width: 12),
                       Text(
                         'Busca artículos, códigos o foros...',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                          fontSize: 14,
+                        ),
                       ),
                     ],
                   ),
@@ -180,7 +187,11 @@ class HomeView extends ConsumerWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.2,
+          ),
         ),
         if (onAction != null)
           TextButton(
@@ -194,90 +205,167 @@ class HomeView extends ConsumerWidget {
   Widget _buildFeaturedCard(BuildContext context, LegalArticle article) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return LawCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.green.shade700,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.08),
+            blurRadius: 20,
+            spreadRadius: 0,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: LawCard(
+        padding: EdgeInsets.zero,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Gradient image placeholder area
+            ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+                topRight: Radius.circular(20),
               ),
-            ),
-            child: const Text(
-              'VIGENTE',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  article.code?.name ?? 'Código',
-                  style: TextStyle(
-                    color: colorScheme.secondary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+              child: Container(
+                height: 140,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      colorScheme.primaryContainer,
+                      colorScheme.secondaryContainer,
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  '${article.number}: ${article.title}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  article.content,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: Colors.grey, fontSize: 13),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Stack(
                   children: [
-                    const Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        SizedBox(width: 4),
-                        Text('4.8',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: Colors.white,
+                    // Centered gavel icon
+                    Center(
+                      child: Icon(
+                        Icons.gavel_rounded,
+                        size: 52,
+                        color: colorScheme.onPrimaryContainer.withValues(alpha: 0.35),
                       ),
-                      child: const Text('Ver artículo'),
+                    ),
+                    // VIGENTE badge
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade700,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: const Text(
+                          'VIGENTE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Category chip styled with secondaryContainer
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      article.code?.name ?? 'Código',
+                      style: TextStyle(
+                        color: colorScheme.onSecondaryContainer,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // Subtle divider between category and title
+                  Divider(
+                    height: 1,
+                    thickness: 0.5,
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${article.number}: ${article.title}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    article.content,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          SizedBox(width: 4),
+                          Text('4.8',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      // Outlined chip-like 'Leer más' button
+                      OutlinedButton(
+                        onPressed: () {},
+                        style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          foregroundColor: colorScheme.primary,
+                          side: BorderSide(color: colorScheme.primary, width: 1.2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        ),
+                        child: const Text(
+                          'Ver artículo',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildCodeCard(BuildContext context, LegalCode code) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       width: 140,
       margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -289,15 +377,27 @@ class HomeView extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Icon container with gradient background
               Container(
-                padding: const EdgeInsets.all(8),
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      colorScheme.primaryContainer,
+                      colorScheme.secondaryContainer,
+                    ],
+                  ),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.gavel_rounded,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                child: Center(
+                  child: Icon(
+                    Icons.gavel_rounded,
+                    size: 22,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),

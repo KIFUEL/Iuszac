@@ -20,6 +20,7 @@ class MainLayout extends StatelessWidget {
     }
 
     final bool isLargeScreen = MediaQuery.of(context).size.width >= 800;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: isLargeScreen
@@ -27,6 +28,23 @@ class MainLayout extends StatelessWidget {
               children: [
                 NavigationRail(
                   extended: MediaQuery.of(context).size.width >= 1100,
+                  // Subtle gavel logo at the top of the rail
+                  leading: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Icon(
+                        Icons.gavel_rounded,
+                        color: colorScheme.primary,
+                        size: 24,
+                      ),
+                    ),
+                  ),
                   destinations: const [
                     NavigationRailDestination(
                       icon: Icon(Icons.home_outlined),
@@ -65,13 +83,16 @@ class MainLayout extends StatelessWidget {
                     }
                   },
                 ),
-                const VerticalDivider(thickness: 1, width: 1),
+                // Subtle separator instead of plain VerticalDivider
+                Container(width: 1, color: Colors.grey.withValues(alpha: 0.08)),
                 Expanded(child: child),
               ],
             )
           : child,
       bottomNavigationBar: !isLargeScreen
           ? NavigationBar(
+              elevation: 2,
+              surfaceTintColor: colorScheme.primary,
               selectedIndex: getIndex(),
               onDestinationSelected: (index) {
                 switch (index) {
