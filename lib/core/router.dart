@@ -18,8 +18,11 @@ import '../views/auth/login_view.dart';
 import '../views/auth/register_view.dart';
 import '../views/auth/splash_view.dart';
 import '../views/codes/codes_list_view.dart';
+import '../views/codes/articles_list_view.dart';
 import '../views/codes/article_detail_view.dart';
 import '../views/search/global_search_view.dart';
+import '../views/admin/admin_dashboard_view.dart';
+import '../views/admin/new_legal_update_view.dart';
 import '../widgets/main_layout.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
@@ -142,6 +145,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/codes',
             builder: (context, state) => const CodesListView(),
+            routes: [
+              GoRoute(
+                path: ':codeId',
+                builder: (context, state) {
+                  final codeId = state.pathParameters['codeId']!;
+                  final codeName = state.uri.queryParameters['name'] ?? 'Artículos';
+                  return ArticlesListView(codeId: codeId, codeName: codeName);
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/article/:id',
@@ -154,8 +167,19 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/search',
             builder: (context, state) => const GlobalSearchView(),
           ),
+          GoRoute(
+            path: '/admin',
+            builder: (context, state) => const AdminDashboardView(),
+            routes: [
+              GoRoute(
+                path: 'new-update',
+                builder: (context, state) => const NewLegalUpdateView(),
+              ),
+            ],
+          ),
         ],
       ),
     ],
   );
 });
+

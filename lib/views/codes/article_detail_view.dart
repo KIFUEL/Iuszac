@@ -14,17 +14,7 @@ class ArticleDetailView extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Guardar artículo
-            },
-            icon: const Icon(Icons.bookmark_border_rounded),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
+      appBar: AppBar(),
       body: articleAsync.when(
         data: (article) {
           if (article == null) {

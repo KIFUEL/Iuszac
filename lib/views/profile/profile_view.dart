@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/database_provider.dart';
 import '../../widgets/common_widgets.dart';
 
 class ProfileView extends ConsumerWidget {
@@ -10,6 +11,7 @@ class ProfileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
+    final statsAsync = ref.watch(profileStatsProvider);
     final authService = ref.watch(authServiceProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -25,15 +27,21 @@ class ProfileView extends ConsumerWidget {
 
           return CustomScrollView(
             slivers: [
-              // ── Encabezado con gradiente ──────────────────────────────
+              // ── Hero Header con gradiente ─────────────────────────
               SliverAppBar(
-                expandedHeight: 220,
+                expandedHeight: 240,
                 pinned: true,
                 stretch: true,
                 actions: [
                   IconButton(
+                    tooltip: 'Ajustes',
                     onPressed: () => context.go('/profile/settings'),
                     icon: const Icon(Icons.settings_outlined),
+                  ),
+                  IconButton(
+                    tooltip: 'Editar perfil',
+                    onPressed: () => _showEditProfileDialog(context, ref, profile),
+                    icon: const Icon(Icons.edit_outlined),
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -56,7 +64,6 @@ class ProfileView extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 40),
-                          // Avatar con borde blanco
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -105,6 +112,19 @@ class ProfileView extends ConsumerWidget {
                               ],
                             ],
                           ),
+                          if (profile.bio != null && profile.bio!.isNotEmpty) ...[
+                            const SizedBox(height: 6),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 32),
+                              child: Text(
+                                profile.bio!,
+                                style: const TextStyle(color: Colors.white60, fontSize: 12),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -118,7 +138,7 @@ class ProfileView extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Badge Membresía
+                      // ── Badge Membresía ─────────────────────────────
                       Center(
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -153,56 +173,85 @@ class ProfileView extends ConsumerWidget {
 
                       const SizedBox(height: 24),
 
-                      // ── Estadísticas ──────────────────────────────────
-                      Row(
-                        children: [
-                          _buildStatCard(context, '8', 'Artículos', Icons.bookmark_outline),
-                          const SizedBox(width: 10),
-                          _buildStatCard(context, '24', 'Aportes', Icons.forum_outlined),
-                          const SizedBox(width: 10),
-                          _buildStatCard(context, '3', 'Mentorías', Icons.school_outlined),
-                        ],
+                      // ── Estadísticas REALES desde Supabase ────────
+                      statsAsync.when(
+                        data: (stats) => Row(
+                          children: [
+                            _buildStatCard(
+                              context,
+                              '${stats['aportes'] ?? 0}',
+                              'Aportes',
+                              Icons.forum_outlined,
+                            ),
+                            const SizedBox(width: 10),
+                            _buildStatCard(
+                              context,
+                              '${stats['mentorias'] ?? 0}',
+                              'Mentorías',
+                              Icons.school_outlined,
+                            ),
+                          ],
+                        ),
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (_, __) => const SizedBox(),
                       ),
 
                       const SizedBox(height: 28),
 
-                      // ── Sección de opciones ────────────────────────────
-                      Text(
-                        'Configuración',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.8,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      _buildMenuCard(context, const [
-                        _MenuTileData('Notificaciones push', Icons.notifications_active_outlined),
-                        _MenuTileData('Artículos guardados', Icons.collections_bookmark_outlined),
-                        _MenuTileData('Privacidad y seguridad', Icons.security_outlined),
-                        _MenuTileData('Ayuda y soporte', Icons.help_outline_rounded),
+
+
+                      // ── Opciones de Perfil ─────────────────────────
+                      _buildSectionLabel(context, 'Configuración', Icons.settings_outlined),
+                      const SizedBox(height: 10),
+                      _buildMenuCard(context, [
+                        _MenuTileData(
+                          'Notificaciones',
+                          Icons.notifications_active_outlined,
+                          onTap: () => context.go('/profile/settings'),
+                        ),
+                        _MenuTileData(
+                          'Editar Perfil',
+                          Icons.edit_outlined,
+                          onTap: () => _showEditProfileDialog(context, ref, profile),
+                        ),
+                        if (profile.role == 'admin')
+                          _MenuTileData(
+                            'Panel de Administración',
+                            Icons.admin_panel_settings_outlined,
+                            onTap: () => context.push('/admin'),
+                          ),
+                        _MenuTileData(
+                          'Privacidad y seguridad',
+                          Icons.security_outlined,
+                          onTap: () => context.go('/profile/settings'),
+                        ),
+                        _MenuTileData(
+                          'Ayuda y soporte',
+                          Icons.help_outline_rounded,
+                          onTap: () {},
+                        ),
                       ]),
 
                       const SizedBox(height: 32),
 
-                      // ── Cerrar Sesión ──────────────────────────────────
+                      // ── Cerrar Sesión ──────────────────────────────
                       LawButton(
                         label: 'Cerrar Sesión',
                         backgroundColor: colorScheme.error,
                         onPressed: () async {
                           final confirm = await showDialog<bool>(
                             context: context,
-                            builder: (context) => AlertDialog(
+                            builder: (ctx) => AlertDialog(
                               title: const Text('Cerrar Sesión'),
                               content: const Text('¿Estás seguro de que deseas salir?'),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               actions: [
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
+                                  onPressed: () => Navigator.pop(ctx, false),
                                   child: const Text('Cancelar'),
                                 ),
                                 FilledButton(
-                                  onPressed: () => Navigator.pop(context, true),
+                                  onPressed: () => Navigator.pop(ctx, true),
                                   style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
                                   child: const Text('Salir'),
                                 ),
@@ -228,6 +277,7 @@ class ProfileView extends ConsumerWidget {
     );
   }
 
+  // ── Estadística individual ─────────────────────────────────────────────────
   Widget _buildStatCard(BuildContext context, String value, String label, IconData icon) {
     final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
@@ -257,16 +307,43 @@ class ProfileView extends ConsumerWidget {
                 color: colorScheme.primary,
               ),
             ),
-            Text(
-              label,
-              style: const TextStyle(fontSize: 10, color: Colors.grey),
-            ),
+            Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
           ],
         ),
       ),
     );
   }
 
+  // ── Encabezado de sección ──────────────────────────────────────────────────
+  Widget _buildSectionLabel(BuildContext context, String title, IconData icon) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          height: 18,
+          decoration: BoxDecoration(
+            color: colorScheme.primary,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Icon(icon, size: 16, color: colorScheme.primary),
+        const SizedBox(width: 6),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: colorScheme.primary,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Menú agrupado ──────────────────────────────────────────────────────────
   Widget _buildMenuCard(BuildContext context, List<_MenuTileData> items) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
@@ -292,7 +369,7 @@ class ProfileView extends ConsumerWidget {
                 ),
                 title: Text(item.title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                 trailing: Icon(Icons.chevron_right, size: 18, color: colorScheme.outline),
-                onTap: () {},
+                onTap: item.onTap,
               ),
               if (i < items.length - 1)
                 Divider(
@@ -306,10 +383,167 @@ class ProfileView extends ConsumerWidget {
       ),
     );
   }
+
+  // ── Dialog de edición de perfil ────────────────────────────────────────────
+  void _showEditProfileDialog(BuildContext context, WidgetRef ref, profile) {
+    final nameCtrl = TextEditingController(text: profile.fullName);
+    final lastNameCtrl = TextEditingController(text: profile.lastName ?? '');
+    final bioCtrl = TextEditingController(text: profile.bio ?? '');
+    final institutionCtrl = TextEditingController(text: profile.institution ?? '');
+    final semesterCtrl = TextEditingController(text: profile.semesterDegree ?? '');
+    bool isSaving = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          final colorScheme = Theme.of(ctx).colorScheme;
+          return DraggableScrollableSheet(
+            initialChildSize: 0.85,
+            maxChildSize: 0.95,
+            minChildSize: 0.5,
+            builder: (_, scrollCtrl) => Container(
+              decoration: BoxDecoration(
+                color: Theme.of(ctx).scaffoldBackgroundColor,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              child: Column(
+                children: [
+                  // Handle bar
+                  Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: colorScheme.outline.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Editar Perfil',
+                          style: Theme.of(ctx).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: ListView(
+                      controller: scrollCtrl,
+                      padding: EdgeInsets.fromLTRB(
+                        24,
+                        20,
+                        24,
+                        MediaQuery.of(ctx).viewInsets.bottom + 24,
+                      ),
+                      children: [
+                        LawTextField(
+                          label: 'Nombre(s)',
+                          icon: Icons.person_outline,
+                          controller: nameCtrl,
+                        ),
+                        const SizedBox(height: 16),
+                        LawTextField(
+                          label: 'Apellidos',
+                          icon: Icons.badge_outlined,
+                          controller: lastNameCtrl,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: bioCtrl,
+                          maxLines: 3,
+                          maxLength: 200,
+                          decoration: InputDecoration(
+                            labelText: 'Biografía breve',
+                            prefixIcon: const Padding(
+                              padding: EdgeInsets.only(bottom: 48),
+                              child: Icon(Icons.notes_outlined),
+                            ),
+                            alignLabelWithHint: true,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            filled: true,
+                            fillColor: colorScheme.surface,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        LawTextField(
+                          label: 'Institución',
+                          icon: Icons.school_outlined,
+                          controller: institutionCtrl,
+                        ),
+                        const SizedBox(height: 16),
+                        LawTextField(
+                          label: 'Semestre / Grado',
+                          icon: Icons.menu_book_outlined,
+                          controller: semesterCtrl,
+                        ),
+                        const SizedBox(height: 28),
+                        LawButton(
+                          label: 'Guardar Cambios',
+                          isLoading: isSaving,
+                          onPressed: () async {
+                            setModalState(() => isSaving = true);
+                            try {
+                              final dbService = ref.read(profileUpdateProvider);
+                              await dbService.updateProfile(
+                                userId: profile.id,
+                                fullName: nameCtrl.text.trim(),
+                                lastName: lastNameCtrl.text.trim(),
+                                bio: bioCtrl.text.trim(),
+                                institution: institutionCtrl.text.trim(),
+                                semesterDegree: semesterCtrl.text.trim(),
+                              );
+                              ref.invalidate(userProfileProvider);
+                              ref.invalidate(profileStatsProvider);
+                              if (ctx.mounted) {
+                                Navigator.pop(ctx);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Perfil actualizado correctamente'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              if (ctx.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error: $e')),
+                                );
+                              }
+                            } finally {
+                              if (ctx.mounted) setModalState(() => isSaving = false);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
 class _MenuTileData {
   final String title;
   final IconData icon;
-  const _MenuTileData(this.title, this.icon);
+  final VoidCallback? onTap;
+
+  const _MenuTileData(this.title, this.icon, {this.onTap});
 }

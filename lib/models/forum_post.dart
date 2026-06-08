@@ -36,7 +36,7 @@ class ForumPost {
           json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
       isUrgent: json['is_urgent'] ?? false,
       tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
-      replyCount: json['reply_count'] ?? 0,
+      replyCount: json['reply_count'] ?? (json['forum_comments'] as List?)?.length ?? 0,
     );
   }
 

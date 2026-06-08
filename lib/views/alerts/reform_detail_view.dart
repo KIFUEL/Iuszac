@@ -95,16 +95,6 @@ class ReformDetailView extends ConsumerWidget {
                 const SizedBox(height: 12),
                 _buildMetadataRow(
                     Icons.event, 'Fecha de Publicación', publishDate),
-                const SizedBox(height: 32),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.bookmark_add_outlined),
-                    label: const Text('Guardar Artículo Actualizado'),
-                  ),
-                ),
               ],
             ),
           );

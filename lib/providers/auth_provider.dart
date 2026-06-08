@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/auth_service.dart';
+import '../services/database_service.dart';
 import '../models/profile.dart';
 
 // Provider para el servicio de autenticación
@@ -32,3 +33,9 @@ final userProfileProvider = FutureProvider<Profile?>((ref) async {
   if (response == null) return null;
   return Profile.fromJson(response);
 });
+
+// Provider para actualizar el perfil del usuario actual
+final profileUpdateProvider = Provider<DatabaseService>((ref) {
+  return DatabaseService();
+});
+

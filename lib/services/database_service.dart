@@ -6,6 +6,8 @@ import '../models/mentor.dart';
 import '../models/legal_code.dart';
 import '../models/legal_article.dart';
 import '../models/mentorship_session.dart';
+import '../models/saved_article.dart';
+
 
 class DatabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -22,11 +24,43 @@ class DatabaseService {
         .toList();
   }
 
+  Future<LegalUpdate> createLegalUpdate({
+    required String title,
+    required String content,
+    required String category,
+    String? imageUrl,
+    String? articleId,
+    String? oldContent,
+    String? newContent,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw Exception('Inicia sesión para poder crear una actualización');
+    }
+
+    final response = await _supabase
+        .from('legal_updates')
+        .insert({
+          'title': title,
+          'content': content,
+          'category': category,
+          'image_url': imageUrl,
+          'author_id': userId,
+          'article_id': articleId,
+          'old_content': oldContent,
+          'new_content': newContent,
+        })
+        .select('*, profiles(*)')
+        .single();
+
+    return LegalUpdate.fromJson(response);
+  }
+
   // 2. Foro (Publicaciones)
   Future<List<ForumPost>> getForumPosts() async {
     final response = await _supabase
         .from('forum_posts')
-        .select('*, profiles(*)')
+        .select('*, profiles(*), forum_comments(id)')
         .order('created_at', ascending: false);
 
     return (response as List).map((json) => ForumPost.fromJson(json)).toList();
@@ -46,7 +80,7 @@ class DatabaseService {
           'tags': tags,
           'is_urgent': isUrgent,
         })
-        .select('*, profiles(*)')
+        .select('*, profiles(*), forum_comments(id)')
         .single();
 
     return ForumPost.fromJson(response);
@@ -198,4 +232,130 @@ class DatabaseService {
     if (response == null) return null;
     return LegalArticle.fromJson(response);
   }
+
+  // ── 6. Perfil de Usuario ────────────────────────────────────────────────────
+
+  /// Actualiza los datos editables del perfil (nombre, bio, institución, etc.)
+  Future<void> updateProfile({
+    required String userId,
+    String? fullName,
+    String? lastName,
+    String? bio,
+    String? institution,
+    String? semesterDegree,
+  }) async {
+    final updates = <String, dynamic>{};
+    if (fullName != null) updates['full_name'] = fullName;
+    if (lastName != null) updates['last_name'] = lastName;
+    if (bio != null) updates['bio'] = bio;
+    if (institution != null) updates['institution'] = institution;
+    if (semesterDegree != null) updates['semester_degree'] = semesterDegree;
+    if (updates.isEmpty) return;
+
+    await _supabase.from('profiles').update(updates).eq('id', userId);
+  }
+
+  /// Actualiza las preferencias de notificación del perfil
+  Future<void> updateNotificationPreferences({
+    required String userId,
+    required bool notifAlertsReforma,
+    required bool notifEmailResumen,
+    required bool notifForo,
+    required bool notifMentoria,
+  }) async {
+    await _supabase.from('profiles').update({
+      'notif_alerts_reforma': notifAlertsReforma,
+      'notif_email_resumen': notifEmailResumen,
+      'notif_foro': notifForo,
+      'notif_mentoria': notifMentoria,
+    }).eq('id', userId);
+  }
+
+  /// Devuelve estadísticas reales del usuario: artículos guardados, aportes al foro, mentorías
+  Future<Map<String, int>> getProfileStats(String userId) async {
+    // Usamos count a través de la función .count() que devuelve PostgrestCountResponse
+    final savedRes = await _supabase
+        .from('saved_articles')
+        .select()
+        .eq('user_id', userId);
+
+    final forumRes = await _supabase
+        .from('forum_posts')
+        .select()
+        .eq('user_id', userId);
+
+    final mentoriasRes = await _supabase
+        .from('mentorship_enrollments')
+        .select()
+        .eq('user_id', userId);
+
+    return {
+      'saved': (savedRes as List).length,
+      'aportes': (forumRes as List).length,
+      'mentorias': (mentoriasRes as List).length,
+    };
+  }
+
+  // ── 7. Artículos Guardados (Bookmarks) ────────────────────────────────────
+
+  /// Obtiene los artículos guardados del usuario con la info del artículo
+  Future<List<SavedArticle>> getSavedArticles() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return [];
+
+    final response = await _supabase
+        .from('saved_articles')
+        .select('*, legal_articles(*, legal_codes(*))')
+        .eq('user_id', userId)
+        .order('saved_at', ascending: false);
+
+    return (response as List)
+        .map((json) => SavedArticle.fromJson(json))
+        .toList();
+  }
+
+  /// Guarda un artículo en los marcadores del usuario
+  Future<void> saveArticle(String articleId) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception('Inicia sesión para guardar artículos');
+
+    await _supabase.from('saved_articles').upsert({
+      'user_id': userId,
+      'article_id': articleId,
+      'saved_at': DateTime.now().toIso8601String(),
+    }, onConflict: 'user_id,article_id');
+  }
+
+  /// Elimina un artículo de los marcadores del usuario
+  Future<void> unsaveArticle(String articleId) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return;
+
+    await _supabase
+        .from('saved_articles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('article_id', articleId);
+  }
+
+  /// Verifica si un artículo ya está guardado
+  Future<bool> isArticleSaved(String articleId) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return false;
+
+    final response = await _supabase
+        .from('saved_articles')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('article_id', articleId)
+        .maybeSingle();
+
+    return response != null;
+  }
+
+  /// Elimina una actualización legal/noticia por su ID
+  Future<void> deleteLegalUpdate(String id) async {
+    await _supabase.from('legal_updates').delete().eq('id', id);
+  }
 }
+

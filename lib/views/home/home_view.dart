@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/database_provider.dart';
-import '../../models/legal_article.dart';
 import '../../models/legal_code.dart';
+import '../../models/legal_update.dart';
 import '../../widgets/common_widgets.dart';
 
 class HomeView extends ConsumerWidget {
@@ -20,7 +21,7 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider);
-    final featuredAsync = ref.watch(featuredArticleProvider);
+    final updatesAsync = ref.watch(legalUpdatesProvider);
     final codesAsync = ref.watch(legalCodesProvider);
 
     final firstName = user?.userMetadata?['full_name'] ?? 'Usuario';
@@ -119,25 +120,80 @@ class HomeView extends ConsumerWidget {
             ),
           ),
 
-          // Artículo Destacado
+          // Noticias y Reformas Recientes (Carrusel)
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionHeader('Artículo Destacado', null),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: _buildSectionHeader(
+                      'Reformas Recientes',
+                      () => context.go('/alerts'),
+                    ),
+                  ),
                   const SizedBox(height: 12),
-                  featuredAsync.when(
-                    data: (article) {
-                      if (article == null) return const SizedBox();
-                      return _buildFeaturedCard(context, article);
+                  updatesAsync.when(
+                    data: (updates) {
+                      if (updates.isEmpty) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Text('No hay noticias o reformas recientes.'),
+                          ),
+                        );
+                      }
+                      final carouselUpdates = updates.take(3).toList();
+                      return SizedBox(
+                        height: 200,
+                        child: PageView.builder(
+                          controller: PageController(viewportFraction: 0.9),
+                          itemCount: carouselUpdates.length,
+                          itemBuilder: (context, index) {
+                            final update = carouselUpdates[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                              child: _buildCarouselNewsCard(context, update),
+                            );
+                          },
+                        ),
+                      );
                     },
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (err, _) => Text('Error: $err'),
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    error: (err, _) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text('Error: $err'),
+                    ),
                   ),
                 ],
               ),
+            ),
+          ),
+
+          // Otras Noticias (Lista Vertical)
+          SliverToBoxAdapter(
+            child: updatesAsync.when(
+              data: (updates) {
+                if (updates.length <= 3) return const SizedBox();
+                final remainingUpdates = updates.skip(3).toList();
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSectionHeader('Más Noticias', null),
+                      const SizedBox(height: 12),
+                      ...remainingUpdates.map((update) => _buildListNewsCard(context, update)),
+                    ],
+                  ),
+                );
+              },
+              loading: () => const SizedBox(),
+              error: (_, __) => const SizedBox(),
             ),
           ),
 
@@ -202,162 +258,250 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeaturedCard(BuildContext context, LegalArticle article) {
+  Widget _buildCarouselNewsCard(BuildContext context, LegalUpdate update) {
     final colorScheme = Theme.of(context).colorScheme;
+    final formattedDate = DateFormat('dd/MM/yyyy').format(update.createdAt);
+    final isNew = DateTime.now().difference(update.createdAt).inHours < 24;
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.08),
-            blurRadius: 20,
-            spreadRadius: 0,
-            offset: const Offset(0, 6),
+            color: colorScheme.primary.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: LawCard(
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gradient image placeholder area
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              child: Container(
-                height: 140,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      colorScheme.primaryContainer,
-                      colorScheme.secondaryContainer,
-                    ],
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    update.category,
+                    style: TextStyle(
+                      color: colorScheme.onSecondaryContainer,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                      letterSpacing: 0.3,
+                    ),
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    // Centered gavel icon
-                    Center(
-                      child: Icon(
-                        Icons.gavel_rounded,
-                        size: 52,
-                        color: colorScheme.onPrimaryContainer.withValues(alpha: 0.35),
+                if (isNew) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent.shade700,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'NUEVO',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
                       ),
                     ),
-                    // VIGENTE badge
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.green.shade700,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                        ),
-                        child: const Text(
-                          'VIGENTE',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.8,
-                          ),
+                  ),
+                ],
+                const Spacer(),
+                Text(
+                  formattedDate,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Divider(
+              height: 1,
+              thickness: 0.5,
+              color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              update.title,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Expanded(
+              child: Text(
+                update.content,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () {
+                    if (update.articleId != null) {
+                      context.push('/article/${update.articleId}');
+                    } else {
+                      context.push('/alerts/detail/${update.id}');
+                    }
+                  },
+                  style: OutlinedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    foregroundColor: colorScheme.primary,
+                    side: BorderSide(color: colorScheme.primary, width: 1.2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  ),
+                  child: Text(
+                    update.articleId != null ? 'Ver artículo' : 'Ver cambios',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListNewsCard(BuildContext context, LegalUpdate update) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final formattedDate = DateFormat('dd/MM/yyyy').format(update.createdAt);
+    final isNew = DateTime.now().difference(update.createdAt).inHours < 24;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: LawCard(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: InkWell(
+          onTap: () {
+            if (update.articleId != null) {
+              context.push('/article/${update.articleId}');
+            } else {
+              context.push('/alerts/detail/${update.id}');
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: colorScheme.secondaryContainer.withValues(alpha: 0.7),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      update.category,
+                      style: TextStyle(
+                        color: colorScheme.onSecondaryContainer,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 9,
+                      ),
+                    ),
+                  ),
+                  if (isNew) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.redAccent.shade700,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'NUEVO',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Category chip styled with secondaryContainer
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: colorScheme.secondaryContainer,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      article.code?.name ?? 'Código',
-                      style: TextStyle(
-                        color: colorScheme.onSecondaryContainer,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  // Subtle divider between category and title
-                  Divider(
-                    height: 1,
-                    thickness: 0.5,
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                  ),
-                  const SizedBox(height: 10),
+                  const Spacer(),
                   Text(
-                    '${article.number}: ${article.title}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    formattedDate,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    article.content,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.grey, fontSize: 13),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          SizedBox(width: 4),
-                          Text('4.8',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      // Outlined chip-like 'Leer más' button
-                      OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          foregroundColor: colorScheme.primary,
-                          side: BorderSide(color: colorScheme.primary, width: 1.2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                        ),
-                        child: const Text(
-                          'Ver artículo',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          update.title,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          update.content,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 16,
+                    color: colorScheme.primary,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

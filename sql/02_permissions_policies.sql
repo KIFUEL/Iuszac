@@ -1,8 +1,8 @@
--- ==========================================
--- 3. DATABASE_FIX_PERMISSIONS.SQL
+-- =========================================================================
+-- 2. PERMISOS Y POLÍTICAS RLS (02_permissions_policies.sql)
 -- PROYECTO: IusZac
 -- OBJETIVO: Configurar permisos Postgres y políticas RLS definitivas.
--- ==========================================
+-- =========================================================================
 
 -- A. PERMISOS DE ESQUEMA POSTGRES
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
@@ -17,23 +17,25 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO au
 
 -- B. POLÍTICAS RLS (Row Level Security)
 
--- 1. PROFILES
+-- 1. PERFILES (profiles)
 DROP POLICY IF EXISTS "Lectura pública de perfiles" ON public.profiles;
 CREATE POLICY "Lectura pública de perfiles" ON public.profiles FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Usuarios pueden actualizar su propio perfil" ON public.profiles;
 CREATE POLICY "Usuarios pueden actualizar su propio perfil" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
--- 2. CONTENIDO LEGAL (Solo lectura para usuarios, admin vía Dashboard)
+-- 2. CONTENIDO LEGAL (codes y articles)
 DROP POLICY IF EXISTS "Lectura pública de códigos" ON public.legal_codes;
 CREATE POLICY "Lectura pública de códigos" ON public.legal_codes FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Lectura pública de artículos" ON public.legal_articles;
 CREATE POLICY "Lectura pública de artículos" ON public.legal_articles FOR SELECT USING (true);
 
+-- 3. REFORMAS Y NOTICIAS (legal_updates)
 DROP POLICY IF EXISTS "Lectura pública de actualizaciones" ON public.legal_updates;
 CREATE POLICY "Lectura pública de actualizaciones" ON public.legal_updates FOR SELECT USING (true);
 
+-- Permisos exclusivos para administradores en legal_updates
 DROP POLICY IF EXISTS "Solo administradores pueden insertar actualizaciones" ON public.legal_updates;
 CREATE POLICY "Solo administradores pueden insertar actualizaciones" ON public.legal_updates 
   FOR INSERT WITH CHECK (
@@ -61,7 +63,7 @@ CREATE POLICY "Solo administradores pueden eliminar actualizaciones" ON public.l
     )
   );
 
--- 3. FOROS
+-- 4. FOROS (forum_posts y forum_comments)
 DROP POLICY IF EXISTS "Lectura pública de posts" ON public.forum_posts;
 CREATE POLICY "Lectura pública de posts" ON public.forum_posts FOR SELECT USING (true);
 
@@ -77,7 +79,7 @@ CREATE POLICY "Lectura pública de comentarios" ON public.forum_comments FOR SEL
 DROP POLICY IF EXISTS "Cualquier usuario autenticado puede crear comentarios" ON public.forum_comments;
 CREATE POLICY "Cualquier usuario autenticado puede crear comentarios" ON public.forum_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- 4. MENTORÍAS
+-- 5. MENTORÍAS
 DROP POLICY IF EXISTS "Lectura pública de sesiones" ON public.mentorship_sessions;
 CREATE POLICY "Lectura pública de sesiones" ON public.mentorship_sessions FOR SELECT USING (true);
 
@@ -93,7 +95,10 @@ CREATE POLICY "Usuarios pueden ver sus inscripciones" ON public.mentorship_enrol
 DROP POLICY IF EXISTS "Usuarios pueden inscribirse" ON public.mentorship_enrollments;
 CREATE POLICY "Usuarios pueden inscribirse" ON public.mentorship_enrollments FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- 5. MARCADORES
+DROP POLICY IF EXISTS "Lectura pública de reseñas" ON public.mentorship_reviews;
+CREATE POLICY "Lectura pública de reseñas" ON public.mentorship_reviews FOR SELECT USING (true);
+
+-- 6. MARCADORES (saved_articles)
 DROP POLICY IF EXISTS "Usuarios pueden ver sus propios guardados" ON public.saved_articles;
 CREATE POLICY "Usuarios pueden ver sus propios guardados" ON public.saved_articles FOR SELECT USING (auth.uid() = profile_id);
 

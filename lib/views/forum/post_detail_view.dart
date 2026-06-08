@@ -39,6 +39,7 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
       await dbService.createComment(widget.postId, text);
       _commentController.clear();
       ref.invalidate(forumCommentsProvider(widget.postId));
+      ref.invalidate(forumPostsProvider);
     } catch (e) {
       // Manejar error de publicación
     } finally {

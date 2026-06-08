@@ -8,6 +8,7 @@ import '../models/mentor.dart';
 import '../models/legal_code.dart';
 import '../models/legal_article.dart';
 import '../models/mentorship_session.dart';
+import '../models/saved_article.dart';
 
 // Proveedor para instanciar el servicio de Base de Datos
 final databaseServiceProvider = Provider<DatabaseService>((ref) {
@@ -59,6 +60,14 @@ final legalCodesProvider = FutureProvider<List<LegalCode>>((ref) async {
   return await dbService.getLegalCodes();
 });
 
+// Proveedor para obtener los artículos de un código específico
+final articlesByCodeProvider =
+    FutureProvider.family<List<LegalArticle>, String>((ref, codeId) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getArticlesByCode(codeId);
+});
+
+
 // Proveedor para obtener el artículo destacado
 final featuredArticleProvider = FutureProvider<LegalArticle?>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
@@ -76,4 +85,25 @@ final articleDetailProvider =
 
   if (response == null) return null;
   return LegalArticle.fromJson(response);
+});
+
+// Proveedor para las estadísticas reales del perfil del usuario
+final profileStatsProvider = FutureProvider<Map<String, int>>((ref) async {
+  final userId = Supabase.instance.client.auth.currentUser?.id;
+  if (userId == null) return {'saved': 0, 'aportes': 0, 'mentorias': 0};
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getProfileStats(userId);
+});
+
+// Proveedor para los artículos guardados (bookmarks) del usuario
+final savedArticlesProvider = FutureProvider<List<SavedArticle>>((ref) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getSavedArticles();
+});
+
+// Proveedor para verificar si un artículo específico está guardado
+final isArticleSavedProvider =
+    FutureProvider.family<bool, String>((ref, articleId) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.isArticleSaved(articleId);
 });

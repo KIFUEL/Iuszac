@@ -85,9 +85,7 @@ class _CodesListViewState extends ConsumerState<CodesListView> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return InkWell(
-      onTap: () {
-        // Navegar a detalle (cuando esté implementado)
-      },
+      onTap: () => context.push('/codes/${code.id}?name=${Uri.encodeComponent(code.name)}'),
       borderRadius: BorderRadius.circular(20),
       child: LawCard(
         padding: const EdgeInsets.all(16),
