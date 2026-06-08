@@ -15,18 +15,39 @@ class ReformDetailView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Comparativa de Reforma'),
+        title: const Text('Detalle de Reforma'),
       ),
       body: alertsAsync.when(
         data: (alerts) {
           final alert = alerts.firstWhere((a) => a.id == alertId);
           final publishDate = DateFormat('dd/MM/yyyy').format(alert.createdAt);
 
+          final hasComparison = (alert.oldContent != null && alert.oldContent!.trim().isNotEmpty) ||
+              (alert.newContent != null && alert.newContent!.trim().isNotEmpty);
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Category Chip Badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    alert.category.toUpperCase(),
+                    style: TextStyle(
+                      color: colorScheme.onPrimaryContainer,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 Text(
                   alert.title,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -34,64 +55,104 @@ class ReformDetailView extends ConsumerWidget {
                         color: colorScheme.primary,
                       ),
                 ),
-                const SizedBox(height: 16),
-
-                // Texto Anterior
-                const Text(
-                  'TEXTO ANTERIOR',
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    alert.oldContent ?? 'No disponible',
-                    style: const TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 24),
 
-                // Texto Nuevo
-                const Text(
-                  'TEXTO NUEVO',
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+                if (hasComparison) ...[
+                  // Texto Anterior
+                  if (alert.oldContent != null && alert.oldContent!.trim().isNotEmpty) ...[
+                    const Text(
+                      'TEXTO ANTERIOR',
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          letterSpacing: 0.5),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.red.withValues(alpha: 0.15)),
+                      ),
+                      child: Text(
+                        alert.oldContent!,
+                        style: const TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          color: Colors.red,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+
+                  // Texto Nuevo
+                  if (alert.newContent != null && alert.newContent!.trim().isNotEmpty) ...[
+                    const Text(
+                      'TEXTO NUEVO / VIGENTE',
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          letterSpacing: 0.5),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.green.withValues(alpha: 0.15)),
+                      ),
+                      child: Text(
+                        alert.newContent!,
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ] else ...[
+                  // General content display
+                  const Text(
+                    'DETALLES DE LA PUBLICACIÓN',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                        letterSpacing: 0.5),
                   ),
-                  child: Text(
-                    alert.newContent ?? alert.content,
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
+                    ),
+                    child: Text(
+                      alert.content,
+                      style: TextStyle(
+                        color: colorScheme.onSurface,
+                        fontSize: 14,
+                        height: 1.6,
+                      ),
                     ),
                   ),
-                ),
+                ],
 
                 const Divider(height: 48),
 
                 // Metadatos
                 _buildMetadataRow(Icons.account_balance, 'Fuente Oficial',
-                    'Periódico Oficial del Estado'),
+                    'Periódico Oficial del Estado / Diario Oficial'),
                 const SizedBox(height: 12),
                 _buildMetadataRow(
                     Icons.event, 'Fecha de Publicación', publishDate),
