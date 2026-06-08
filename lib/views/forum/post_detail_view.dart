@@ -747,6 +747,44 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
                 comment.content,
                 style: const TextStyle(height: 1.5, fontSize: 14),
               ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          // Visual interaction placeholder
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.thumb_up_alt_outlined, size: 14, color: colorScheme.primary),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Útil',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

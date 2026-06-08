@@ -253,13 +253,22 @@ class _ForumViewState extends ConsumerState<ForumView> {
                     if (post.tags.isNotEmpty) ...[
                       Wrap(
                         spacing: 6,
+                        runSpacing: 6,
                         children: post.tags
-                            .map((tag) => Text(
-                                  '#$tag',
-                                  style: TextStyle(
-                                      color: colorScheme.primary,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold),
+                            .map((tag) => Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primary.withValues(alpha: 0.08),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: colorScheme.primary.withValues(alpha: 0.15)),
+                                  ),
+                                  child: Text(
+                                    '#$tag',
+                                    style: TextStyle(
+                                        color: colorScheme.primary,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ))
                             .toList(),
                       ),
@@ -284,19 +293,43 @@ class _ForumViewState extends ConsumerState<ForumView> {
                     ),
                     Row(
                       children: [
-                        Icon(Icons.chat_bubble_outline,
-                            size: 16, color: colorScheme.primary),
-                        const SizedBox(width: 6),
-                        Text(
-                          '${post.replyCount} respuestas',
-                          style: TextStyle(
-                              color: colorScheme.primary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondary.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.chat_bubble_outline, size: 14, color: colorScheme.secondary),
+                              const SizedBox(width: 6),
+                              Text(
+                                '${post.replyCount} respuestas',
+                                style: TextStyle(
+                                    color: colorScheme.secondary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
                         const Spacer(),
-                        const Icon(Icons.arrow_forward_ios,
-                            size: 12, color: Colors.grey),
+                        ElevatedButton.icon(
+                          onPressed: () => context.go('/forum/${post.id}'),
+                          icon: const Icon(Icons.forum_outlined, size: 14, color: Colors.white),
+                          label: const Text(
+                            'Discutir caso',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            elevation: 2,
+                            shadowColor: colorScheme.primary.withValues(alpha: 0.3),
+                            backgroundColor: colorScheme.primary,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                        ),
                       ],
                     ),
                   ],
