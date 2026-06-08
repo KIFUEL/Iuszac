@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,36 +16,45 @@ import '../views/profile/settings_view.dart';
 import '../views/auth/login_view.dart';
 import '../views/auth/register_view.dart';
 import '../views/auth/splash_view.dart';
+import '../views/auth/suspended_view.dart';
 import '../views/codes/codes_list_view.dart';
 import '../views/codes/articles_list_view.dart';
 import '../views/codes/article_detail_view.dart';
 import '../views/search/global_search_view.dart';
 import '../views/admin/admin_dashboard_view.dart';
 import '../views/admin/new_legal_update_view.dart';
+import '../views/admin/admin_mentors_view.dart';
+import '../views/admin/admin_moderation_view.dart';
+import '../views/admin/admin_suspend_view.dart';
 import '../widgets/main_layout.dart';
+import '../providers/auth_provider.dart';
+import '../models/profile.dart';
 
-class GoRouterRefreshStream extends ChangeNotifier {
-  GoRouterRefreshStream(Stream<dynamic> stream) {
+class RouterRefreshNotifier extends ChangeNotifier {
+  void refresh() {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-          (dynamic _) => notifyListeners(),
-        );
-  }
-
-  late final StreamSubscription<dynamic> _subscription;
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
   }
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final refreshNotifier = RouterRefreshNotifier();
+  
+  final authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((_) {
+    refreshNotifier.refresh();
+  });
+  
+  ref.listen<AsyncValue<Profile?>>(userProfileProvider, (previous, next) {
+    refreshNotifier.refresh();
+  });
+  
+  ref.onDispose(() {
+    authSubscription.cancel();
+    refreshNotifier.dispose();
+  });
+
   return GoRouter(
     initialLocation: '/',
-    refreshListenable:
-        GoRouterRefreshStream(Supabase.instance.client.auth.onAuthStateChange),
+    refreshListenable: refreshNotifier,
     redirect: (context, state) {
       final session = Supabase.instance.client.auth.currentSession;
       final isAuthRoute = state.matchedLocation == '/login' ||
@@ -59,6 +67,40 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (isAuthRoute) {
         return '/';
+      }
+
+      // Check suspension and role guards
+      final profileAsync = ref.read(userProfileProvider);
+      final profile = profileAsync.value;
+
+      if (profile != null) {
+        final now = DateTime.now();
+        final isSuspended = profile.isSuspended && (profile.suspendedUntil == null || profile.suspendedUntil!.isAfter(now));
+        
+        if (isSuspended) {
+          if (state.matchedLocation != '/suspended') {
+            return '/suspended';
+          }
+          return null;
+        } else {
+          if (state.matchedLocation == '/suspended') {
+            return '/';
+          }
+        }
+
+        // Check admin routes
+        if (state.matchedLocation.startsWith('/admin')) {
+          if (profile.userType != 'admin') {
+            return '/';
+          }
+        }
+
+        // Check mentor routes
+        if (state.matchedLocation.startsWith('/mentorship/new') || state.matchedLocation.startsWith('/mentorship/edit')) {
+          if (profile.userType != 'mentor') {
+            return '/mentorship';
+          }
+        }
       }
 
       return null;
@@ -75,6 +117,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterView(),
+      ),
+      GoRoute(
+        path: '/suspended',
+        builder: (context, state) => const SuspendedView(),
       ),
       ShellRoute(
         builder: (context, state, child) {
@@ -122,6 +168,13 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'new',
                 builder: (context, state) => const NewMentorshipView(),
+              ),
+              GoRoute(
+                path: 'edit/:id',
+                builder: (context, state) {
+                  final sessionId = state.pathParameters['id']!;
+                  return NewMentorshipView(sessionId: sessionId);
+                },
               ),
               GoRoute(
                 path: ':id',
@@ -174,6 +227,21 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'new-update',
                 builder: (context, state) => const NewLegalUpdateView(),
+              ),
+              GoRoute(
+                path: 'mentors',
+                builder: (context, state) => const AdminMentorsView(),
+              ),
+              GoRoute(
+                path: 'moderation',
+                builder: (context, state) => const AdminModerationView(),
+              ),
+              GoRoute(
+                path: 'suspend/:userId',
+                builder: (context, state) {
+                  final userId = state.pathParameters['userId']!;
+                  return AdminSuspendView(userId: userId);
+                },
               ),
             ],
           ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/database_provider.dart';
 import '../../widgets/common_widgets.dart';
+import '../../models/profile.dart';
 
 class ProfileView extends ConsumerWidget {
   const ProfileView({super.key});
@@ -103,15 +104,34 @@ class ProfileView extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                '${profile.role} · ${profile.institution ?? 'Sin institución'}',
+                                '${profile.label ?? 'Usuario'} · ${profile.institution ?? 'Sin institución'}',
                                 style: const TextStyle(color: Colors.white70, fontSize: 13),
                               ),
-                              if (profile.role == 'Docente' || profile.role == 'Investigador') ...[
+                              if (profile.label == 'Docente' || profile.label == 'Investigador') ...[
                                 const SizedBox(width: 6),
                                 const Icon(Icons.verified, color: Colors.white, size: 15),
                               ],
                             ],
                           ),
+                          if (profile.userType != 'user') ...[
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: profile.userType == 'admin' ? Colors.red : Colors.amber.shade700,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                profile.userType == 'admin' ? 'ADMINISTRADOR' : 'MENTOR',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ],
                           if (profile.bio != null && profile.bio!.isNotEmpty) ...[
                             const SizedBox(height: 6),
                             Padding(
@@ -385,12 +405,13 @@ class ProfileView extends ConsumerWidget {
   }
 
   // ── Dialog de edición de perfil ────────────────────────────────────────────
-  void _showEditProfileDialog(BuildContext context, WidgetRef ref, profile) {
+  void _showEditProfileDialog(BuildContext context, WidgetRef ref, Profile profile) {
     final nameCtrl = TextEditingController(text: profile.fullName);
     final lastNameCtrl = TextEditingController(text: profile.lastName ?? '');
     final bioCtrl = TextEditingController(text: profile.bio ?? '');
     final institutionCtrl = TextEditingController(text: profile.institution ?? '');
     final semesterCtrl = TextEditingController(text: profile.semesterDegree ?? '');
+    final phoneCtrl = TextEditingController(text: profile.phoneWhatsapp ?? '');
     bool isSaving = false;
 
     showModalBottomSheet(
@@ -489,6 +510,15 @@ class ProfileView extends ConsumerWidget {
                           icon: Icons.menu_book_outlined,
                           controller: semesterCtrl,
                         ),
+                        if (profile.userType == 'mentor' || profile.userType == 'admin') ...[
+                          const SizedBox(height: 16),
+                          LawTextField(
+                            label: 'Celular WhatsApp',
+                            icon: Icons.phone_android,
+                            controller: phoneCtrl,
+                            keyboardType: TextInputType.phone,
+                          ),
+                        ],
                         const SizedBox(height: 28),
                         LawButton(
                           label: 'Guardar Cambios',
@@ -504,6 +534,7 @@ class ProfileView extends ConsumerWidget {
                                 bio: bioCtrl.text.trim(),
                                 institution: institutionCtrl.text.trim(),
                                 semesterDegree: semesterCtrl.text.trim(),
+                                phoneWhatsapp: (profile.userType == 'mentor' || profile.userType == 'admin') ? phoneCtrl.text.trim() : null,
                               );
                               ref.invalidate(userProfileProvider);
                               ref.invalidate(profileStatsProvider);

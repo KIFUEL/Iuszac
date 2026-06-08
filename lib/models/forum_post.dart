@@ -10,6 +10,8 @@ class ForumPost {
   final bool isUrgent;
   final List<String> tags;
   final int replyCount;
+  final bool isClosed;
+  final DateTime? closedAt;
 
   ForumPost({
     required this.id,
@@ -21,6 +23,8 @@ class ForumPost {
     this.isUrgent = false,
     this.tags = const [],
     this.replyCount = 0,
+    this.isClosed = false,
+    this.closedAt,
   });
 
   factory ForumPost.fromJson(Map<String, dynamic> json) {
@@ -37,6 +41,10 @@ class ForumPost {
       isUrgent: json['is_urgent'] ?? false,
       tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
       replyCount: json['reply_count'] ?? (json['forum_comments'] as List?)?.length ?? 0,
+      isClosed: json['is_closed'] ?? false,
+      closedAt: json['closed_at'] != null
+          ? DateTime.parse(json['closed_at'])
+          : null,
     );
   }
 
@@ -47,6 +55,8 @@ class ForumPost {
       'content': content,
       'user_id': userId,
       'created_at': createdAt.toIso8601String(),
+      'is_closed': isClosed,
+      'closed_at': closedAt?.toIso8601String(),
     };
   }
 }

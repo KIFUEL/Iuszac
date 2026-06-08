@@ -5,6 +5,10 @@ class LegalCode {
   final String status;
   final DateTime createdAt;
   final int? articleCount;
+  final String? shortName;
+  final String? scope;
+  final String? description;
+  final DateTime? lastReformDate;
 
   LegalCode({
     required this.id,
@@ -13,6 +17,10 @@ class LegalCode {
     required this.status,
     required this.createdAt,
     this.articleCount,
+    this.shortName,
+    this.scope,
+    this.description,
+    this.lastReformDate,
   });
 
   factory LegalCode.fromJson(Map<String, dynamic> json) {
@@ -23,6 +31,12 @@ class LegalCode {
       status: json['status'],
       createdAt: DateTime.parse(json['created_at']),
       articleCount: json['article_count'],
+      shortName: json['short_name'],
+      scope: json['scope'],
+      description: json['description'],
+      lastReformDate: json['last_reform_date'] != null
+          ? DateTime.parse(json['last_reform_date'])
+          : null,
     );
   }
 }

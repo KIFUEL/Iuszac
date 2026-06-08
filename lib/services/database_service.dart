@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/legal_update.dart';
+import '../models/profile.dart';
 import '../models/forum_post.dart';
 import '../models/forum_comment.dart';
 import '../models/mentor.dart';
@@ -243,6 +244,7 @@ class DatabaseService {
     String? bio,
     String? institution,
     String? semesterDegree,
+    String? phoneWhatsapp,
   }) async {
     final updates = <String, dynamic>{};
     if (fullName != null) updates['full_name'] = fullName;
@@ -250,6 +252,7 @@ class DatabaseService {
     if (bio != null) updates['bio'] = bio;
     if (institution != null) updates['institution'] = institution;
     if (semesterDegree != null) updates['semester_degree'] = semesterDegree;
+    if (phoneWhatsapp != null) updates['phone_whatsapp'] = phoneWhatsapp;
     if (updates.isEmpty) return;
 
     await _supabase.from('profiles').update(updates).eq('id', userId);
@@ -273,7 +276,6 @@ class DatabaseService {
 
   /// Devuelve estadísticas reales del usuario: artículos guardados, aportes al foro, mentorías
   Future<Map<String, int>> getProfileStats(String userId) async {
-    // Usamos count a través de la función .count() que devuelve PostgrestCountResponse
     final savedRes = await _supabase
         .from('saved_articles')
         .select()
@@ -356,6 +358,131 @@ class DatabaseService {
   /// Elimina una actualización legal/noticia por su ID
   Future<void> deleteLegalUpdate(String id) async {
     await _supabase.from('legal_updates').delete().eq('id', id);
+  }
+
+  // ── 8. Gestión de Usuarios y Roles (Admin/Mentor) ─────────────────────────
+
+  /// Obtiene todos los perfiles de usuario
+  Future<List<Profile>> getAllUsers() async {
+    final response = await _supabase
+        .from('profiles')
+        .select()
+        .order('full_name', ascending: true);
+    return (response as List).map((json) => Profile.fromJson(json)).toList();
+  }
+
+  /// Actualiza el tipo de usuario (user_type) de un perfil
+  Future<void> updateUserType(String userId, String userType) async {
+    await _supabase.from('profiles').update({'user_type': userType}).eq('id', userId);
+  }
+
+  /// Aplica una suspensión temporal usando la función de BD
+  Future<void> suspendUser(String userId, DateTime until, String reason) async {
+    await _supabase.rpc('admin_suspend_user', params: {
+      'target_user_id': userId,
+      'suspend_until': until.toIso8601String(),
+      'reason': reason,
+    });
+  }
+
+  /// Levanta la suspensión de un usuario usando la función de BD
+  Future<void> liftSuspension(String userId) async {
+    await _supabase.rpc('admin_lift_suspension', params: {
+      'target_user_id': userId,
+    });
+  }
+
+  // ── 9. Operaciones adicionales de Foro (Cerrar/Editar/Borrar) ──────────────
+
+  /// Cierra un hilo del foro
+  Future<void> closeForumPost(String postId) async {
+    await _supabase.from('forum_posts').update({
+      'is_closed': true,
+      'closed_at': DateTime.now().toIso8601String(),
+    }).eq('id', postId);
+  }
+
+  /// Actualiza el contenido de un post del foro
+  Future<void> updateForumPost(String postId, String title, String content, {List<String> tags = const [], bool isUrgent = false}) async {
+    await _supabase.from('forum_posts').update({
+      'title': title,
+      'content': content,
+      'tags': tags,
+      'is_urgent': isUrgent,
+    }).eq('id', postId);
+  }
+
+  /// Elimina un post de foro
+  Future<void> deleteForumPost(String postId) async {
+    await _supabase.from('forum_posts').delete().eq('id', postId);
+  }
+
+  /// Actualiza el contenido de un comentario
+  Future<void> updateForumComment(String commentId, String content) async {
+    await _supabase.from('forum_comments').update({
+      'content': content,
+    }).eq('id', commentId);
+  }
+
+  /// Elimina un comentario de foro
+  Future<void> deleteForumComment(String commentId) async {
+    await _supabase.from('forum_comments').delete().eq('id', commentId);
+  }
+
+  // ── 10. Operaciones adicionales de Mentorías ──────────────────────────────
+
+  /// Obtiene las mentorías de un mentor específico (incluye expiradas)
+  Future<List<MentorshipSession>> getMentorshipSessionsByMentor(String mentorId) async {
+    final response = await _supabase
+        .from('mentorship_sessions')
+        .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
+        .eq('mentor_id', mentorId)
+        .order('created_at', ascending: false);
+
+    return (response as List)
+        .map((json) => MentorshipSession.fromJson(json))
+        .toList();
+  }
+
+  /// Elimina una sesión de mentoría
+  Future<void> deleteMentorshipSession(String sessionId) async {
+    await _supabase.from('mentorship_sessions').delete().eq('id', sessionId);
+  }
+
+  /// Actualiza una sesión de mentoría
+  Future<MentorshipSession> updateMentorshipSession({
+    required String sessionId,
+    required String title,
+    required String description,
+    required String specialty,
+    required double price,
+    required int availableSlots,
+    DateTime? expiresAt,
+  }) async {
+    final response = await _supabase
+        .from('mentorship_sessions')
+        .update({
+          'title': title,
+          'description': description,
+          'specialty': specialty,
+          'price': price,
+          'available_slots': availableSlots,
+          'expires_at': expiresAt?.toIso8601String(),
+        })
+        .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
+        .single();
+
+    return MentorshipSession.fromJson(response);
+  }
+
+  /// Obtiene todos los comentarios recientes junto con el título del hilo (para moderación)
+  Future<List<Map<String, dynamic>>> getAllRecentCommentsWithPostTitle() async {
+    final response = await _supabase
+        .from('forum_comments')
+        .select('*, profiles(*), forum_posts(title)')
+        .order('created_at', ascending: false)
+        .limit(100);
+    return List<Map<String, dynamic>>.from(response as List);
   }
 }
 

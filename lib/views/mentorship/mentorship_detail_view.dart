@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/database_provider.dart';
 import '../../models/mentorship_session.dart';
 
@@ -12,7 +13,11 @@ class MentorshipDetailView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionsAsync = ref.watch(mentorshipSessionsProvider);
+    final enrolledAsync = ref.watch(enrolledSessionsProvider);
     final colorScheme = Theme.of(context).colorScheme;
+
+    final enrolledSessions = enrolledAsync.value ?? [];
+    final isEnrolled = enrolledSessions.any((s) => s.id == sessionId);
 
     return Scaffold(
       appBar: AppBar(
@@ -32,6 +37,8 @@ class MentorshipDetailView extends ConsumerWidget {
           }
 
           final mentorName = session.mentor?.fullName ?? 'Mentor';
+          final phone = session.mentor?.phoneWhatsapp;
+          final hasPhone = phone != null && phone.trim().isNotEmpty;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -108,17 +115,6 @@ class MentorshipDetailView extends ConsumerWidget {
                 ],
                 const SizedBox(height: 32),
                 
-                // Calendario / Horarios
-                const Text(
-                  'Próximas Fechas',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                const SizedBox(height: 12),
-                _buildScheduleTile(Icons.calendar_today, 'Lunes, 15 de Junio', '18:00 - 19:30'),
-                _buildScheduleTile(Icons.calendar_today, 'Miércoles, 17 de Junio', '18:00 - 19:30'),
-                
-                const SizedBox(height: 32),
-                
                 // Detalles de Costo y Cupo
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,23 +148,85 @@ class MentorshipDetailView extends ConsumerWidget {
                 
                 const SizedBox(height: 40),
                 
-                // Botón Acción
+                // Botón Acción Inscripción
                 SizedBox(
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: session.availableSlots > 0 ? () {} : null,
+                    onPressed: isEnrolled 
+                        ? null 
+                        : (session.availableSlots > 0 
+                            ? () async {
+                                try {
+                                  await ref.read(databaseServiceProvider).enrollInSession(session!.id);
+                                  ref.invalidate(enrolledSessionsProvider);
+                                  ref.invalidate(mentorshipSessionsProvider);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('¡Te has inscrito exitosamente! 🎉'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error al inscribirse: $e'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            : null),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colorScheme.primary,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     child: Text(
-                      session.availableSlots > 0 ? 'Inscribirme ahora' : 'Lista de espera',
+                      isEnrolled 
+                          ? 'Ya estás inscrito' 
+                          : (session.availableSlots > 0 ? 'Inscribirme ahora' : 'Sin cupos disponibles'),
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                 ),
+
+                // Botón Acción WhatsApp
+                if (hasPhone) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 54,
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.chat, color: Colors.green),
+                      label: const Text(
+                        'Contactar por WhatsApp',
+                        style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.green, width: 1.5),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () async {
+                        final text = Uri.encodeComponent('Hola, me interesa tu mentoría: ${session!.title}');
+                        final url = Uri.parse('https://wa.me/$phone?text=$text');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No se pudo abrir WhatsApp')),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 40),
                 
                 // Reseñas (Sección simple)
@@ -187,25 +245,6 @@ class MentorshipDetailView extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
-      ),
-    );
-  }
-
-  Widget _buildScheduleTile(IconData icon, String day, String time) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.grey),
-          const SizedBox(width: 16),
-          Expanded(child: Text(day, style: const TextStyle(fontWeight: FontWeight.w600))),
-          Text(time, style: const TextStyle(color: Colors.grey)),
-        ],
       ),
     );
   }

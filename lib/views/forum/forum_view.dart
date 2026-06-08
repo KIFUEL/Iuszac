@@ -215,7 +215,23 @@ class _ForumViewState extends ConsumerState<ForumView> {
                             ],
                           ),
                         ),
-                        if (post.isUrgent)
+                        if (post.isClosed)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'CERRADO',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        else if (post.isUrgent)
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 2),

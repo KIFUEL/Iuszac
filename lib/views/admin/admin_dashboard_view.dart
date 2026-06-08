@@ -12,7 +12,14 @@ class AdminDashboardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final updatesAsync = ref.watch(legalUpdatesProvider);
+    final postsAsync = ref.watch(forumPostsProvider);
+    final usersAsync = ref.watch(allUsersProvider);
     final colorScheme = Theme.of(context).colorScheme;
+
+    // Get statistics reactively
+    final int newsCount = updatesAsync.value?.length ?? 0;
+    final int postsCount = postsAsync.value?.length ?? 0;
+    final int usersCount = usersAsync.value?.length ?? 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -23,95 +30,258 @@ class AdminDashboardView extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(legalUpdatesProvider),
+            onPressed: () {
+              ref.invalidate(legalUpdatesProvider);
+              ref.invalidate(forumPostsProvider);
+              ref.invalidate(allUsersProvider);
+            },
           ),
           const SizedBox(width: 8),
         ],
       ),
-      body: updatesAsync.when(
-        data: (updates) {
-          if (updates.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.newspaper_outlined,
-                    size: 80,
-                    color: colorScheme.primary.withValues(alpha: 0.2),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No hay noticias ni reformas publicadas',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Presiona el botón "+" para publicar la primera.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Actividad Global Stats Section
+            Text(
+              'Actividad Global',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
               ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: updates.length,
-            itemBuilder: (context, index) {
-              final update = updates[index];
-              return _buildAdminUpdateCard(context, ref, update);
-            },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Text(
-              'Error al cargar actualizaciones: $err',
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.red),
             ),
-          ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStatCard(
+                    context,
+                    'Noticias',
+                    newsCount.toString(),
+                    Icons.newspaper,
+                    colorScheme.primaryContainer,
+                    colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildStatCard(
+                    context,
+                    'Foros',
+                    postsCount.toString(),
+                    Icons.forum,
+                    colorScheme.secondaryContainer,
+                    colorScheme.onSecondaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildStatCard(
+                    context,
+                    'Usuarios',
+                    usersCount.toString(),
+                    Icons.people,
+                    colorScheme.tertiaryContainer,
+                    colorScheme.onTertiaryContainer,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Acciones Rápidas Section
+            Text(
+              'Acciones Rápidas',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isWide = constraints.maxWidth > 600;
+                return GridView.count(
+                  crossAxisCount: isWide ? 3 : 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: isWide ? 2.5 : 1.8,
+                  children: [
+                    _buildActionButton(
+                      context,
+                      'Publicar Noticia',
+                      Icons.add_photo_alternate_outlined,
+                      colorScheme.primary,
+                      () => context.push('/admin/new-update'),
+                    ),
+                    _buildActionButton(
+                      context,
+                      'Gestionar Mentores',
+                      Icons.supervisor_account,
+                      colorScheme.secondary,
+                      () => context.push('/admin/mentors'),
+                    ),
+                    _buildActionButton(
+                      context,
+                      'Moderar Contenido',
+                      Icons.gavel_rounded,
+                      colorScheme.error,
+                      () => context.push('/admin/moderation'),
+                    ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+
+            // Publicaciones Recientes Section
+            Text(
+              'Publicaciones Recientes',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            updatesAsync.when(
+              data: (updates) {
+                if (updates.isEmpty) {
+                  return Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: const Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child: Center(
+                        child: Text('No hay publicaciones recientes.'),
+                      ),
+                    ),
+                  );
+                }
+
+                // Show only the 5 most recent updates
+                final recentUpdates = updates.take(5).toList();
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: recentUpdates.length,
+                  itemBuilder: (context, index) {
+                    final update = recentUpdates[index];
+                    return _buildAdminUpdateCard(context, ref, update);
+                  },
+                );
+              },
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              error: (err, _) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text('Error al cargar publicaciones: $err', style: const TextStyle(color: Colors.red)),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/admin/new-update'),
-        label: const Text(
-          'Nueva Noticia',
-          style: TextStyle(fontWeight: FontWeight.bold),
+    );
+  }
+
+  Widget _buildStatCard(
+    BuildContext context,
+    String title,
+    String value,
+    IconData icon,
+    Color bgColor,
+    Color fgColor,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: fgColor, size: 24),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: fgColor),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            title,
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: fgColor.withValues(alpha: 0.8)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context,
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: color.withValues(alpha: 0.2),
+            width: 1.5,
+          ),
         ),
-        icon: const Icon(Icons.add),
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildAdminUpdateCard(BuildContext context, WidgetRef ref, LegalUpdate update) {
     final colorScheme = Theme.of(context).colorScheme;
-    final formattedDate = DateFormat('dd MMM yyyy, hh:mm a').format(update.createdAt);
+    final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(update.createdAt);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: LawCard(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -148,7 +318,7 @@ class AdminDashboardView extends ConsumerWidget {
             Text(
               update.title,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -162,40 +332,16 @@ class AdminDashboardView extends ConsumerWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            if (update.articleId != null) ...[
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Icon(
-                    Icons.link,
-                    size: 14,
-                    color: colorScheme.primary,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Vinculado a un artículo legal',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            const SizedBox(height: 8),
-            const Divider(height: 1, thickness: 0.5),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton.icon(
                   onPressed: () {
-                    // Mostrar detalle comparativo o vista normal
                     context.push('/alerts/detail/${update.id}');
                   },
                   icon: const Icon(Icons.visibility_outlined, size: 16),
-                  label: const Text('Ver publicación', style: TextStyle(fontSize: 12)),
+                  label: const Text('Ver', style: TextStyle(fontSize: 12)),
                 ),
                 const SizedBox(width: 8),
                 IconButton(
@@ -227,7 +373,6 @@ class AdminDashboardView extends ConsumerWidget {
             onPressed: () async {
               Navigator.of(ctx).pop();
               try {
-                // Borrar directamente usando Supabase
                 await ref.read(databaseServiceProvider).deleteLegalUpdate(id);
                 ref.invalidate(legalUpdatesProvider);
                 if (context.mounted) {
