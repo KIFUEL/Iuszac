@@ -40,7 +40,51 @@
 
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <script>
+    window.deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.deferredInstallPrompt = e;
+      if (window.onAppInstallable) {
+        window.onAppInstallable(true);
+      }
+    });
+
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('INSTALL: Success');
+      window.deferredInstallPrompt = null;
+      if (window.onAppInstallable) {
+        window.onAppInstallable(false);
+      }
+    });
+
+    window.isAppInstallable = function() {
+      return window.deferredInstallPrompt !== null;
+    };
+
+    window.installAppWithCallback = async function() {
+      const promptEvent = window.deferredInstallPrompt;
+      if (!promptEvent) {
+        if (window.onInstallComplete) window.onInstallComplete(false);
+        return;
+      }
+      promptEvent.prompt();
+      try {
+        const { outcome } = await promptEvent.userChoice;
+        console.log(`User choice: ${outcome}`);
+        window.deferredInstallPrompt = null;
+        if (window.onAppInstallable) {
+          window.onAppInstallable(false);
+        }
+        if (window.onInstallComplete) {
+          window.onInstallComplete(outcome === 'accepted');
+        }
+      } catch (err) {
+        console.error(err);
+        if (window.onInstallComplete) window.onInstallComplete(false);
+      }
+    };
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

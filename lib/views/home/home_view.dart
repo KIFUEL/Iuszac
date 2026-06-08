@@ -8,8 +8,31 @@ import '../../models/legal_code.dart';
 import '../../models/legal_update.dart';
 import '../../widgets/common_widgets.dart';
 
-class HomeView extends ConsumerWidget {
+import '../../utils/pwa_helper.dart';
+
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
+
+  @override
+  ConsumerState<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends ConsumerState<HomeView> {
+  bool _isInstallable = false;
+  bool _isDismissed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    PwaHelper.init((installable) {
+      if (mounted) {
+        setState(() {
+          _isInstallable = installable;
+        });
+      }
+    });
+    _isInstallable = PwaHelper.isInstallable();
+  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
@@ -18,8 +41,117 @@ class HomeView extends ConsumerWidget {
     return 'Buenas noches';
   }
 
+  Widget _buildInstallBanner(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              colorScheme.primary,
+              colorScheme.secondary,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.primary.withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.install_mobile_rounded,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '¡Instala LawApp!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Accede más rápido y trabaja sin conexión.',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            ElevatedButton(
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final success = await PwaHelper.triggerInstall();
+                if (success) {
+                  if (mounted) {
+                    setState(() {
+                      _isInstallable = false;
+                    });
+                  }
+                  messenger.showSnackBar(
+                    const SnackBar(
+                      content: Text('¡Gracias por instalar LawApp!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Instalar',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close, color: Colors.white70, size: 20),
+              onPressed: () {
+                setState(() {
+                  _isDismissed = true;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
     final updatesAsync = ref.watch(legalUpdatesProvider);
     final codesAsync = ref.watch(legalCodesProvider);
@@ -119,6 +251,11 @@ class HomeView extends ConsumerWidget {
               ),
             ),
           ),
+
+          if (_isInstallable && !_isDismissed)
+            SliverToBoxAdapter(
+              child: _buildInstallBanner(context),
+            ),
 
           // Noticias y Reformas Recientes (Carrusel)
           SliverToBoxAdapter(
