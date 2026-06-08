@@ -13,14 +13,19 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   full_name TEXT NOT NULL,
   last_name TEXT,
   avatar_url TEXT,
-  role TEXT NOT NULL DEFAULT 'user',
-  bio TEXT,
+  user_type TEXT NOT NULL DEFAULT 'user' CHECK (user_type IN ('user', 'mentor', 'admin')),
+  label TEXT CHECK (label IN ('Estudiante', 'Docente', 'Postulante', 'Investigador', 'Practicante')),
   institution TEXT,
   semester_degree TEXT,
-  alerts_push BOOLEAN DEFAULT true,
-  alerts_email BOOLEAN DEFAULT true,
-  alerts_forum BOOLEAN DEFAULT true,
-  alerts_mentorship BOOLEAN DEFAULT true,
+  bio TEXT,
+  phone_whatsapp TEXT,
+  is_suspended BOOLEAN NOT NULL DEFAULT false,
+  suspended_until TIMESTAMP WITH TIME ZONE,
+  suspension_reason TEXT,
+  notif_alerts_reforma BOOLEAN DEFAULT true,
+  notif_email_resumen BOOLEAN DEFAULT true,
+  notif_foro BOOLEAN DEFAULT true,
+  notif_mentoria BOOLEAN DEFAULT true,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -30,16 +35,37 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, last_name, avatar_url, role, institution, semester_degree, alerts_push)
+  INSERT INTO public.profiles (
+    id, 
+    full_name, 
+    last_name, 
+    avatar_url, 
+    user_type, 
+    label, 
+    institution, 
+    semester_degree,
+    phone_whatsapp,
+    is_suspended,
+    notif_alerts_reforma,
+    notif_email_resumen,
+    notif_foro,
+    notif_mentoria
+  )
   VALUES (
     new.id,
     COALESCE(new.raw_user_meta_data->>'full_name', 'Usuario'),
     new.raw_user_meta_data->>'last_name',
     new.raw_user_meta_data->>'avatar_url',
-    COALESCE(new.raw_user_meta_data->>'role', 'user'),
+    COALESCE(new.raw_user_meta_data->>'user_type', 'user'),
+    new.raw_user_meta_data->>'label',
     new.raw_user_meta_data->>'institution',
     new.raw_user_meta_data->>'semester_degree',
-    COALESCE((new.raw_user_meta_data->>'alerts_push')::boolean, true)
+    new.raw_user_meta_data->>'phone_whatsapp',
+    false,
+    COALESCE((new.raw_user_meta_data->>'notif_alerts_reforma')::boolean, true),
+    COALESCE((new.raw_user_meta_data->>'notif_email_resumen')::boolean, true),
+    COALESCE((new.raw_user_meta_data->>'notif_foro')::boolean, true),
+    COALESCE((new.raw_user_meta_data->>'notif_mentoria')::boolean, true)
   );
   RETURN NEW;
 END;
@@ -53,8 +79,11 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
 CREATE TABLE IF NOT EXISTS public.legal_codes (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
-  icon TEXT, 
+  short_name TEXT,
+  scope TEXT CHECK (scope IN ('federal', 'estatal')),
+  description TEXT,
   status TEXT NOT NULL DEFAULT 'Vigente' CHECK (status IN ('Vigente', 'Actualizado')),
+  last_reform_date TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -71,28 +100,31 @@ CREATE TABLE IF NOT EXISTS public.legal_articles (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- E. Marcadores (Saved Articles - Mantenida para retrocompatibilidad)
 CREATE TABLE IF NOT EXISTS public.saved_articles (
-  profile_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
   article_id UUID REFERENCES public.legal_articles(id) ON DELETE CASCADE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-  PRIMARY KEY (profile_id, article_id)
+  saved_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE (user_id, article_id)
 );
 
--- E. Reformas y Alertas (Noticias)
+-- F. Reformas y Alertas (Noticias)
 CREATE TABLE IF NOT EXISTS public.legal_updates (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
   content TEXT NOT NULL,
-  category TEXT NOT NULL,
+  category TEXT NOT NULL CHECK (category IN ('Reforma', 'Adición', 'Derogación', 'Corrección', 'Noticia')),
   image_url TEXT,
+  published_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  author_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   article_id UUID REFERENCES public.legal_articles(id) ON DELETE CASCADE,
   old_content TEXT,
-  new_content TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-  author_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL
+  new_content TEXT
 );
 
--- F. Foros de Discusión
+-- G. Foros de Discusión
 CREATE TABLE IF NOT EXISTS public.forum_posts (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
@@ -100,6 +132,9 @@ CREATE TABLE IF NOT EXISTS public.forum_posts (
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   is_urgent BOOLEAN DEFAULT false,
   tags TEXT[],
+  reply_count INT DEFAULT 0,
+  is_closed BOOLEAN DEFAULT false,
+  closed_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -112,26 +147,43 @@ CREATE TABLE IF NOT EXISTS public.forum_comments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- G. Mentorías
+-- Trigger para mantener reply_count actualizado
+CREATE OR REPLACE FUNCTION update_reply_count()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    UPDATE forum_posts SET reply_count = reply_count + 1 WHERE id = NEW.post_id;
+  ELSIF TG_OP = 'DELETE' THEN
+    UPDATE forum_posts SET reply_count = reply_count - 1 WHERE id = OLD.post_id;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER trg_reply_count
+AFTER INSERT OR DELETE ON forum_comments
+FOR EACH ROW EXECUTE FUNCTION update_reply_count();
+
+-- H. Mentorías
 CREATE TABLE IF NOT EXISTS public.mentorship_sessions (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   mentor_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
-  description TEXT,
   specialty TEXT NOT NULL,
+  description TEXT NOT NULL,
   price NUMERIC DEFAULT 0,
   available_slots INT DEFAULT 10,
-  schedule JSONB,
-  expires_at TIMESTAMP WITH TIME ZONE,
-  is_community_verified BOOLEAN DEFAULT false,
+  session_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.mentorship_enrollments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   session_id UUID REFERENCES public.mentorship_sessions(id) ON DELETE CASCADE,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-  PRIMARY KEY (session_id, user_id)
+  enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE (session_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.mentorship_reviews (
@@ -143,7 +195,7 @@ CREATE TABLE IF NOT EXISTS public.mentorship_reviews (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- H. Habilitar RLS en todas las tablas
+-- I. Habilitar RLS en todas las tablas
 ALTER TABLE public.legal_codes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.legal_articles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.saved_articles ENABLE ROW LEVEL SECURITY;
