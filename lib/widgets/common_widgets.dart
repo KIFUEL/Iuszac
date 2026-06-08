@@ -6,6 +6,8 @@ class LawButton extends StatelessWidget {
   final bool isLoading;
   final bool isPrimary;
   final Color? backgroundColor;
+  // Optional icon to display alongside the label
+  final IconData? icon;
 
   const LawButton({
     super.key,
@@ -14,6 +16,7 @@ class LawButton extends StatelessWidget {
     this.isLoading = false,
     this.isPrimary = true,
     this.backgroundColor,
+    this.icon,
   });
 
   @override
@@ -24,9 +27,14 @@ class LawButton extends StatelessWidget {
     // Gradient only when isPrimary and no override backgroundColor provided
     final useGradient = isPrimary && backgroundColor == null;
 
+    // Larger, premium button dimensions
+    const double buttonHeight = 60.0;
+    const double borderRadius = 16.0;
+    const double iconSize = 24.0;
+
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: buttonHeight,
       child: useGradient
           ? Container(
               decoration: BoxDecoration(
@@ -38,37 +46,46 @@ class LawButton extends StatelessWidget {
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(borderRadius),
                 boxShadow: [
                   BoxShadow(
                     color: primary.withValues(alpha: 0.28),
-                    blurRadius: 10,
+                    blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: Material(
                 color: Colors.transparent,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(borderRadius),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(borderRadius),
                   onTap: isLoading ? null : onPressed,
                   child: Center(
                     child: isLoading
                         ? const SizedBox(
-                            height: 20,
-                            width: 20,
+                            height: 28,
+                            width: 28,
                             child: CircularProgressIndicator(
-                                color: Colors.white, strokeWidth: 2),
+                                color: Colors.white, strokeWidth: 2.5),
                           )
-                        : Text(
-                            label,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 15,
-                              letterSpacing: 0.3,
-                            ),
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (icon != null) ...[
+                                Icon(icon, size: iconSize, color: Colors.white),
+                                const SizedBox(width: 8),
+                              ],
+                              Text(
+                                label,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ],
                           ),
                   ),
                 ),
@@ -76,32 +93,43 @@ class LawButton extends StatelessWidget {
             )
           : ElevatedButton(
               style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(buttonHeight),
                 backgroundColor: backgroundColor ?? secondary,
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(borderRadius)),
               ),
               onPressed: isLoading ? null : onPressed,
               child: isLoading
                   ? const SizedBox(
-                      height: 20,
-                      width: 20,
+                      height: 28,
+                      width: 28,
                       child: CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2),
+                          color: Colors.white, strokeWidth: 2.5),
                     )
-                  : Text(
-                      label,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        letterSpacing: 0.3,
-                      ),
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (icon != null) ...[
+                          Icon(icon, size: iconSize, color: Colors.white),
+                          const SizedBox(width: 8),
+                        ],
+                        Text(
+                          label,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ],
                     ),
             ),
     );
   }
 }
+
 
 class LawTextField extends StatelessWidget {
   final String label;
@@ -128,6 +156,10 @@ class LawTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    // Larger, premium input styling
+    const double iconSize = 28.0;
+    const double fontSize = 16.0;
+    const double borderRadius = 16.0;
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
@@ -135,16 +167,18 @@ class LawTextField extends StatelessWidget {
       keyboardType: keyboardType,
       onChanged: onChanged,
       validator: validator,
+      style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, size: 20),
+        labelStyle: const TextStyle(fontSize: fontSize),
+        prefixIcon: Icon(icon, size: iconSize),
         filled: true,
         fillColor: Theme.of(context).brightness == Brightness.dark
             ? const Color(0xFF161B2E)
             : const Color(0xFFF3F4F8),
-        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(
             color: Theme.of(context).brightness == Brightness.dark
                 ? Colors.white.withValues(alpha: 0.1)
@@ -152,25 +186,26 @@ class LawTextField extends StatelessWidget {
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+          borderRadius: BorderRadius.circular(borderRadius),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.error, width: 1.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(color: colorScheme.error, width: 1.5),
         ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+          borderSide: BorderSide(color: colorScheme.error, width: 2),
+        ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide.none,
         ),
       ),
     );
   }
 }
+
 
 class LawDropdown<T> extends StatelessWidget {
   final String label;
@@ -192,6 +227,9 @@ class LawDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Premium dropdown styling
+    const double borderRadius = 16.0;
+    const double fontSize = 16.0;
     return DropdownButtonFormField<T>(
       initialValue: value,
       items: items,
@@ -199,14 +237,18 @@ class LawDropdown<T> extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        labelStyle: const TextStyle(fontSize: fontSize),
+        prefixIcon: Icon(icon, size: 28),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(borderRadius)),
         filled: true,
         fillColor: Theme.of(context).colorScheme.surface,
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
       ),
+      style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface),
     );
   }
 }
+
 
 class LawCard extends StatelessWidget {
   final Widget child;
@@ -217,34 +259,31 @@ class LawCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Glassmorphism + subtle elevation for premium look
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: isDark ? const Color(0xFF2C2C2C).withValues(alpha: 0.85) : Colors.white.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
-              ? Colors.white.withValues(alpha: 0.05)
-              : Colors.grey.withValues(alpha: 0.1),
+              ? Colors.white.withValues(alpha: 0.07)
+              : Colors.grey.withValues(alpha: 0.12),
+          width: 1,
         ),
-        boxShadow: isDark
-            ? []
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        // Subtle backdrop blur effect (requires ClipRRect in parent widget)
       ),
       child: Padding(
-        padding: padding ?? const EdgeInsets.all(16.0),
+        padding: padding ?? const EdgeInsets.symmetric(vertical: 20.0, horizontal: 24.0),
         child: child,
       ),
     );
   }
 }
+

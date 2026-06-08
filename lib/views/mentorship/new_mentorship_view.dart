@@ -22,6 +22,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController(text: '0');
   final _slotsController = TextEditingController(text: '10');
+  DateTime? _selectedSessionDate;
   DateTime? _selectedExpiryDate;
 
   bool _isLoading = false;
@@ -59,6 +60,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
       _descriptionController.text = session.description ?? '';
       _priceController.text = session.price.toStringAsFixed(0);
       _slotsController.text = session.availableSlots.toString();
+      _selectedSessionDate = session.sessionDate;
       _selectedExpiryDate = session.expiresAt;
     } catch (e) {
       setState(() {
@@ -66,6 +68,41 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
       });
     } finally {
       if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _selectSessionDate() async {
+    final now = DateTime.now();
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedSessionDate ?? now.add(const Duration(days: 7)),
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      helpText: 'Fecha de impartición de la sesión',
+    );
+
+    if (pickedDate != null && mounted) {
+      final pickedTime = await showTimePicker(
+        context: context,
+        initialTime: _selectedSessionDate != null
+            ? TimeOfDay.fromDateTime(_selectedSessionDate!)
+            : const TimeOfDay(hour: 10, minute: 0),
+        helpText: 'Hora de la sesión',
+      );
+
+      if (pickedTime != null) {
+        setState(() {
+          _selectedSessionDate = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+          // By default, make expiresAt equal to sessionDate if not set
+          _selectedExpiryDate ??= _selectedSessionDate;
+        });
+      }
     }
   }
 
@@ -86,6 +123,10 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_selectedSessionDate == null) {
+      setState(() => _errorMessage = 'Por favor selecciona la fecha de la sesión');
+      return;
+    }
     if (_selectedExpiryDate == null) {
       setState(() => _errorMessage = 'Por favor selecciona una fecha de vigencia');
       return;
@@ -107,6 +148,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
           description: _descriptionController.text.trim(),
           price: double.parse(_priceController.text),
           availableSlots: int.parse(_slotsController.text),
+          sessionDate: _selectedSessionDate!,
           expiresAt: _selectedExpiryDate,
         );
       } else {
@@ -116,6 +158,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
           description: _descriptionController.text.trim(),
           price: double.parse(_priceController.text),
           availableSlots: int.parse(_slotsController.text),
+          sessionDate: _selectedSessionDate!,
           expiresAt: _selectedExpiryDate,
         );
       }
@@ -254,6 +297,37 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                         ),
                         const SizedBox(height: 16),
 
+                        // Selector de Fecha de la Sesión
+                        InkWell(
+                          onTap: _selectSessionDate,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.calendar_today_outlined, color: colorScheme.primary),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _selectedSessionDate == null 
+                                        ? 'Fecha y Hora de la sesión' 
+                                        : 'Fecha de sesión: ${DateFormat('dd/MM/yyyy HH:mm').format(_selectedSessionDate!)}',
+                                    style: TextStyle(
+                                      color: _selectedSessionDate == null ? Colors.grey.shade700 : colorScheme.onSurface,
+                                    ),
+                                  ),
+                                ),
+                                const Icon(Icons.access_time_outlined, color: Colors.grey),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
                         // Selector de Fecha de Vigencia
                         InkWell(
                           onTap: _selectExpiryDate,
@@ -274,7 +348,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                                         ? 'Fecha límite de la mentoría' 
                                         : 'Válido hasta: ${DateFormat('dd/MM/yyyy').format(_selectedExpiryDate!)}',
                                     style: TextStyle(
-                                      color: _selectedExpiryDate == null ? Colors.grey.shade700 : Colors.black,
+                                      color: _selectedExpiryDate == null ? Colors.grey.shade700 : colorScheme.onSurface,
                                     ),
                                   ),
                                 ),

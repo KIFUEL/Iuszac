@@ -1,6 +1,6 @@
 # ⚖ IusZac — Derecho Digital
 
-## Documentación Técnica y de Pantallas · Versión 4.1
+## Documentación Técnica y de Pantallas · Versión 4.2
 *Estado actualizado del proyecto — Junio 2026*
 
 ────────────────────────────────────────────────────────────────────────────────
@@ -687,7 +687,7 @@ Ficha completa de la sesión de mentoría con todos los detalles, acceso a Whats
 | Descripción Completa | Text block | Sí | Objetivos, temario y requisitos. |
 | Botón WhatsApp Mentor | Botón verde | No | `wa.me/<phone>`. Visible si el mentor tiene número registrado. |
 | Botón Inscribirse | Botón Primario | Sí | Llama `enrollInSession()`. Deshabilitado si `available_slots == 0` o si ya está inscrito. |
-| Reseñas | Lista | No | Desde `mentorship_reviews`. Muestra calificación y comentario. |
+| Reseñas | Lista | No | Desde `mentorship_reviews`. Muestra calificación y comentario. El formulario para dejar una reseña solo está disponible si el usuario está inscrito y la fecha final/de la sesión (`session_date`) ya ha pasado. |
 
 ---
 
@@ -725,11 +725,11 @@ Formulario para crear o editar una sesión de mentoría. **Solo accesible para u
 **Estado:** ✅ Implementado
 
 #### Descripción General
-Ficha del usuario con estadísticas de actividad, información de perfil y acceso al editor de datos.
+Ficha del usuario con estadísticas de actividad, información de perfil y acceso al menú de configuración. Los botones directos de "Editar" y "Configurar" en la AppBar superior fueron removidos en la v4.2 para dejar un diseño limpio; el acceso a todas las configuraciones se gestiona a través del menú de tarjetas del cuerpo del perfil.
 
 #### Notas de Implementación
 *   Si `user_type == 'mentor'`, se muestra una sección adicional con el número de sesiones publicadas y un acceso rápido a `/mentorship?tab=mias`.
-*   El campo `phone_whatsapp` es editable desde aquí para los mentores.
+*   Toda la navegación hacia configuraciones se redirige a rutas standalone (`/profile/edit`, `/profile/notifications`, `/profile/security`).
 
 #### Interfaz y Validaciones
 | **Campo / Elemento** | **Tipo** | **Requerido** | **Detalles / Validación** |
@@ -738,24 +738,41 @@ Ficha del usuario con estadísticas de actividad, información de perfil y acces
 | Insignia de Tipo | Chip | Sí | Muestra "Mentor" (dorado) o "Admin" (rojo) si aplica. No se muestra para `user` normal. |
 | Tarjeta Estadísticas | Fila de Cards | Sí | Aportes en foro y sesiones de mentoría inscritas. |
 | Sección Mentor | Container | No | Visible solo si `user_type == 'mentor'`. Muestra conteo de sesiones publicadas. |
-| Editar Perfil | Bottom Sheet | Sí | Formulario modal para actualizar datos personales en Supabase, incluyendo `phone_whatsapp`. |
-| Ajustes | IconButton | Sí | Navega a `/profile/settings`. |
+| Menú Tarjeta Ajustes | ListTiles | Sí | Lista de accesos de configuración: "Editar Perfil", "Notificaciones", "Privacidad y seguridad". |
 | Cerrar Sesión | Botón Rojo | Sí | Diálogo de confirmación antes de destruir el token. |
 
 ---
 
-### Pantalla 18 · Ajustes de Perfil
+### Pantalla 18 · Subpantallas de Configuración de Perfil 🆕 Actualizado v4.2
 **Sección:** Perfil
-**Ruta:** `/profile/settings`
+**Rutas:** `/profile/edit`, `/profile/notifications`, `/profile/security`
 **Estado:** ✅ Implementado
 
-#### Interfaz y Validaciones
+#### Descripción General
+En la v4.2, la antigua pantalla de ajustes monolíticos (`/profile/settings`) y el modal dialog "Editar Perfil" se separaron en tres pantallas standalone completamente responsivas (con ancho máximo de 700px):
+
+1. **Editar Perfil (`/profile/edit`):** Formulario a pantalla completa para modificar datos personales del usuario. Expone todos los campos editables mediante controles estandarizados:
+   - **Nombre(s)** (texto, requerido).
+   - **Apellidos** (texto).
+   - **Rol / Ocupación** (Dropdown seleccionable con validación en BD: Estudiante, Docente, Postulante, Investigador, Practicante).
+   - **Institución** (texto).
+   - **Semestre / Grado** (Dropdown seleccionable: 1ro a 10mo semestre, Titulado, Posgrado).
+   - **Celular WhatsApp** (campo de texto numérico para enlace wa.me).
+   - **Biografía breve** (campo multilínea de hasta 200 caracteres).
+2. **Notificaciones (`/profile/notifications`):** Gestiona switches para alertas push y notificaciones semanales, del foro y de mentorías. Guarda mediante el método `updateNotificationPreferences`.
+3. **Privacidad y Seguridad (`/profile/security`):** Permite cambiar contraseña (enviando correo de recuperación), visualizar el correo electrónico asociado, y acceder a la "Zona de Peligro" para dar de baja la cuenta definitivamente.
+
+#### Interfaz y Validaciones (Editar Perfil)
 | **Campo / Elemento** | **Tipo** | **Requerido** | **Detalles / Validación** |
 | --- | --- | --- | --- |
-| Switches Notificación | SwitchListTile | Sí | Cambios directos de campos `notif_*` con guardado automático. |
-| Cambiar Contraseña | ListTile Tap | Sí | Envía correo automático de cambio de contraseña. |
-| Zona de Peligro | Container Rojo | Sí | Acceso a la baja definitiva de cuenta. |
-| Botón Eliminar Cuenta | Botón | Sí | Alerta de confirmación en dos pasos. |
+| Nombre(s) | Input Texto | Sí | Mínimo 1 carácter. |
+| Apellidos | Input Texto | No | Campo opcional. |
+| Rol / Ocupación | Dropdown | Sí | Selección obligatoria de rol (sincroniza con `label` en BD). |
+| Institución | Input Texto | No | Nombre de escuela o despacho. |
+| Semestre / Grado | Dropdown | No | Nivel académico. |
+| Celular WhatsApp | Input Numérico| No | Enlace de contacto del mentor. |
+| Biografía breve | TextArea | No | Límite visual de 200 caracteres. |
+| Guardar Cambios | Botón | Sí | Ejecuta `updateProfile`, invalida providers y redirige. |
 
 ---
 
@@ -1061,7 +1078,9 @@ Pantalla informativa que se muestra al usuario cuando intenta iniciar sesión y 
  │    ├── /mentorship/edit/:id   ← guard: solo mentor dueño + sesión no pasada
  │    └── /mentorship/:id
  ├── /profile
- │    └── /profile/settings
+ │    ├── /profile/edit          ← nuevo v4.2
+ │    ├── /profile/notifications ← nuevo v4.2
+ │    └── /profile/security      ← nuevo v4.2
  ├── /codes
  │    └── /codes/:codeId
  ├── /article/:id
@@ -1231,6 +1250,18 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ---
 
 ## 8. Historial de Cambios
+
+### Versión 4.2 (Junio 2026) — Cambios respecto a v4.1 🆕
+
+*   **Subpantallas de configuración independientes:** Se desmanteló la vista monolítica `/profile/settings` y el modal de edición de perfil. En su lugar, se crearon tres pantallas completas:
+    - **Editar Perfil (`/profile/edit`):** Permite cambiar de manera responsiva el Nombre, Apellidos, Rol/Ocupación (ahora dropdown), Institución, Semestre/Grado (ahora dropdown), WhatsApp y Biografía.
+    - **Notificaciones (`/profile/notifications`):** Gestiona de forma aislada las preferencias de avisos.
+    - **Seguridad (`/profile/security`):** Contiene la visualización del correo, el envío de email para cambio de contraseña y el panel de eliminación de cuenta.
+*   **Comentarios y calificaciones reales para mentores:** Implementada la sección de valoraciones dinámicas en la sesión de mentorías. Los estudiantes inscritos pueden calificar (1-5 estrellas) y comentar sobre la sesión del mentor únicamente si la fecha de la sesión (`session_date`) ya ha pasado. El sistema recalcula en tiempo real las calificaciones del mentor y de la sesión mediante triggers PostgreSQL definidos en `04_mentor_reviews.sql`.
+*   **Estadísticas de Mentores en Perfil:** Agregada la insignia de reputación (calificación promedio y total de reseñas) en el Hero Card de perfil de los mentores.
+*   **Limpieza de App Bar en Perfil:** Remoción de los botones edit y config superiores en el perfil para simplificar la interfaz.
+*   **Resolución de desbordamiento en Bottom Sheet del Foro:** Añadida compatibilidad de scroll y SafeArea en la modal de administración de post en `post_detail_view.dart`, impidiendo que los botones se corten en pantallas reducidas.
+*   **Corrección de Deprecaciones y Lints:** Se reemplazó el atributo `value` obsoleto por `initialValue` en `DropdownButtonFormField`, se limpiaron variables no utilizadas (`screenWidth` en el Inicio) y se corrigieron lints de constructores constantes y llamadas asíncronas de BuildContext en gaps.
 
 ### Versión 4.1 (Junio 2026) — Cambios respecto a v4.0
 

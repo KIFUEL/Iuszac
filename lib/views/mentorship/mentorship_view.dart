@@ -103,7 +103,7 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: LawTextField(
                 label: 'Buscar materia o especialidad...',
                 icon: Icons.search,
@@ -175,14 +175,55 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
     }).toList();
 
     if (filtered.isEmpty) {
-      return const Center(child: Text('No hay sesiones disponibles.'));
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.school_outlined,
+                size: 64,
+                color: Colors.grey.withValues(alpha: 0.4),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'No hay sesiones disponibles',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Intenta buscar con otros términos o revisa más tarde.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade500,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: filtered.length,
-      itemBuilder: (context, index) =>
-          _buildSessionCard(context, filtered[index], isMyTab, currentUserId),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final horizontalPadding = constraints.maxWidth > 700
+            ? (constraints.maxWidth - 700) / 2 + 16
+            : 16.0;
+
+        return ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 16),
+          itemCount: filtered.length,
+          itemBuilder: (context, index) =>
+              _buildSessionCard(context, filtered[index], isMyTab, currentUserId),
+        );
+      },
     );
   }
 
@@ -191,23 +232,31 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
     final mentorName = session.mentor?.fullName ?? 'Mentor';
     final phone = session.mentor?.phoneWhatsapp;
     final hasPhone = phone != null && phone.trim().isNotEmpty;
-    final isExpired = session.expiresAt != null && session.expiresAt!.isBefore(DateTime.now());
+    final isExpired = session.sessionDate.isBefore(DateTime.now());
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.only(bottom: 20.0),
       child: LawCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- Header row: avatar, title, mentor name, badges ---
             Row(
               children: [
                 CircleAvatar(
-                  radius: 24,
+                  radius: 26,
                   backgroundColor: colorScheme.primaryContainer,
-                  child: Text(mentorName.isNotEmpty ? mentorName[0] : 'U'),
+                  child: Text(
+                    mentorName.isNotEmpty ? mentorName[0] : 'U',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onPrimaryContainer,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,37 +267,53 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
                             child: Text(
                               session.title,
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                              ),
                               overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                             ),
                           ),
                           if (isExpired)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              margin: const EdgeInsets.only(left: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: colorScheme.outlineVariant,
+                                color: Colors.red.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.red.withValues(alpha: 0.3),
+                                  width: 1,
+                                ),
                               ),
                               child: const Text(
                                 'VENCIDA',
                                 style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 9,
+                                  color: Colors.red,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
                                 ),
                               ),
                             ),
                         ],
                       ),
+                      const SizedBox(height: 4),
                       Text(
                         '$mentorName · ${session.specialty}',
-                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 if (session.isCommunityVerified)
-                  const Icon(Icons.verified, color: Colors.blue, size: 20),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Icon(Icons.verified, color: Colors.blue, size: 24),
+                  ),
                 if (isMyTab && !isExpired && currentUserId != null)
                   PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert),
@@ -273,78 +338,149 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
               ],
             ),
             const SizedBox(height: 16),
+
+            // --- Rating & schedule row ---
             Row(
               children: [
-                const Icon(Icons.star, color: Colors.amber, size: 16),
-                const SizedBox(width: 4),
-                Text(session.rating.toString(),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 12)),
-                Text(' (${session.reviewCount} reseñas)',
-                    style: const TextStyle(color: Colors.grey, fontSize: 11)),
-                const Spacer(),
-                const Icon(Icons.schedule, size: 14, color: Colors.grey),
+                Icon(Icons.star_rounded, color: Colors.amber.shade700, size: 22),
                 const SizedBox(width: 4),
                 Text(
-                  session.expiresAt != null 
-                      ? 'Hasta: ${DateFormat('dd/MM').format(session.expiresAt!)}' 
-                      : 'Proximamente',
-                  style: const TextStyle(color: Colors.grey, fontSize: 11),
+                  session.rating.toString(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '(${session.reviewCount} reseñas)',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 13,
+                  ),
+                ),
+                const Spacer(),
+                Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey.shade600),
+                const SizedBox(width: 4),
+                Text(
+                  'Sesión: ${DateFormat('dd/MM HH:mm').format(session.sessionDate)}',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
-            const Divider(height: 24),
+
+            Divider(
+              height: 28,
+              color: Colors.grey.withValues(alpha: 0.2),
+            ),
+
+            // --- Price, slots, actions row ---
             Row(
               children: [
+                // Price badge
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: session.price == 0
-                        ? Colors.green.withValues(alpha: 0.1)
-                        : Colors.grey.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                        ? Colors.green.withValues(alpha: 0.12)
+                        : colorScheme.primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: session.price == 0
+                          ? Colors.green.withValues(alpha: 0.3)
+                          : colorScheme.primary.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
                   child: Text(
                     session.price == 0 ? 'GRATIS' : '\$${session.price}',
                     style: TextStyle(
                       color: session.price == 0
-                          ? Colors.green
-                          : Colors.grey.shade700,
+                          ? Colors.green.shade700
+                          : colorScheme.primary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 10,
+                      fontSize: 13,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
+                // Available slots badge
                 if (session.availableSlots > 0)
-                  Text(
-                    '${session.availableSlots} cupos',
-                    style: const TextStyle(
-                        color: Colors.orange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.orange.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.people_alt_outlined, size: 14, color: Colors.orange),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${session.availableSlots} cupos',
+                          style: const TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 const Spacer(),
+                // WhatsApp button with background circle
                 if (hasPhone && !isMyTab) ...[
-                  IconButton(
-                    icon: const Icon(Icons.chat, color: Colors.green, size: 20),
-                    onPressed: () async {
-                      final text = Uri.encodeComponent('Hola, me interesa tu mentoría: ${session.title}');
-                      final url = Uri.parse('https://wa.me/$phone?text=$text');
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url, mode: LaunchMode.externalApplication);
-                      }
-                    },
-                    tooltip: 'WhatsApp al mentor',
+                  Material(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    shape: const CircleBorder(),
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () async {
+                        final text = Uri.encodeComponent('Hola, me interesa tu mentoría: ${session.title}');
+                        final url = Uri.parse('https://wa.me/$phone?text=$text');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Icon(Icons.chat_rounded, color: Colors.green, size: 24),
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                 ],
-                ElevatedButton(
-                  onPressed: () => context.go('/mentorship/${session.id}'),
-                  style: ElevatedButton.styleFrom(
-                      visualDensity: VisualDensity.compact),
-                  child: const Text('Ver más'),
+                // Ver más button
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton.icon(
+                    onPressed: () => context.go('/mentorship/${session.id}'),
+                    icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                    label: const Text(
+                      'Ver más',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                  ),
                 ),
               ],
             ),

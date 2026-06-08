@@ -41,12 +41,21 @@ class _HomeViewState extends ConsumerState<HomeView> {
     return 'Buenas noches';
   }
 
+  /// Responsive horizontal padding – wider on tablets/desktop
+  double _responsivePadding(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 900) return 48;
+    if (width >= 600) return 32;
+    return 16;
+  }
+
   Widget _buildInstallBanner(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final hPad = _responsivePadding(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 8),
       child: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -68,7 +77,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
@@ -76,7 +85,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
               child: const Icon(
                 Icons.install_mobile_rounded,
                 color: Colors.white,
-                size: 24,
+                size: 28,
               ),
             ),
             const SizedBox(width: 16),
@@ -85,11 +94,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '¡Instala LawApp!',
+                    '¡Instala IusZac!',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 17,
+                      height: 1.3,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -97,14 +107,15 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     'Accede más rápido y trabaja sin conexión.',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 12,
+                      fontSize: 14,
+                      height: 1.4,
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 12),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () async {
                 final messenger = ScaffoldMessenger.of(context);
                 final success = await PwaHelper.triggerInstall();
@@ -116,33 +127,36 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   }
                   messenger.showSnackBar(
                     const SnackBar(
-                      content: Text('¡Gracias por instalar LawApp!'),
+                      content: Text('¡Gracias por instalar IusZac!'),
                       backgroundColor: Colors.green,
                     ),
                   );
                 }
               },
+              icon: const Icon(Icons.download_rounded, size: 20),
+              label: const Text(
+                'Instalar',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: colorScheme.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                minimumSize: const Size(0, 48),
                 elevation: 0,
-              ),
-              child: const Text(
-                'Instalar',
-                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.close, color: Colors.white70, size: 20),
+              icon: const Icon(Icons.close, color: Colors.white70, size: 22),
               onPressed: () {
                 setState(() {
                   _isDismissed = true;
                 });
               },
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             ),
           ],
         ),
@@ -158,6 +172,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
     final firstName = user?.userMetadata?['full_name'] ?? 'Usuario';
     final colorScheme = Theme.of(context).colorScheme;
+    final hPad = _responsivePadding(context);
 
     return Scaffold(
       body: CustomScrollView(
@@ -172,6 +187,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   '${_getGreeting()},',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey,
+                        fontSize: 14,
+                        height: 1.4,
                       ),
                 ),
                 Text(
@@ -186,6 +203,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   IconButton(
                     onPressed: () => context.go('/alerts'),
                     icon: const Icon(Icons.notifications_outlined),
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                   ),
                   Positioned(
                     right: 8,
@@ -197,14 +215,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         shape: BoxShape.circle,
                       ),
                       constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
+                        minWidth: 18,
+                        minHeight: 18,
                       ),
                       child: const Text(
                         '3',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -220,32 +238,38 @@ class _HomeViewState extends ConsumerState<HomeView> {
           // Buscador Global
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: GestureDetector(
-                onTap: () => context.go('/search'),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.4),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.search, color: colorScheme.onSurfaceVariant),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Busca artículos, códigos o foros...',
-                        style: TextStyle(
-                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                          fontSize: 14,
+              padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 8),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 720),
+                  child: GestureDetector(
+                    onTap: () => context.go('/search'),
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+                          width: 1,
                         ),
                       ),
-                    ],
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: colorScheme.onSurfaceVariant, size: 24),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Busca artículos, códigos o foros...',
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                              fontSize: 15,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -257,34 +281,63 @@ class _HomeViewState extends ConsumerState<HomeView> {
               child: _buildInstallBanner(context),
             ),
 
-          // Noticias y Reformas Recientes (Carrusel)
+          // ── Noticias y Reformas Recientes (Carrusel) ──
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              padding: const EdgeInsets.only(top: 24.0, bottom: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: EdgeInsets.symmetric(horizontal: hPad),
                     child: _buildSectionHeader(
+                      context,
                       'Reformas Recientes',
+                      Icons.gavel_rounded,
                       () => context.go('/alerts'),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   updatesAsync.when(
                     data: (updates) {
                       if (updates.isEmpty) {
-                        return const Center(
+                        return Center(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Text('No hay noticias o reformas recientes.'),
+                            padding: const EdgeInsets.symmetric(vertical: 40),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.newspaper_rounded,
+                                  size: 80,
+                                  color: colorScheme.outline.withValues(alpha: 0.4),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No hay reformas recientes',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.onSurfaceVariant,
+                                    height: 1.4,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Vuelve más tarde para ver actualizaciones.',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }
                       final carouselUpdates = updates.take(3).toList();
                       return SizedBox(
-                        height: 200,
+                        height: 240,
                         child: PageView.builder(
                           controller: PageController(viewportFraction: 0.9),
                           itemCount: carouselUpdates.length,
@@ -299,11 +352,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       );
                     },
                     loading: () => const Center(
-                      child: CircularProgressIndicator(),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
                     error: (err, _) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text('Error: $err'),
+                      padding: EdgeInsets.symmetric(horizontal: hPad),
+                      child: Text('Error: $err', style: const TextStyle(fontSize: 14)),
                     ),
                   ),
                 ],
@@ -311,21 +367,34 @@ class _HomeViewState extends ConsumerState<HomeView> {
             ),
           ),
 
-          // Otras Noticias (Lista Vertical)
+          // ── Divider between sections ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: hPad),
+              child: const Divider(height: 32, thickness: 0.5),
+            ),
+          ),
+
+          // ── Otras Noticias (Lista Vertical) ──
           SliverToBoxAdapter(
             child: updatesAsync.when(
               data: (updates) {
                 if (updates.length <= 3) return const SizedBox();
                 final remainingUpdates = updates.skip(3).toList();
                 return Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionHeader('Más Noticias', null),
-                      const SizedBox(height: 12),
-                      ...remainingUpdates.map((update) => _buildListNewsCard(context, update)),
-                    ],
+                  padding: EdgeInsets.fromLTRB(hPad, 8.0, hPad, 8.0),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 720),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSectionHeader(context, 'Más Noticias', Icons.article_outlined, null),
+                          const SizedBox(height: 16),
+                          ...remainingUpdates.map((update) => _buildListNewsCard(context, update)),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
@@ -334,27 +403,37 @@ class _HomeViewState extends ConsumerState<HomeView> {
             ),
           ),
 
-          // Códigos Disponibles
+          // ── Divider before codes section ──
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
+              padding: EdgeInsets.symmetric(horizontal: hPad),
+              child: const Divider(height: 32, thickness: 0.5),
+            ),
+          ),
+
+          // ── Códigos Disponibles ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: hPad),
                     child: _buildSectionHeader(
+                      context,
                       'Códigos Disponibles',
+                      Icons.menu_book_rounded,
                       () => context.go('/codes'),
                     ),
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
-                    height: 160,
+                    height: 180,
                     child: codesAsync.when(
                       data: (codes) => ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        padding: EdgeInsets.symmetric(horizontal: hPad - 4),
                         itemCount: codes.length,
                         itemBuilder: (context, index) =>
                             _buildCodeCard(context, codes[index]),
@@ -374,22 +453,47 @@ class _HomeViewState extends ConsumerState<HomeView> {
     );
   }
 
-  Widget _buildSectionHeader(String title, VoidCallback? onAction) {
+  /// Section header with accent bar, icon, title, and optional action button
+  Widget _buildSectionHeader(BuildContext context, String title, IconData icon, VoidCallback? onAction) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.2,
+        // Accent bar
+        Container(
+          width: 4,
+          height: 24,
+          decoration: BoxDecoration(
+            color: colorScheme.secondary,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Icon(icon, size: 20, color: colorScheme.primary),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.2,
+              color: colorScheme.onSurface,
+              height: 1.3,
+            ),
           ),
         ),
         if (onAction != null)
-          TextButton(
+          TextButton.icon(
             onPressed: onAction,
-            child: const Text('Ver todos'),
+            icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+            label: const Text(
+              'Ver todos',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            style: TextButton.styleFrom(
+              minimumSize: const Size(0, 48),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
           ),
       ],
     );
@@ -402,24 +506,24 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: colorScheme.primary.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: LawCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(20),
@@ -429,7 +533,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     style: TextStyle(
                       color: colorScheme.onSecondaryContainer,
                       fontWeight: FontWeight.bold,
-                      fontSize: 10,
+                      fontSize: 11,
                       letterSpacing: 0.3,
                     ),
                   ),
@@ -437,7 +541,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 if (isNew) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       color: Colors.redAccent.shade700,
                       borderRadius: BorderRadius.circular(20),
@@ -446,7 +550,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       'NUEVO',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 8,
+                        fontSize: 10,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
                       ),
@@ -454,47 +558,53 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   ),
                 ],
                 const Spacer(),
+                Icon(Icons.calendar_today_rounded, size: 14, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+                const SizedBox(width: 4),
                 Text(
                   formattedDate,
                   style: TextStyle(
-                    fontSize: 11,
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Divider(
               height: 1,
               thickness: 0.5,
               color: colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Text(
               update.title,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
+                height: 1.3,
               ),
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Expanded(
               child: Text(
                 update.content,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                  height: 1.5,
                 ),
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            const SizedBox(height: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                OutlinedButton(
+                OutlinedButton.icon(
                   onPressed: () {
                     if (update.articleId != null) {
                       context.push('/article/${update.articleId}');
@@ -502,18 +612,22 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       context.push('/alerts/detail/${update.id}');
                     }
                   },
-                  style: OutlinedButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    foregroundColor: colorScheme.primary,
-                    side: BorderSide(color: colorScheme.primary, width: 1.2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  icon: Icon(
+                    update.articleId != null ? Icons.article_outlined : Icons.visibility_outlined,
+                    size: 18,
                   ),
-                  child: Text(
+                  label: Text(
                     update.articleId != null ? 'Ver artículo' : 'Ver cambios',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colorScheme.primary,
+                    side: BorderSide(color: colorScheme.primary, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    minimumSize: const Size(0, 48),
                   ),
                 ),
               ],
@@ -530,19 +644,19 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final isNew = DateTime.now().difference(update.createdAt).inHours < 24;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.02),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: colorScheme.primary.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: LawCard(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: InkWell(
           onTap: () {
             if (update.articleId != null) {
@@ -557,49 +671,52 @@ class _HomeViewState extends ConsumerState<HomeView> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: colorScheme.secondaryContainer.withValues(alpha: 0.7),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       update.category,
                       style: TextStyle(
                         color: colorScheme.onSecondaryContainer,
                         fontWeight: FontWeight.bold,
-                        fontSize: 9,
+                        fontSize: 11,
                       ),
                     ),
                   ),
                   if (isNew) ...[
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: Colors.redAccent.shade700,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Text(
                         'NUEVO',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 8,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                   const Spacer(),
+                  Icon(Icons.calendar_today_rounded, size: 13, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+                  const SizedBox(width: 4),
                   Text(
                     formattedDate,
                     style: TextStyle(
-                      fontSize: 10,
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -610,30 +727,40 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         Text(
                           update.title,
                           style: const TextStyle(
-                            fontSize: 13,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
+                            height: 1.3,
                           ),
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Text(
                           update.content,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 14,
                             color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                            height: 1.5,
                           ),
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    Icons.chevron_right,
-                    size: 16,
-                    color: colorScheme.primary,
+                  const SizedBox(width: 12),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withValues(alpha: 0.4),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.chevron_right,
+                      size: 22,
+                      color: colorScheme.primary,
+                    ),
                   ),
                 ],
               ),
@@ -648,20 +775,20 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      width: 140,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      width: 155,
+      margin: const EdgeInsets.symmetric(horizontal: 6),
       child: InkWell(
         onTap: () {},
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: LawCard(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Icon container with gradient background
               Container(
-                width: 44,
-                height: 44,
+                width: 50,
+                height: 50,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -676,12 +803,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 child: Center(
                   child: Icon(
                     Icons.gavel_rounded,
-                    size: 22,
+                    size: 24,
                     color: colorScheme.onPrimaryContainer,
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Text(
                 code.name,
                 textAlign: TextAlign.center,
@@ -689,22 +816,23 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontSize: 13,
+                  height: 1.3,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 6),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: code.status == 'Vigente'
-                      ? Colors.green.withValues(alpha: 0.1)
-                      : Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                      ? Colors.green.withValues(alpha: 0.12)
+                      : Colors.blue.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   code.status,
                   style: TextStyle(
-                    fontSize: 9,
+                    fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: code.status == 'Vigente' ? Colors.green : Colors.blue,
                   ),

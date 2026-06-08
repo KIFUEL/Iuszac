@@ -27,6 +27,9 @@ class _ForumViewState extends ConsumerState<ForumView> {
   Widget build(BuildContext context) {
     final postsAsync = ref.watch(forumPostsProvider);
     final colorScheme = Theme.of(context).colorScheme;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth > 700;
+    final horizontalPadding = isWide ? 32.0 : 16.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,8 +47,8 @@ class _ForumViewState extends ConsumerState<ForumView> {
           // Motivational gradient banner header
           Container(
             width: double.infinity,
-            margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            margin: EdgeInsets.fromLTRB(horizontalPadding, 10, horizontalPadding, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
             decoration: BoxDecoration(
               color: colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(16),
@@ -56,14 +59,15 @@ class _ForumViewState extends ConsumerState<ForumView> {
               style: TextStyle(
                 color: colorScheme.onPrimaryContainer,
                 fontStyle: FontStyle.italic,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
                 letterSpacing: 0.2,
+                height: 1.4,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            padding: EdgeInsets.fromLTRB(horizontalPadding, 14, horizontalPadding, 6),
             child: LawTextField(
               label: 'Buscar por hashtag (ej: #penal)',
               icon: Icons.tag,
@@ -71,6 +75,15 @@ class _ForumViewState extends ConsumerState<ForumView> {
               onChanged: (val) {
                 setState(() => _searchQuery = val.toLowerCase().trim());
               },
+            ),
+          ),
+          // Separator between search and results
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: Divider(
+              height: 20,
+              thickness: 1,
+              color: colorScheme.outlineVariant.withValues(alpha: 0.4),
             ),
           ),
           Expanded(
@@ -98,7 +111,7 @@ class _ForumViewState extends ConsumerState<ForumView> {
                   return const Center(child: Text('No se encontraron resultados.'));
                 }
 
-                return _buildPostList(filteredPosts);
+                return _buildPostList(filteredPosts, isWide, horizontalPadding);
               },
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, _) => Center(child: Text('Error: $err')),
@@ -136,12 +149,21 @@ class _ForumViewState extends ConsumerState<ForumView> {
     );
   }
 
-  Widget _buildPostList(List<ForumPost> posts) {
+  Widget _buildPostList(List<ForumPost> posts, bool isWide, double horizontalPadding) {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 10),
       itemCount: posts.length,
       itemBuilder: (context, index) {
-        return _buildPostCard(context, posts[index]);
+        final card = _buildPostCard(context, posts[index]);
+        if (isWide) {
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: card,
+            ),
+          );
+        }
+        return card;
       },
     );
   }
@@ -153,7 +175,7 @@ class _ForumViewState extends ConsumerState<ForumView> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 18),
       child: InkWell(
         onTap: () => context.go('/forum/${post.id}'),
         borderRadius: BorderRadius.circular(20),
@@ -163,16 +185,16 @@ class _ForumViewState extends ConsumerState<ForumView> {
           child: Stack(
             children: [
               LawCard(
-                padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
+                padding: const EdgeInsets.fromLTRB(22, 18, 18, 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        // Author avatar with gradient background
+                        // Author avatar with gradient background — 40x40
                         Container(
-                          width: 36,
-                          height: 36,
+                          width: 40,
+                          height: 40,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
@@ -189,7 +211,7 @@ class _ForumViewState extends ConsumerState<ForumView> {
                               authorName[0].toUpperCase(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize: 16,
                                 color: colorScheme.onPrimaryContainer,
                               ),
                             ),
@@ -203,14 +225,16 @@ class _ForumViewState extends ConsumerState<ForumView> {
                               Text(
                                 authorName,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 13),
+                                    fontWeight: FontWeight.bold, fontSize: 14),
                               ),
+                              const SizedBox(height: 2),
                               Text(
                                 '$semester · $formattedDate',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(color: Colors.grey),
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 12,
+                                  height: 1.3,
+                                ),
                               ),
                             ],
                           ),
@@ -218,33 +242,35 @@ class _ForumViewState extends ConsumerState<ForumView> {
                         if (post.isClosed)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Text(
+                            child: Text(
                               'CERRADO',
                               style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold),
+                                  color: Colors.grey.shade700,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.3),
                             ),
                           )
                         else if (post.isUrgent)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.red.shade100,
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Text(
+                            child: Text(
                               'URGENTE',
                               style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold),
+                                  color: Colors.red.shade700,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.3),
                             ),
                           ),
                       ],
@@ -252,82 +278,107 @@ class _ForumViewState extends ConsumerState<ForumView> {
                     const SizedBox(height: 16),
                     if (post.tags.isNotEmpty) ...[
                       Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
+                        spacing: 8,
+                        runSpacing: 8,
                         children: post.tags
                             .map((tag) => Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
                                     color: colorScheme.primary.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: colorScheme.primary.withValues(alpha: 0.15)),
+                                    border: Border.all(color: colorScheme.primary.withValues(alpha: 0.18)),
                                   ),
                                   child: Text(
                                     '#$tag',
                                     style: TextStyle(
                                         color: colorScheme.primary,
-                                        fontSize: 10,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ))
                             .toList(),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                     ],
                     Text(
                       post.title,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15),
+                          fontWeight: FontWeight.bold, fontSize: 17, height: 1.3),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       post.content,
-                      style: const TextStyle(color: Colors.grey, fontSize: 13),
-                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    // Subtle divider above 'Discutir caso' row
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Divider(height: 1, thickness: 0.6),
+                    // Visible divider above 'Discutir caso' row
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      child: Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                      ),
                     ),
                     Row(
                       children: [
+                        // Reply count badge — larger & more prominent
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                           decoration: BoxDecoration(
-                            color: colorScheme.secondary.withValues(alpha: 0.08),
+                            color: colorScheme.secondary.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.chat_bubble_outline, size: 14, color: colorScheme.secondary),
-                              const SizedBox(width: 6),
+                              Icon(Icons.chat_bubble_outline, size: 18, color: colorScheme.secondary),
+                              const SizedBox(width: 8),
                               Text(
                                 '${post.replyCount} respuestas',
                                 style: TextStyle(
                                     color: colorScheme.secondary,
-                                    fontSize: 12,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
                         ),
                         const Spacer(),
-                        ElevatedButton.icon(
-                          onPressed: () => context.go('/forum/${post.id}'),
-                          icon: const Icon(Icons.forum_outlined, size: 14, color: Colors.white),
-                          label: const Text(
-                            'Discutir caso',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            elevation: 2,
-                            shadowColor: colorScheme.primary.withValues(alpha: 0.3),
-                            backgroundColor: colorScheme.primary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        // 'Discutir caso' button — minimum 48px height, larger text+icon
+                        Material(
+                          color: colorScheme.primary,
+                          borderRadius: BorderRadius.circular(12),
+                          elevation: 2,
+                          shadowColor: colorScheme.primary.withValues(alpha: 0.3),
+                          child: InkWell(
+                            onTap: () => context.go('/forum/${post.id}'),
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              constraints: const BoxConstraints(minHeight: 48),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.forum_outlined, size: 20, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Discutir caso',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ],

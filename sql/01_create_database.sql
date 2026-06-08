@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   notif_email_resumen BOOLEAN DEFAULT true,
   notif_foro BOOLEAN DEFAULT true,
   notif_mentoria BOOLEAN DEFAULT true,
+  rating NUMERIC DEFAULT 0,
+  review_count INT DEFAULT 0,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -175,6 +177,8 @@ CREATE TABLE IF NOT EXISTS public.mentorship_sessions (
   available_slots INT DEFAULT 10,
   session_date TIMESTAMP WITH TIME ZONE NOT NULL,
   expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  rating NUMERIC DEFAULT 0,
+  review_count INT DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -205,3 +209,51 @@ ALTER TABLE public.forum_comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.mentorship_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.mentorship_enrollments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.mentorship_reviews ENABLE ROW LEVEL SECURITY;
+
+-- J. Trigger para actualizar calificaciones automáticas
+CREATE OR REPLACE FUNCTION public.update_mentorship_ratings()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_session_id UUID;
+  v_mentor_id UUID;
+BEGIN
+  IF TG_OP = 'DELETE' THEN
+    v_session_id := OLD.session_id;
+  ELSE
+    v_session_id := NEW.session_id;
+  END IF;
+
+  SELECT mentor_id INTO v_mentor_id FROM public.mentorship_sessions WHERE id = v_session_id;
+
+  UPDATE public.mentorship_sessions
+  SET 
+    rating = COALESCE((SELECT ROUND(AVG(rating)::numeric, 1) FROM public.mentorship_reviews WHERE session_id = v_session_id), 0),
+    review_count = COALESCE((SELECT COUNT(*) FROM public.mentorship_reviews WHERE session_id = v_session_id), 0)
+  WHERE id = v_session_id;
+
+  IF v_mentor_id IS NOT NULL THEN
+    UPDATE public.profiles
+    SET
+      rating = COALESCE((
+        SELECT ROUND(AVG(r.rating)::numeric, 1)
+        FROM public.mentorship_reviews r
+        JOIN public.mentorship_sessions s ON r.session_id = s.id
+        WHERE s.mentor_id = v_mentor_id
+      ), 0),
+      review_count = COALESCE((
+        SELECT COUNT(r.id)
+        FROM public.mentorship_reviews r
+        JOIN public.mentorship_sessions s ON r.session_id = s.id
+        WHERE s.mentor_id = v_mentor_id
+      ), 0)
+    WHERE id = v_mentor_id;
+  END IF;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS trg_mentorship_ratings ON public.mentorship_reviews;
+CREATE TRIGGER trg_mentorship_ratings
+AFTER INSERT OR UPDATE OR DELETE ON public.mentorship_reviews
+FOR EACH ROW EXECUTE FUNCTION public.update_mentorship_ratings();

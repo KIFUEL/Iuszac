@@ -12,7 +12,9 @@ import '../views/mentorship/mentorship_view.dart';
 import '../views/mentorship/mentorship_detail_view.dart';
 import '../views/mentorship/new_mentorship_view.dart';
 import '../views/profile/profile_view.dart';
-import '../views/profile/settings_view.dart';
+import '../views/profile/edit_profile_view.dart';
+import '../views/profile/notification_settings_view.dart';
+import '../views/profile/security_settings_view.dart';
 import '../views/auth/login_view.dart';
 import '../views/auth/register_view.dart';
 import '../views/auth/splash_view.dart';
@@ -190,8 +192,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const ProfileView(),
             routes: [
               GoRoute(
-                path: 'settings',
-                builder: (context, state) => const SettingsView(),
+                path: 'edit',
+                builder: (context, state) => const EditProfileView(),
+              ),
+              GoRoute(
+                path: 'notifications',
+                builder: (context, state) => const NotificationSettingsView(),
+              ),
+              GoRoute(
+                path: 'security',
+                builder: (context, state) => const SecuritySettingsView(),
               ),
             ],
           ),

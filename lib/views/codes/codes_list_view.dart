@@ -25,6 +25,7 @@ class _CodesListViewState extends ConsumerState<CodesListView> {
   @override
   Widget build(BuildContext context) {
     final codesAsync = ref.watch(legalCodesProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -34,55 +35,117 @@ class _CodesListViewState extends ConsumerState<CodesListView> {
           onPressed: () => context.go('/'),
         ),
       ),
-      body: Column(
-        children: [
-          // Buscador Inline
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: LawTextField(
-              label: 'Buscar código...',
-              icon: Icons.search,
-              controller: _searchController,
-              onChanged: (val) {
-                setState(() => _searchQuery = val.toLowerCase());
-              },
-            ),
-          ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: Column(
+            children: [
+              // Buscador Inline
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: LawTextField(
+                  label: 'Buscar código...',
+                  icon: Icons.search,
+                  controller: _searchController,
+                  onChanged: (val) {
+                    setState(() => _searchQuery = val.toLowerCase());
+                  },
+                ),
+              ),
 
-          Expanded(
-            child: codesAsync.when(
-              data: (codes) {
-                final filteredCodes = codes
-                    .where((c) => c.name.toLowerCase().contains(_searchQuery))
-                    .toList();
+              // Divider separating search from results
+              Divider(
+                height: 1,
+                color: colorScheme.outline.withValues(alpha: 0.15),
+              ),
 
-                if (filteredCodes.isEmpty) {
-                  return const Center(child: Text('No se encontraron códigos.'));
-                }
+              Expanded(
+                child: codesAsync.when(
+                  data: (codes) {
+                    final filteredCodes = codes
+                        .where((c) => c.name.toLowerCase().contains(_searchQuery))
+                        .toList();
 
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: filteredCodes.length,
-                  itemBuilder: (context, index) {
-                    final code = filteredCodes[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: _buildCodeTile(context, code),
+                    if (filteredCodes.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.search_off_rounded,
+                              size: 64,
+                              color: colorScheme.outline.withValues(alpha: 0.5),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No se encontraron códigos.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Intenta con otro término de búsqueda',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: colorScheme.outline,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        // 2 columns on tablets (width >= 500)
+                        if (constraints.maxWidth >= 500) {
+                          return GridView.builder(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 2.2,
+                            ),
+                            itemCount: filteredCodes.length,
+                            itemBuilder: (context, index) {
+                              final code = filteredCodes[index];
+                              return _buildCodeTile(context, code);
+                            },
+                          );
+                        }
+
+                        return ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                          itemCount: filteredCodes.length,
+                          itemBuilder: (context, index) {
+                            final code = filteredCodes[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: _buildCodeTile(context, code),
+                            );
+                          },
+                        );
+                      },
                     );
                   },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('Error: $err')),
-            ),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (err, _) => Center(child: Text('Error: $err')),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildCodeTile(BuildContext context, LegalCode code) {
     final colorScheme = Theme.of(context).colorScheme;
+
+    final statusColor = code.status == 'Vigente' ? Colors.green : Colors.blue;
 
     return InkWell(
       onTap: () => context.push('/codes/${code.id}?name=${Uri.encodeComponent(code.name)}'),
@@ -91,14 +154,17 @@ class _CodesListViewState extends ConsumerState<CodesListView> {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
+            // Gavel icon: 26px icon inside 48px circle
             Container(
-              padding: const EdgeInsets.all(10),
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
                 color: colorScheme.primaryContainer,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.gavel_rounded,
+                size: 26,
                 color: colorScheme.onPrimaryContainer,
               ),
             ),
@@ -106,46 +172,66 @@ class _CodesListViewState extends ConsumerState<CodesListView> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     code.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     '${code.articleCount ?? 0} artículos disponibles',
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                  const SizedBox(height: 8),
+                  // Status badge - more prominent with border
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: statusColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: statusColor.withValues(alpha: 0.4),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      code.status.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: statusColor,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: code.status == 'Vigente'
-                        ? Colors.green.withValues(alpha: 0.1)
-                        : Colors.blue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+            // "Ver artículos" button instead of chevron
+            SizedBox(
+              height: 40,
+              child: OutlinedButton.icon(
+                onPressed: () => context.push('/codes/${code.id}?name=${Uri.encodeComponent(code.name)}'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: colorScheme.primary,
+                  side: BorderSide(color: colorScheme.primary.withValues(alpha: 0.4)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    code.status.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      color: code.status == 'Vigente' ? Colors.green : Colors.blue,
-                    ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  textStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Icon(Icons.chevron_right, color: Colors.grey),
-              ],
+                icon: Icon(Icons.chevron_right, size: 18, color: colorScheme.primary),
+                label: const Text('Ver'),
+              ),
             ),
           ],
         ),

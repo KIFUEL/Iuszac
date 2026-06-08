@@ -24,6 +24,17 @@ final userProfileProvider = FutureProvider<Profile?>((ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
 
+  try {
+    // 1. Validar activamente con el servidor que la cuenta siga existiendo y sea válida.
+    // Esto previene que usuarios borrados sigan navegando con una sesión local "fantasma".
+    await Supabase.instance.client.auth.getUser();
+  } catch (e) {
+    // Si el servidor rechaza el token (ej. usuario eliminado o baneado), destruimos la sesión local.
+    await Supabase.instance.client.auth.signOut();
+    return null;
+  }
+
+  // 2. Si el usuario es válido en el servidor, cargamos su perfil público.
   final response = await Supabase.instance.client
       .from('profiles')
       .select()

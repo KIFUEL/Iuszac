@@ -10,6 +10,7 @@ import '../models/legal_article.dart';
 import '../models/mentorship_session.dart';
 import '../models/saved_article.dart';
 import '../models/profile.dart';
+import '../models/mentorship_review.dart';
 import 'auth_provider.dart';
 
 // Proveedor para instanciar el servicio de Base de Datos
@@ -155,5 +156,12 @@ final isSuspendedProvider = Provider<bool>((ref) {
 final recentCommentsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
   return await dbService.getAllRecentCommentsWithPostTitle();
+});
+
+// Proveedor para obtener las reseñas de una sesión específica
+final mentorshipReviewsProvider =
+    FutureProvider.family<List<MentorshipReview>, String>((ref, sessionId) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getReviewsForSession(sessionId);
 });
 

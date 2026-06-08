@@ -210,14 +210,14 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                   _buildSectionTitle('Contexto Profesional'),
                   const SizedBox(height: 16),
                   LawDropdown<String>(
-                    label: 'Rol',
+                    label: 'Ocupación',
                     icon: Icons.work_outline,
                     items: _roles
                         .map((r) => DropdownMenuItem(value: r, child: Text(r)))
                         .toList(),
                     value: _selectedRole,
                     onChanged: (val) => setState(() => _selectedRole = val),
-                    validator: (val) => val == null ? 'Selecciona un rol' : null,
+                    validator: (val) => val == null ? 'Selecciona una ocupación' : null,
                   ),
                   const SizedBox(height: 16),
                   LawTextField(

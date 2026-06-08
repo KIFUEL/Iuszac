@@ -8,6 +8,7 @@ import '../models/legal_code.dart';
 import '../models/legal_article.dart';
 import '../models/mentorship_session.dart';
 import '../models/saved_article.dart';
+import '../models/mentorship_review.dart';
 
 
 class DatabaseService {
@@ -168,6 +169,7 @@ class DatabaseService {
     required String specialty,
     required double price,
     required int availableSlots,
+    required DateTime sessionDate,
     DateTime? expiresAt,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
@@ -184,6 +186,7 @@ class DatabaseService {
           'specialty': specialty,
           'price': price,
           'available_slots': availableSlots,
+          'session_date': sessionDate.toIso8601String(),
           'expires_at': expiresAt?.toIso8601String(),
         })
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
@@ -245,6 +248,7 @@ class DatabaseService {
     String? institution,
     String? semesterDegree,
     String? phoneWhatsapp,
+    String? label,
   }) async {
     final updates = <String, dynamic>{};
     if (fullName != null) updates['full_name'] = fullName;
@@ -253,6 +257,7 @@ class DatabaseService {
     if (institution != null) updates['institution'] = institution;
     if (semesterDegree != null) updates['semester_degree'] = semesterDegree;
     if (phoneWhatsapp != null) updates['phone_whatsapp'] = phoneWhatsapp;
+    if (label != null) updates['label'] = label;
     if (updates.isEmpty) return;
 
     await _supabase.from('profiles').update(updates).eq('id', userId);
@@ -429,6 +434,13 @@ class DatabaseService {
     await _supabase.from('forum_comments').delete().eq('id', commentId);
   }
 
+  /// Marca o desmarca un comentario como solución aceptada
+  Future<void> setCommentSolutionStatus(String commentId, bool isSolution) async {
+    await _supabase.from('forum_comments').update({
+      'is_solution': isSolution,
+    }).eq('id', commentId);
+  }
+
   // ── 10. Operaciones adicionales de Mentorías ──────────────────────────────
 
   /// Obtiene las mentorías de un mentor específico (incluye expiradas)
@@ -457,6 +469,7 @@ class DatabaseService {
     required String specialty,
     required double price,
     required int availableSlots,
+    required DateTime sessionDate,
     DateTime? expiresAt,
   }) async {
     final response = await _supabase
@@ -467,6 +480,7 @@ class DatabaseService {
           'specialty': specialty,
           'price': price,
           'available_slots': availableSlots,
+          'session_date': sessionDate.toIso8601String(),
           'expires_at': expiresAt?.toIso8601String(),
         })
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
@@ -483,6 +497,36 @@ class DatabaseService {
         .order('created_at', ascending: false)
         .limit(100);
     return List<Map<String, dynamic>>.from(response as List);
+  }
+
+  /// Obtiene las reseñas de una sesión de mentoría específica
+  Future<List<MentorshipReview>> getReviewsForSession(String sessionId) async {
+    final response = await _supabase
+        .from('mentorship_reviews')
+        .select('*, profiles(*)')
+        .eq('session_id', sessionId)
+        .order('created_at', ascending: false);
+
+    return (response as List)
+        .map((json) => MentorshipReview.fromJson(json))
+        .toList();
+  }
+
+  /// Crea una nueva reseña para una sesión de mentoría
+  Future<void> createMentorshipReview({
+    required String sessionId,
+    required int rating,
+    required String comment,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception('Usuario no autenticado');
+
+    await _supabase.from('mentorship_reviews').insert({
+      'session_id': sessionId,
+      'user_id': userId,
+      'rating': rating,
+      'comment': comment,
+    });
   }
 }
 

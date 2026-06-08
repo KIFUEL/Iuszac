@@ -11,6 +11,7 @@ class MentorshipSession {
   final Map<String, dynamic>? schedule;
   final bool isCommunityVerified;
   final DateTime createdAt;
+  final DateTime sessionDate;
   final DateTime? expiresAt;
   final Profile? mentor;
   final double rating;
@@ -27,6 +28,7 @@ class MentorshipSession {
     this.schedule,
     this.isCommunityVerified = false,
     required this.createdAt,
+    required this.sessionDate,
     this.expiresAt,
     this.mentor,
     this.rating = 0,
@@ -44,7 +46,10 @@ class MentorshipSession {
       availableSlots: json['available_slots'] ?? 0,
       schedule: json['schedule'],
       isCommunityVerified: json['is_community_verified'] ?? false,
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : DateTime.now(),
+      sessionDate: json['session_date'] != null 
+          ? DateTime.parse(json['session_date']) 
+          : (json['expires_at'] != null ? DateTime.parse(json['expires_at']) : DateTime.now()),
       expiresAt: json['expires_at'] != null ? DateTime.parse(json['expires_at']) : null,
       mentor: json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
       rating: (json['rating'] ?? 0).toDouble(),

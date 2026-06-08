@@ -220,26 +220,19 @@ class _AdminMentorsViewState extends ConsumerState<AdminMentorsView> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if (isMentor)
-                  ElevatedButton(
+                  LawButton(
+                    label: 'Revocar',
+                    icon: Icons.remove_circle_outline,
+                    isPrimary: false,
+                    backgroundColor: colorScheme.error.withValues(alpha: 0.1),
                     onPressed: () => _showRoleDialog(context, user, false),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.error.withValues(alpha: 0.1),
-                      foregroundColor: colorScheme.error,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    ),
-                    child: const Text('Revocar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   )
                 else
-                  ElevatedButton(
+                  LawButton(
+                    label: 'Hacer Mentor',
+                    icon: Icons.star_outline,
+                    backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
                     onPressed: () => _showRoleDialog(context, user, true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
-                      foregroundColor: colorScheme.primary,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    ),
-                    child: const Text('Hacer Mentor', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   ),
               ],
             ),

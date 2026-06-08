@@ -17,6 +17,9 @@ class Profile {
   final bool notifEmailResumen;
   final bool notifForo;
   final bool notifMentoria;
+  // Calificación agregada (para mentores)
+  final double rating;
+  final int reviewCount;
 
   Profile({
     required this.id,
@@ -36,6 +39,8 @@ class Profile {
     this.notifEmailResumen = true,
     this.notifForo = true,
     this.notifMentoria = true,
+    this.rating = 0,
+    this.reviewCount = 0,
   });
 
   String get role => userType;
@@ -61,6 +66,8 @@ class Profile {
       notifEmailResumen: json['notif_email_resumen'] ?? true,
       notifForo: json['notif_foro'] ?? true,
       notifMentoria: json['notif_mentoria'] ?? true,
+      rating: (json['rating'] ?? 0).toDouble(),
+      reviewCount: json['review_count'] ?? 0,
     );
   }
 
@@ -83,6 +90,8 @@ class Profile {
       'notif_email_resumen': notifEmailResumen,
       'notif_foro': notifForo,
       'notif_mentoria': notifMentoria,
+      'rating': rating,
+      'review_count': reviewCount,
     };
   }
 
@@ -102,6 +111,8 @@ class Profile {
     bool? notifEmailResumen,
     bool? notifForo,
     bool? notifMentoria,
+    double? rating,
+    int? reviewCount,
   }) {
     return Profile(
       id: id,
@@ -121,6 +132,8 @@ class Profile {
       notifEmailResumen: notifEmailResumen ?? this.notifEmailResumen,
       notifForo: notifForo ?? this.notifForo,
       notifMentoria: notifMentoria ?? this.notifMentoria,
+      rating: rating ?? this.rating,
+      reviewCount: reviewCount ?? this.reviewCount,
     );
   }
 }
