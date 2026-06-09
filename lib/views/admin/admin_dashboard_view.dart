@@ -122,8 +122,8 @@ class AdminDashboardView extends ConsumerWidget {
                     ),
                     _buildActionButton(
                       context,
-                      'Gestionar Mentores',
-                      Icons.supervisor_account,
+                      'Gestión de Usuarios',
+                      Icons.manage_accounts_rounded,
                       colorScheme.secondary,
                       () => context.push('/admin/mentors'),
                     ),

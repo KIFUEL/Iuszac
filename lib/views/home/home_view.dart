@@ -179,6 +179,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
         slivers: [
           // Header con Saludo e Ícono de Notificaciones
           SliverAppBar.large(
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -197,42 +200,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 ),
               ],
             ),
-            actions: [
-              Stack(
-                children: [
-                  IconButton(
-                    onPressed: () => context.go('/alerts'),
-                    icon: const Icon(Icons.notifications_outlined),
-                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                  ),
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 18,
-                        minHeight: 18,
-                      ),
-                      child: const Text(
-                        '3',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 8),
-            ],
+            // Removemos los actions para que ya no aparezca la campanita arriba
           ),
 
           // Buscador Global

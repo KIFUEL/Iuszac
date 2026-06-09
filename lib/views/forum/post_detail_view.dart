@@ -706,7 +706,7 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
                                         radius: 22,
                                         backgroundColor: Colors.transparent,
                                         child: Text(
-                                          postAuthor[0].toUpperCase(),
+                                          postAuthor.isNotEmpty ? postAuthor[0].toUpperCase() : 'U',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white,
@@ -1158,7 +1158,7 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
                       radius: 14,
                       backgroundColor: Colors.transparent,
                       child: Text(
-                        authorName[0].toUpperCase(),
+                        authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
                         style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),

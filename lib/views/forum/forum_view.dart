@@ -208,7 +208,7 @@ class _ForumViewState extends ConsumerState<ForumView> {
                           ),
                           child: Center(
                             child: Text(
-                              authorName[0].toUpperCase(),
+                              authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,

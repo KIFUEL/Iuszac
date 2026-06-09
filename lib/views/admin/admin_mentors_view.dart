@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../providers/database_provider.dart';
 import '../../models/profile.dart';
 import '../../widgets/common_widgets.dart';
+import 'admin_suspend_view.dart';
 
 class AdminMentorsView extends ConsumerStatefulWidget {
   const AdminMentorsView({super.key});
@@ -30,7 +31,7 @@ class _AdminMentorsViewState extends ConsumerState<AdminMentorsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Gestión de Mentores',
+          'Gestión de Usuarios',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -154,118 +155,125 @@ class _AdminMentorsViewState extends ConsumerState<AdminMentorsView> {
       color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Row(
+        child: Column(
           children: [
-            CircleAvatar(
-              backgroundColor: isMentor ? colorScheme.primary : colorScheme.outlineVariant,
-              foregroundColor: isMentor ? colorScheme.onPrimary : colorScheme.onSurface,
-              radius: 24,
-              child: Text(user.fullName.substring(0, 1).toUpperCase()),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: isMentor ? colorScheme.primary : colorScheme.outlineVariant,
+                  foregroundColor: isMentor ? colorScheme.onPrimary : colorScheme.onSurface,
+                  radius: 24,
+                  child: Text(user.fullName.isNotEmpty ? user.fullName.substring(0, 1).toUpperCase() : 'U'),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          '${user.fullName} ${user.lastName ?? ''}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${user.fullName} ${user.lastName ?? ''}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
                           ),
+                          if (isSuspended)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: colorScheme.errorContainer,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                'SUSPENDIDO ${suspensionRemaining.isNotEmpty ? '($suspensionRemaining)' : ''}',
+                                style: TextStyle(
+                                  color: colorScheme.onErrorContainer,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        user.label ?? 'Sin etiqueta profesional',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
                         ),
                       ),
-                      if (isSuspended)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: colorScheme.errorContainer,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            'SUSPENDIDO ${suspensionRemaining.isNotEmpty ? '($suspensionRemaining)' : ''}',
-                            style: TextStyle(
-                              color: colorScheme.onErrorContainer,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      if (user.institution != null && user.institution!.isNotEmpty)
+                        Text(
+                          user.institution!,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                           ),
                         ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    user.label ?? 'Sin etiqueta profesional',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-                    ),
-                  ),
-                  if (user.institution != null && user.institution!.isNotEmpty)
-                    Text(
-                      user.institution!,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                if (isMentor)
-                  LawButton(
-                    label: 'Revocar',
-                    icon: Icons.remove_circle_outline,
-                    isPrimary: false,
-                    backgroundColor: colorScheme.error.withValues(alpha: 0.1),
-                    onPressed: () => _showRoleDialog(context, user, false),
-                  )
-                else
-                  LawButton(
-                    label: 'Hacer Mentor',
-                    icon: Icons.star_outline,
-                    backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
-                    onPressed: () => _showRoleDialog(context, user, true),
-                  ),
+                ),
               ],
             ),
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert),
-              onSelected: (value) {
-                if (value == 'suspend') {
-                  context.push('/admin/suspend/${user.id}');
-                } else if (value == 'unsuspend') {
-                  _liftSuspension(user.id);
-                }
-              },
-              itemBuilder: (context) => [
-                if (!isSuspended)
-                  const PopupMenuItem(
-                    value: 'suspend',
-                    child: Row(
-                      children: [
-                        Icon(Icons.block, color: Colors.red, size: 18),
-                        SizedBox(width: 8),
-                        Text('Suspender usuario'),
-                      ],
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (isMentor)
+                  TextButton.icon(
+                    onPressed: () => _showRoleDialog(context, user, false),
+                    icon: const Icon(Icons.remove_circle_outline, size: 18),
+                    label: const Text('Revocar'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                      backgroundColor: colorScheme.error.withValues(alpha: 0.1),
                     ),
                   )
                 else
-                  const PopupMenuItem(
-                    value: 'unsuspend',
-                    child: Row(
-                      children: [
-                        Icon(Icons.check_circle_outline, color: Colors.green, size: 18),
-                        SizedBox(width: 8),
-                        Text('Levantar suspensión'),
-                      ],
+                  TextButton.icon(
+                    onPressed: () => _showRoleDialog(context, user, true),
+                    icon: const Icon(Icons.star_outline, size: 18),
+                    label: const Text('Hacer Mentor'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: colorScheme.primary,
+                      backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
+                    ),
+                  ),
+                const SizedBox(width: 8),
+                if (!isSuspended)
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => Dialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          clipBehavior: Clip.antiAlias,
+                          child: SizedBox(
+                            width: 500,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: AdminSuspendView(userId: user.id),
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.block, color: Colors.red, size: 20),
+                    tooltip: 'Suspender usuario',
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.red.withValues(alpha: 0.1),
+                    ),
+                  )
+                else
+                  IconButton(
+                    onPressed: () => _liftSuspension(user.id),
+                    icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 20),
+                    tooltip: 'Levantar suspensión',
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.green.withValues(alpha: 0.1),
                     ),
                   ),
               ],

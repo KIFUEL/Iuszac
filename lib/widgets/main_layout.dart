@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/database_provider.dart';
 
-class MainLayout extends StatelessWidget {
+class MainLayout extends ConsumerWidget {
   final Widget child;
 
   const MainLayout({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final location = GoRouterState.of(context).uri.toString();
+    final updatesAsync = ref.watch(legalUpdatesProvider);
+    
+    // Obtener el conteo de alertas recientes (últimos 7 días)
+    final alertsCount = updatesAsync.maybeWhen(
+      data: (updates) {
+        final now = DateTime.now();
+        return updates.where((u) => now.difference(u.createdAt).inDays <= 7).length;
+      },
+      orElse: () => 0,
+    );
     
     int getIndex() {
       if (location == '/') return 0;
@@ -21,6 +33,17 @@ class MainLayout extends StatelessWidget {
 
     final bool isLargeScreen = MediaQuery.of(context).size.width >= 800;
     final colorScheme = Theme.of(context).colorScheme;
+
+    Widget buildAlertsIcon(bool isSelected) {
+      final baseIcon = Icon(isSelected ? Icons.notifications : Icons.notifications_outlined);
+      if (alertsCount > 0) {
+        return Badge(
+          label: Text(alertsCount.toString()),
+          child: baseIcon,
+        );
+      }
+      return baseIcon;
+    }
 
     return Scaffold(
       body: isLargeScreen
@@ -45,28 +68,28 @@ class MainLayout extends StatelessWidget {
                       ),
                     ),
                   ),
-                  destinations: const [
-                    NavigationRailDestination(
+                  destinations: [
+                    const NavigationRailDestination(
                       icon: Icon(Icons.home_outlined),
                       selectedIcon: Icon(Icons.home),
                       label: Text('Inicio'),
                     ),
-                    NavigationRailDestination(
+                    const NavigationRailDestination(
                       icon: Icon(Icons.forum_outlined),
                       selectedIcon: Icon(Icons.forum),
                       label: Text('Foros'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.notifications_outlined),
-                      selectedIcon: Icon(Icons.notifications),
-                      label: Text('Alertas'),
+                      icon: buildAlertsIcon(false),
+                      selectedIcon: buildAlertsIcon(true),
+                      label: const Text('Alertas'),
                     ),
-                    NavigationRailDestination(
+                    const NavigationRailDestination(
                       icon: Icon(Icons.school_outlined),
                       selectedIcon: Icon(Icons.school),
                       label: Text('Mentorías'),
                     ),
-                    NavigationRailDestination(
+                    const NavigationRailDestination(
                       icon: Icon(Icons.person_outline),
                       selectedIcon: Icon(Icons.person),
                       label: Text('Perfil'),
@@ -103,28 +126,28 @@ class MainLayout extends StatelessWidget {
                   case 4: context.go('/profile'); break;
                 }
               },
-              destinations: const [
-                NavigationDestination(
+              destinations: [
+                const NavigationDestination(
                   icon: Icon(Icons.home_outlined),
                   selectedIcon: Icon(Icons.home),
                   label: 'Inicio',
                 ),
-                NavigationDestination(
+                const NavigationDestination(
                   icon: Icon(Icons.forum_outlined),
                   selectedIcon: Icon(Icons.forum),
                   label: 'Foros',
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.notifications_outlined),
-                  selectedIcon: Icon(Icons.notifications),
+                  icon: buildAlertsIcon(false),
+                  selectedIcon: buildAlertsIcon(true),
                   label: 'Alertas',
                 ),
-                NavigationDestination(
+                const NavigationDestination(
                   icon: Icon(Icons.school_outlined),
                   selectedIcon: Icon(Icons.school),
                   label: 'Mentorías',
                 ),
-                NavigationDestination(
+                const NavigationDestination(
                   icon: Icon(Icons.person_outline),
                   selectedIcon: Icon(Icons.person),
                   label: 'Perfil',

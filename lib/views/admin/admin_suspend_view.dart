@@ -149,6 +149,7 @@ class _AdminSuspendViewState extends ConsumerState<AdminSuspendView> {
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
+                    runSpacing: 8,
                     children: [
                       _buildDurationChip(1, '1 día'),
                       _buildDurationChip(3, '3 días'),
