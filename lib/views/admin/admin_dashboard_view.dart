@@ -149,36 +149,38 @@ class AdminDashboardView extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
 
-            DefaultTabController(
-              length: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TabBar(
-                    tabs: const [
-                      Tab(text: 'Publicadas'),
-                      Tab(text: 'Borradores'),
-                      Tab(text: 'Programadas'),
-                    ],
-                    labelColor: colorScheme.primary,
-                    unselectedLabelColor: colorScheme.onSurfaceVariant,
-                    indicatorColor: colorScheme.primary,
-                    dividerColor: Colors.transparent,
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    height: 400,
-                    child: TabBarView(
-                      children: [
-                        _buildUpdatesList(context, ref, updatesAsync),
-                        _buildUpdatesList(context, ref, draftsAsync),
-                        _buildUpdatesList(context, ref, scheduledAsync),
+            if (profile?.canPublish == true || profile?.canManageUsers == true || profile?.isAdmin == true) ...[
+              DefaultTabController(
+                length: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TabBar(
+                      tabs: const [
+                        Tab(text: 'Publicadas'),
+                        Tab(text: 'Borradores'),
+                        Tab(text: 'Programadas'),
                       ],
+                      labelColor: colorScheme.primary,
+                      unselectedLabelColor: colorScheme.onSurfaceVariant,
+                      indicatorColor: colorScheme.primary,
+                      dividerColor: Colors.transparent,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 400,
+                      child: TabBarView(
+                        children: [
+                          _buildUpdatesList(context, ref, updatesAsync),
+                          _buildUpdatesList(context, ref, draftsAsync),
+                          _buildUpdatesList(context, ref, scheduledAsync),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),
