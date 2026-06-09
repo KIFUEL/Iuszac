@@ -33,7 +33,7 @@ class _NewLegalUpdateViewState extends ConsumerState<NewLegalUpdateView> {
 
   String _contentType = 'reforma'; // 'reforma', 'noticia', 'evento', 'convocatoria'
   String _status = 'published'; // 'draft', 'published', 'scheduled'
-  String _category = 'Penal';
+  String _category = 'Reforma';
   
   String? _selectedCodeId;
   String? _selectedArticleId;
@@ -46,11 +46,6 @@ class _NewLegalUpdateViewState extends ConsumerState<NewLegalUpdateView> {
   DateTime? _scheduledDate;
   
   bool _isLoading = false;
-
-  final List<String> _categories = [
-    'Penal', 'Constitucional', 'Civil', 'Laboral',
-    'Administrativo', 'Familiar', 'Mercantil', 'Electoral', 'General',
-  ];
 
   @override
   void initState() {
@@ -228,7 +223,14 @@ class _NewLegalUpdateViewState extends ConsumerState<NewLegalUpdateView> {
                         DropdownMenuItem(value: 'evento', child: Text('Evento')),
                         DropdownMenuItem(value: 'convocatoria', child: Text('Convocatoria')),
                       ],
-                      onChanged: (val) => setState(() => _contentType = val!),
+                      onChanged: (val) => setState(() {
+                        _contentType = val!;
+                        if (_contentType == 'reforma') {
+                          _category = 'Reforma';
+                        } else {
+                          _category = 'Noticia';
+                        }
+                      }),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -276,15 +278,22 @@ class _NewLegalUpdateViewState extends ConsumerState<NewLegalUpdateView> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      initialValue: _category,
-                      decoration: _buildInputDecoration('Categoría', Icons.category),
-                      items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-                      onChanged: (val) => setState(() => _category = val!),
+                  if (_contentType == 'reforma') ...[
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        initialValue: _category,
+                        decoration: _buildInputDecoration('Categoría', Icons.category),
+                        items: const [
+                          DropdownMenuItem(value: 'Reforma', child: Text('Reforma')),
+                          DropdownMenuItem(value: 'Adición', child: Text('Adición')),
+                          DropdownMenuItem(value: 'Derogación', child: Text('Derogación')),
+                          DropdownMenuItem(value: 'Corrección', child: Text('Corrección')),
+                        ],
+                        onChanged: (val) => setState(() => _category = val!),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
+                    const SizedBox(width: 16),
+                  ],
                   Expanded(
                     child: TextFormField(
                       controller: _tagsController,
