@@ -144472,67 +144472,68 @@ return A.c([r,r.N(0.75),b.y.N(0.6)],s)}}}},
 Cu(a,b,c){var s=null,r=B.m.N(0.18),q=A.al(20),p=A.cL(B.m.N(0.3),1)
 return A.au(s,A.aB(A.c([A.bc(b,a,s,14),B.ck,A.E(c,s,s,s,s,A.aj(s,s,a,s,s,s,s,s,s,s,s,11,s,s,B.v,s,s,!0,s,1,s,s,s,s,s,s),s,s,s)],t.p),B.l,B.i,B.a_,0,s),B.j,s,s,new A.as(r,s,p,q,s,s,s,B.x),s,s,s,B.GG,s,s,s)}}
 A.aL9.prototype={
-$1(a){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=this,c=null
-if(a==null){s=d.b
+$1(a0){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b=this,a=null
+if(a0==null){s=b.b
 r=s.ry
 if(r==null){r=s.u
-if(r==null)r=s.k3}r=A.bc(B.ajB,r,c,64)
+if(r==null)r=s.k3}r=A.bc(B.ajB,r,a,64)
 q=s.rx
-return A.bB(A.aL(A.c([r,B.V,A.E("Inicia sesi\xf3n para ver tu perfil",c,c,c,c,A.aj(c,c,q==null?s.k3:q,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c,c,c)],t.p),B.l,B.i,B.a_,0,B.u),c,c)}s=a.b
-r=a.c
+return A.bB(A.aL(A.c([r,B.V,A.E("Inicia sesi\xf3n para ver tu perfil",a,a,a,a,A.aj(a,a,q==null?s.k3:q,a,a,a,a,a,a,a,a,16,a,a,a,a,a,!0,a,a,a,a,a,a,a,a),a,a,a)],t.p),B.l,B.i,B.a_,0,B.u),a,a)}s=a0.b
+r=a0.c
 if(r==null)r=""
 p=B.c.aQ(s+" "+r)
 s=s.length!==0?s[0]:"U"
-r=d.a
-q=d.b
-o=r.aBS(a,q)
+r=b.a
+q=b.b
+o=r.aBS(a0,q)
 n=t.p
 m=A.c([],n)
-l=a.e==="admin"
+l=a0.e==="admin"
 if(l)m.push(r.Cu(B.m,B.ajJ,"ADMINISTRADOR"))
-k=a.z
+k=a0.z
 if(k)m.push(r.Cu(B.m,B.ak0,"MENTOR"))
-j=a.Q
+j=a0.Q
 if(j)m.push(r.Cu(B.m,B.pC,"EDITOR"))
-i=a.as
+i=a0.as
 if(i)m.push(r.Cu(B.m,B.ak2,"MODERADOR"))
-if(!l&&!k&&!j&&!i)m.push(r.Cu(B.m,B.ajZ,"USUARIO"))
+l=!l
+if(l&&!k&&!j&&!i)m.push(r.Cu(B.m,B.ajZ,"USUARIO"))
 m=A.pm(B.xI,m,B.fF,B.al,8,8)
-j=A.cL(B.m,3)
-i=A.c([new A.bO(0,B.a4,B.w.N(0.2),B.l8,16)],t.E)
-h=q.d
-if(h==null)h=q.b
-g=q.e
-s=A.au(c,A.wl(h,A.E(s.toUpperCase(),c,c,c,c,A.aj(c,c,g==null?q.c:g,c,c,c,c,c,c,c,c,34,c,c,B.v,c,c,!0,c,c,c,c,c,c,c,c),c,c,c),c,46),B.j,c,c,new A.as(c,c,j,c,i,c,c,B.bG),c,c,c,c,c,c,c)
-j=A.E(p,c,c,c,c,B.b2K,c,c,c)
-i=B.m.N(0.2)
-h=A.al(14)
-g=a.f
-f=g==null?"Usuario":g
-h=A.au(c,A.E(f.toUpperCase(),c,c,c,c,B.b52,c,c,c),B.j,c,c,new A.as(i,c,c,h,c,c,c,B.x),c,c,c,B.agZ,c,c,c)
-i=a.w
-i=A.c([A.E(i==null?"Sin instituci\xf3n":i,c,c,c,c,B.b1I,c,c,c)],n)
-if(g==="Docente"||g==="Investigador")B.b.J(i,A.c([B.fB,B.akF],n))
-i=A.c([h,A.aB(i,B.l,B.i,B.a_,0,c)],n)
+h=A.cL(B.m,3)
+g=A.c([new A.bO(0,B.a4,B.w.N(0.2),B.l8,16)],t.E)
+f=q.d
+if(f==null)f=q.b
+e=q.e
+s=A.au(a,A.wl(f,A.E(s.toUpperCase(),a,a,a,a,A.aj(a,a,e==null?q.c:e,a,a,a,a,a,a,a,a,34,a,a,B.v,a,a,!0,a,a,a,a,a,a,a,a),a,a,a),a,46),B.j,a,a,new A.as(a,a,h,a,g,a,a,B.bG),a,a,a,a,a,a,a)
+h=A.E(p,a,a,a,a,B.b2K,a,a,a)
+g=B.m.N(0.2)
+f=A.al(14)
+e=a0.f
+d=e==null?"Usuario":e
+f=A.au(a,A.E(d.toUpperCase(),a,a,a,a,B.b52,a,a,a),B.j,a,a,new A.as(g,a,a,f,a,a,a,B.x),a,a,a,B.agZ,a,a,a)
+g=a0.w
+g=A.c([A.E(g==null?"Sin instituci\xf3n":g,a,a,a,a,B.b1I,a,a,a)],n)
+if(e==="Docente"||e==="Investigador")B.b.J(g,A.c([B.fB,B.akF],n))
+g=A.c([f,A.aB(g,B.l,B.i,B.a_,0,a)],n)
 if(k){k=B.w.N(0.25)
-h=A.al(12)
-i.push(A.au(c,A.aB(A.c([B.akP,B.ck,A.E(A.m(a.dx)+" ("+a.dy+")",c,c,c,c,B.b4W,c,c,c)],n),B.l,B.i,B.a_,0,c),B.j,c,c,new A.as(k,c,c,h,c,c,c,B.x),c,c,c,B.zg,c,c,c))}s=A.c([B.hb,m,B.hc,s,B.hc,j,B.cr,A.pm(B.xI,i,B.DY,B.al,8,8)],n)
-m=a.r
-if(m!=null&&m.length!==0)B.b.J(s,A.c([B.bD,new A.af(B.aho,A.E(m,2,B.ak,c,c,B.b4d,B.b0,c,c),c)],n))
-s=A.au(c,A.lD(!0,A.aL(s,B.l,B.ce,B.k,0,B.u),!0,!1,B.a5,!0,!0),B.j,c,c,new A.as(c,c,c,c,c,new A.d1(B.cx,B.ew,B.ai,o,c,c),c,B.x),c,c,c,c,c,c,c)
-o=A.eG(d.c,new A.aL0(r,q),new A.aL1(),new A.aL2(),!1,!0,!1,t._P,t.l7)
+f=A.al(12)
+g.push(A.au(a,A.aB(A.c([B.akP,B.ck,A.E(A.m(a0.dx)+" ("+a0.dy+")",a,a,a,a,B.b4W,a,a,a)],n),B.l,B.i,B.a_,0,a),B.j,a,a,new A.as(k,a,a,f,a,a,a,B.x),a,a,a,B.zg,a,a,a))}s=A.c([B.hb,m,B.hc,s,B.hc,h,B.cr,A.pm(B.xI,g,B.DY,B.al,8,8)],n)
+m=a0.r
+if(m!=null&&m.length!==0)B.b.J(s,A.c([B.bD,new A.af(B.aho,A.E(m,2,B.ak,a,a,B.b4d,B.b0,a,a),a)],n))
+s=A.au(a,A.lD(!0,A.aL(s,B.l,B.ce,B.k,0,B.u),!0,!1,B.a5,!0,!0),B.j,a,a,new A.as(a,a,a,a,a,new A.d1(B.cx,B.ew,B.ai,o,a,a),a,B.x),a,a,a,a,a,a,a)
+o=A.eG(b.c,new A.aL0(r,q),new A.aL1(),new A.aL2(),!1,!0,!1,t._P,t.l7)
 m=q.ry
 if(m==null){m=q.u
-if(m==null)m=q.k3}m=A.jx(m.N(0.12),c,1,c,c)
-k=d.d
-e=A.q(k).ax
-j=e.b
-j=A.aB(A.c([A.au(c,c,B.j,c,c,new A.as(e.y,c,c,A.al(2),c,c,c,B.x),c,22,c,c,c,c,4),B.dd,A.bc(B.HF,j,c,18),B.fB,A.E("Configuraci\xf3n",c,c,c,c,A.aj(c,c,j,c,c,c,c,c,c,c,c,16,c,c,B.v,c,c,!0,c,0.5,c,c,c,c,c,c),c,c,c)],n),B.l,B.i,B.k,0,c)
-i=A.c([new A.pv("Notificaciones",B.ajx,new A.aL3(k)),new A.pv("Editar Perfil",B.Al,new A.aL4(k))],t.dE)
-if(l)i.push(new A.pv("Panel de Administraci\xf3n",B.ajg,new A.aL5(k)))
-i.push(new A.pv("Privacidad y seguridad",B.ajE,new A.aL6(k)))
-i.push(new A.pv("Ayuda y soporte",B.ajT,new A.aL7()))
-return A.brY(c,c,B.R,A.c([new A.DE(c,new A.Jq(s,B.aaS,c),c,c,285,!0,!0,56,B.a6R,c),new A.ms(A.bB(new A.d8(B.jQ,new A.af(B.ah8,A.aL(A.c([o,B.aV,m,B.aV,j,B.aT,r.awj(k,i),B.de,A.mb(q.fy,B.ajW,!1,!0,"Cerrar Sesi\xf3n",new A.aL8(k,q,d.e)),B.Do],n),B.W,B.i,B.k,0,B.u),c),c),c,c),c)],n))},
+if(m==null)m=q.k3}m=A.jx(m.N(0.12),a,1,a,a)
+k=b.d
+c=A.q(k).ax
+h=c.b
+h=A.aB(A.c([A.au(a,a,B.j,a,a,new A.as(c.y,a,a,A.al(2),a,a,a,B.x),a,22,a,a,a,a,4),B.dd,A.bc(B.HF,h,a,18),B.fB,A.E("Configuraci\xf3n",a,a,a,a,A.aj(a,a,h,a,a,a,a,a,a,a,a,16,a,a,B.v,a,a,!0,a,0.5,a,a,a,a,a,a),a,a,a)],n),B.l,B.i,B.k,0,a)
+g=A.c([new A.pv("Notificaciones",B.ajx,new A.aL3(k)),new A.pv("Editar Perfil",B.Al,new A.aL4(k))],t.dE)
+if(!l||j||i||a0.at)g.push(new A.pv("Panel de Administraci\xf3n",B.ajg,new A.aL5(k)))
+g.push(new A.pv("Privacidad y seguridad",B.ajE,new A.aL6(k)))
+g.push(new A.pv("Ayuda y soporte",B.ajT,new A.aL7()))
+return A.brY(a,a,B.R,A.c([new A.DE(a,new A.Jq(s,B.aaS,a),a,a,285,!0,!0,56,B.a6R,a),new A.ms(A.bB(new A.d8(B.jQ,new A.af(B.ah8,A.aL(A.c([o,B.aV,m,B.aV,h,B.aT,r.awj(k,g),B.de,A.mb(q.fy,B.ajW,!1,!0,"Cerrar Sesi\xf3n",new A.aL8(k,q,b.e)),B.Do],n),B.W,B.i,B.k,0,B.u),a),a),a,a),a)],n))},
 $S:881}
 A.aL0.prototype={
 $1(a){var s=null,r=this.b,q=r.d
