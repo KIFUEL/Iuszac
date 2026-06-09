@@ -134471,7 +134471,7 @@ A.ams.prototype={}
 A.Bv.prototype={
 F(a){var s=null,r=this.c
 r=r==null?s:"GoException: "+r.a
-return A.lD(!0,A.bB(A.aL(A.c([B.b6d,B.V,A.E(r==null?"page not found":r,s,s,s,s,s,s,s,s),B.V,new A.PK(new A.azA(a),B.b7A,s)],t.p),B.l,B.ce,B.k,0,B.u),s,s),!0,!1,B.a5,!0,!0)}}
+return A.lD(!0,A.bB(A.aL(A.c([B.b6d,B.V,A.E(r==null?"page not found":r,s,s,s,s,s,s,s,s),B.V,new A.PK(new A.azA(a),B.b7z,s)],t.p),B.l,B.ce,B.k,0,B.u),s,s),!0,!1,B.a5,!0,!0)}}
 A.azA.prototype={
 $0(){return A.cD(this.a).eJ(0,"/",null)},
 $S:0}
@@ -134518,7 +134518,7 @@ return A.bq(s,s,s,this.$ti.h("jw<1>").a(this.c).x,!1,s,s,s,!1,s,!0,s,s,s,s,s,s,s
 rT(a,b,c,d){return this.$ti.h("jw<1>").a(this.c).CW.$4(a,b,c,d)}}
 A.xQ.prototype={}
 A.Cf.prototype={
-F(a){var s=null,r=A.fB(s,s,s,!0,!0,s,s,1,s,s,s,!1,s,!1,s,s,s,s,!0,s,s,s,s,s,B.b7n,s,s,s,1,s,!0),q=this.c
+F(a){var s=null,r=A.fB(s,s,s,!0,!0,s,s,1,s,s,s,!1,s,!1,s,s,s,s,!0,s,s,s,s,s,B.b7m,s,s,s,1,s,!0),q=this.c
 q=q==null?s:"GoException: "+q.a
 if(q==null)q="page not found"
 return A.eQ(r,s,A.bB(A.aL(A.c([new A.Nz(q,s),A.dU(!1,B.b6g,s,s,!0,s,new A.aHv(a),s,s)],t.p),B.l,B.ce,B.k,0,B.u),s,s),s,s)}}
@@ -140365,7 +140365,7 @@ a0=q.gp(q)
 k=a0==null?a:J.c5(a0)
 if(k==null)k=0
 a0=t.p
-j=A.fB(A.c([A.e3(a,!1,a,a,a,a,a,a,a,B.HS,a,a,a,a,new A.asd(a3),a,a,a,a,a,a,a),B.aL],a0),a,a,!0,!0,a,a,1,a,a,a,!1,a,!1,a,a,a,a,!0,a,a,a,a,a,B.b7v,a,a,a,1,a,!0)
+j=A.fB(A.c([A.e3(a,!1,a,a,a,a,a,a,a,B.HS,a,a,a,a,new A.asd(a3),a,a,a,a,a,a,a),B.aL],a0),a,a,!0,!0,a,a,1,a,a,a,!1,a,!1,a,a,a,a,!0,a,a,a,a,a,B.b7u,a,a,a,1,a,!0)
 i=n.b
 h=A.E("Actividad Global",a,a,a,a,A.aj(a,a,i,a,a,a,a,a,a,a,a,16,a,a,B.v,a,a,!0,a,a,a,a,a,a,a,a),a,a,a)
 g=B.f.j(m)
@@ -140403,7 +140403,7 @@ r=m.as
 q=t.p
 s=A.c([A.au(n,A.E(c.d,n,n,n,n,A.aj(n,n,r==null?m.z:r,n,n,n,n,n,n,n,n,10,n,n,B.v,n,n,!0,n,n,n,n,n,n,n,n),n,n,n),B.j,n,n,new A.as(k,n,n,s,n,n,n,B.x),n,n,n,B.e7,n,n,n),B.aL],q)
 k=c.Q
-if(k==="draft")s.push(A.au(n,B.b7S,B.j,n,n,new A.as(B.aC.N(0.1),n,A.cL(B.aC.N(0.3),1),A.al(20),n,n,n,B.x),n,n,n,B.k8,n,n,n))
+if(k==="draft")s.push(A.au(n,B.b7Q,B.j,n,n,new A.as(B.aC.N(0.1),n,A.cL(B.aC.N(0.3),1),A.al(20),n,n,n,B.x),n,n,n,B.k8,n,n,n))
 else if(k==="scheduled"){k=B.eQ.N(0.1)
 r=A.cL(B.eQ.N(0.3),1)
 p=A.al(20)
@@ -140464,7 +140464,7 @@ return s.a.ay9(s.b,s.c,s.d.a)},
 $S:0}
 A.as9.prototype={
 $1(a){var s=null
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.as7(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.as8(a,this.a,this.b,this.c),s,s)],t.p),s,B.b7p,s,B.b6l)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.as7(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.as8(a,this.a,this.b,this.c),s,s)],t.p),s,B.b7o,s,B.b6l)},
 $S:45}
 A.as7.prototype={
 $0(){return A.cn(this.a,!1).fU()},
@@ -140613,7 +140613,7 @@ n=a1.d
 o=(n==null?a1.b:n).N(0.3)
 n=A.al(8)
 l=a1.e
-return A.aul(new A.af(B.bd,A.aL(A.c([p,B.cs,A.au(i,A.E('En: "'+q+'"',1,B.ak,i,i,A.aj(i,i,l==null?a1.c:l,i,i,i,i,i,i,i,i,11,i,i,B.ap,i,i,!0,i,i,i,i,i,i,i,i),i,i,i),B.j,i,i,new A.as(o,i,i,n,i,i,i,B.x),i,i,i,B.k8,i,i,i),B.bD,A.E(c,i,i,i,i,A.aj(i,i,a1.k3,i,i,i,i,i,i,i,i,13,i,i,i,i,i,!0,i,i,i,i,i,i,i,i),i,i,i),B.aT,A.aB(A.c([A.z4(B.HR,B.b7c,new A.asf(a3,d),i),B.aL,A.z4(B.I_,B.a5x,new A.asg(k.a,a3,k.d,e),i)],m),B.l,B.i0,B.k,0,i)],m),B.W,B.i,B.k,0,B.u),i),i,i,i,B.hu,new A.ca(f,B.z))},
+return A.aul(new A.af(B.bd,A.aL(A.c([p,B.cs,A.au(i,A.E('En: "'+q+'"',1,B.ak,i,i,A.aj(i,i,l==null?a1.c:l,i,i,i,i,i,i,i,i,11,i,i,B.ap,i,i,!0,i,i,i,i,i,i,i,i),i,i,i),B.j,i,i,new A.as(o,i,i,n,i,i,i,B.x),i,i,i,B.k8,i,i,i),B.bD,A.E(c,i,i,i,i,A.aj(i,i,a1.k3,i,i,i,i,i,i,i,i,13,i,i,i,i,i,!0,i,i,i,i,i,i,i,i),i,i,i),B.aT,A.aB(A.c([A.z4(B.HR,B.b7b,new A.asf(a3,d),i),B.aL,A.z4(B.I_,B.a5x,new A.asg(k.a,a3,k.d,e),i)],m),B.l,B.i0,B.k,0,i)],m),B.W,B.i,B.k,0,B.u),i),i,i,i,B.hu,new A.ca(f,B.z))},
 $S:304}
 A.asf.prototype={
 $0(){return A.jG(this.a,"/forum/"+this.b,t.X)},
@@ -140631,7 +140631,7 @@ return A.bB(new A.af(B.bZ,A.E("Error al cargar comentarios: "+A.m(a),s,s,s,s,B.i
 $S:22}
 A.asy.prototype={
 $1(a){var s=null
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.asw(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.asx(a,this.a,this.b,this.c),s,s)],t.p),s,B.b7Q,s,B.a5v)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.asw(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.asx(a,this.a,this.b,this.c),s,s)],t.p),s,B.b7O,s,B.a5v)},
 $S:45}
 A.asw.prototype={
 $0(){return A.cn(this.a,!1).fU()},
@@ -140670,7 +140670,7 @@ return A.y($async$$0,r)},
 $S:8}
 A.asv.prototype={
 $1(a){var s=null
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.ast(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.asu(a,this.a,this.b,this.c),s,s)],t.p),s,B.b74,s,B.a5w)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.ast(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.asu(a,this.a,this.b,this.c),s,s)],t.p),s,B.b73,s,B.a5w)},
 $S:45}
 A.ast.prototype={
 $0(){return A.cn(this.a,!1).fU()},
@@ -140728,7 +140728,7 @@ if(o!=null)q.L(new A.aX9(q,o))
 return A.x(null,r)}})
 return A.y($async$K8,r)},
 F(a){var s=null,r=this.gfH().cV($.w0(),t.sN),q=A.q(a)
-return A.eQ(A.fB(s,s,s,!0,!0,s,s,1,s,s,s,!1,s,!1,s,s,s,s,!0,s,s,s,s,s,B.b7z,s,s,s,1,s,!0),s,A.eG(r,new A.aXi(this,q.ax,a),new A.aXj(),new A.aXk(),!1,!0,!1,t.m_,t.jK),s,s)},
+return A.eQ(A.fB(s,s,s,!0,!0,s,s,1,s,s,s,!1,s,!1,s,s,s,s,!0,s,s,s,s,s,B.b7y,s,s,s,1,s,!0),s,A.eG(r,new A.aXi(this,q.ax,a),new A.aXj(),new A.aXk(),!1,!0,!1,t.m_,t.jK),s,s)},
 Cr(a,b){var s=null,r=A.E(b,s,s,s,s,s,s,s,s),q=!this.Q&&this.y===a
 return A.bl6(r,s,new A.aX2(this,a),q,s)},
 ay8(a,b){var s=null
@@ -140842,9 +140842,9 @@ i.toString
 B.b.J(m,A.c([B.aT,A.aB(A.c([k,B.ck,A.ba(A.E("Actualmente suspendido hasta el "+j.ei(i),e,e,e,e,A.aj(e,e,l,e,e,e,e,e,e,e,e,12,e,e,B.d0,e,e,!0,e,e,e,e,e,e,e,e),e,e,e),1)],g),B.l,B.i,B.k,0,e)],g))}p=A.au(e,A.aL(m,B.W,B.i,B.k,0,B.u),B.j,e,e,new A.as(p,e,n,o,e,e,e,B.x),e,e,e,B.bd,e,e,1/0)
 o=b.b
 n=A.E("Duraci\xf3n de la suspensi\xf3n",e,e,e,e,A.aj(e,e,o,e,e,e,e,e,e,e,e,15,e,e,B.v,e,e,!0,e,e,e,e,e,e,e,e),e,e,e)
-m=A.pm(B.e_,A.c([d.Cr(1,"1 d\xeda"),d.Cr(3,"3 d\xedas"),d.Cr(7,"7 d\xedas"),d.Cr(15,"15 d\xedas"),d.Cr(30,"30 d\xedas"),A.bl6(B.b7y,e,new A.aXd(d),d.Q,e)],g),B.fF,B.al,8,8)
+m=A.pm(B.e_,A.c([d.Cr(1,"1 d\xeda"),d.Cr(3,"3 d\xedas"),d.Cr(7,"7 d\xedas"),d.Cr(15,"15 d\xedas"),d.Cr(30,"30 d\xedas"),A.bl6(B.b7x,e,new A.aXd(d),d.Q,e)],g),B.fF,B.al,8,8)
 l=A.c([A.aL(A.c([B.b6f,B.cr,A.E(A.eo("dd 'de' MMMM 'de' yyyy, HH:mm 'hrs'","es").ei(d.z),e,e,e,e,A.aj(e,e,b.y,e,e,e,e,e,e,e,e,15,e,e,B.v,e,e,!0,e,e,e,e,e,e,e,e),e,e,e)],g),B.W,B.i,B.k,0,B.u)],g)
-if(d.Q)l.push(A.Ls(B.akl,B.b7C,new A.aXe(d,f.c),e))
+if(d.Q)l.push(A.Ls(B.akl,B.b7B,new A.aXe(d,f.c),e))
 l=A.aB(l,B.l,B.cV,B.k,0,e)
 o=A.E("Motivo de la suspensi\xf3n",e,e,e,e,A.aj(e,e,o,e,e,e,e,e,e,e,e,15,e,e,B.v,e,e,!0,e,e,e,e,e,e,e,e),e,e,e)
 s=(q?b.k2:s).N(0.1)
@@ -140906,7 +140906,7 @@ s.QU()},
 $S:0}
 A.aX6.prototype={
 $1(a){var s=null,r=this.b,q=A.E("El usuario "+r.b+" no podr\xe1 acceder a su cuenta hasta la fecha seleccionada. Se guardar\xe1 la sesi\xf3n y el motivo.",s,s,s,s,s,s,s,s)
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.aX4(a),s,s),A.dU(!1,B.b7l,s,s,!0,s,new A.aX5(this.a,a,r),s,s)],t.p),s,q,s,B.b88)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.aX4(a),s,s),A.dU(!1,B.b7k,s,s,!0,s,new A.aX5(this.a,a,r),s,s)],t.p),s,q,s,B.b87)},
 $S:45}
 A.aX4.prototype={
 $0(){return A.cn(this.a,!1).fU()},
@@ -140940,7 +140940,7 @@ s.W$=0
 this.av()},
 aL4(a,b){A.bjY(new A.aXo(b),a,!0,B.aXP,t.z)},
 F(a){var s=this,r=null,q=s.gfH().cV($.w0(),t.sN),p=A.q(a),o=t.p
-return A.eQ(A.fB(A.c([A.e3(r,!1,r,r,r,r,r,r,r,B.HS,r,r,r,r,new A.aXu(s),r,r,r,r,r,r,r)],o),r,r,!0,!0,r,r,1,r,r,r,!1,r,!1,r,r,r,r,!0,r,r,r,r,r,B.b83,r,r,r,1,r,!0),r,A.aL(A.c([new A.af(B.bd,A.aL(A.c([A.fG(s.w,r,B.iT,!1,r,"Buscar usuario...",new A.aXv(s),r),B.aT,A.h4(A.aB(A.c([s.QL("Todos"),B.aL,s.QL("Con Permisos"),B.aL,s.QL("Suspendidos")],o),B.l,B.i,B.k,0,r),r,B.T,r,r,r,B.al)],o),B.l,B.i,B.k,0,B.u),r),A.ba(A.eG(q,new A.aXw(s,p.ax),new A.aXx(),new A.aXy(),!1,!0,!1,t.m_,t.l7),1)],o),B.l,B.i,B.k,0,B.u),r,r)},
+return A.eQ(A.fB(A.c([A.e3(r,!1,r,r,r,r,r,r,r,B.HS,r,r,r,r,new A.aXu(s),r,r,r,r,r,r,r)],o),r,r,!0,!0,r,r,1,r,r,r,!1,r,!1,r,r,r,r,!0,r,r,r,r,r,B.b82,r,r,r,1,r,!0),r,A.aL(A.c([new A.af(B.bd,A.aL(A.c([A.fG(s.w,r,B.iT,!1,r,"Buscar usuario...",new A.aXv(s),r),B.aT,A.h4(A.aB(A.c([s.QL("Todos"),B.aL,s.QL("Con Permisos"),B.aL,s.QL("Suspendidos")],o),B.l,B.i,B.k,0,r),r,B.T,r,r,r,B.al)],o),B.l,B.i,B.k,0,B.u),r),A.ba(A.eG(q,new A.aXw(s,p.ax),new A.aXx(),new A.aXy(),!1,!0,!1,t.m_,t.l7),1)],o),B.l,B.i,B.k,0,B.u),r,r)},
 QL(a){var s,r,q,p=null,o=this.y===a,n=this.c
 n.toString
 s=A.q(n).ax
@@ -141123,20 +141123,20 @@ s=j==null
 r=A.bc(B.Hs,s?o.c:j,p,p)
 l.push(A.au(p,A.aB(A.c([r,B.aL,A.ba(A.E("Este usuario es un administrador general y tiene todos los permisos por defecto.",p,p,p,p,A.aj(p,p,s?o.c:j,p,p,p,p,p,p,p,p,13,p,p,p,p,p,!0,p,p,p,p,p,p,p,p),p,p,p),1)],m),B.l,B.i,B.k,0,p),B.j,p,p,new A.as(n,p,p,k,p,p,p,B.x),p,p,p,B.fQ,p,p,p))}else{n=q.w
 n===$&&A.b()
-n=A.ab4(p,B.d9.N(0.5),p,new A.b8K(q),B.b7B,B.b6L,n)
+n=A.ab4(p,B.d9.N(0.5),p,new A.b8K(q),B.b7A,B.b6L,n)
 k=q.x
 k===$&&A.b()
-k=A.ab4(p,B.bC.N(0.5),p,new A.b8L(q),B.b7J,B.b6m,k)
+k=A.ab4(p,B.bC.N(0.5),p,new A.b8L(q),B.b7I,B.b6m,k)
 j=q.y
 j===$&&A.b()
-B.b.J(l,A.c([n,B.fa,k,B.fa,A.ab4(p,B.eQ.N(0.5),p,new A.b8M(q),B.b86,B.b8_,j)],m))}l.push(B.de)
+B.b.J(l,A.c([n,B.fa,k,B.fa,A.ab4(p,B.eQ.N(0.5),p,new A.b8M(q),B.b85,B.b7Z,j)],m))}l.push(B.de)
 n=o.id
 if(n==null)n=o.fy
 k=o.k1
-n=A.ba(new A.Jm(B.bcA,new A.b8N(q,a),p,p,p,A.azW(n,k==null?o.go:k,B.ze,p),B.j,p,!1,p,!0,p,B.b7D,p),1)
+n=A.ba(new A.Jm(B.bcA,new A.b8N(q,a),p,p,p,A.azW(n,k==null?o.go:k,B.ze,p),B.j,p,!1,p,!0,p,B.b7C,p),1)
 k=q.a.d.e==="admin"||q.z?p:new A.b8O(q)
 j=A.azW(p,p,B.ze,p)
-l.push(A.aB(A.c([n,B.cj,A.ba(A.blN(q.z?B.b_o:B.b7g,k,j),2)],m),B.l,B.i,B.k,0,p))
+l.push(A.aB(A.c([n,B.cj,A.ba(A.blN(q.z?B.b_o:B.b7f,k,j),2)],m),B.l,B.i,B.k,0,p))
 l.push(B.V)
 return A.au(p,A.aL(l,B.W,B.i,B.a_,0,B.u),B.j,p,p,p,p,p,p,B.bZ,p,p,p)}}
 A.b8D.prototype={
@@ -141544,7 +141544,7 @@ if(s>=900)return 48
 if(s>=600)return 32
 return 16},
 ld(a,b){var s=null,r=b.cV($.t1(),t.OV),q=A.q(a),p=this.aNh(a)
-return A.eQ(A.fB(A.c([A.e3(s,!1,s,B.om,s,s,s,s,s,B.akH,s,s,s,s,new A.asD(a),s,s,s,s,s,s,s),B.aL],t.p),s,s,!0,!0,s,s,1,s,s,s,!1,s,!1,s,s,s,s,!0,s,s,s,s,s,B.b75,s,s,s,1,s,!0),s,A.bmT(A.eG(r,new A.asE(this,p,q.ax),new A.asF(),new A.asG(),!1,!0,!1,t.Fq,t.l7),new A.asH(b)),s,s)},
+return A.eQ(A.fB(A.c([A.e3(s,!1,s,B.om,s,s,s,s,s,B.akH,s,s,s,s,new A.asD(a),s,s,s,s,s,s,s),B.aL],t.p),s,s,!0,!0,s,s,1,s,s,s,!1,s,!1,s,s,s,s,!0,s,s,s,s,s,B.b74,s,s,s,1,s,!0),s,A.bmT(A.eG(r,new A.asE(this,p,q.ax),new A.asF(),new A.asG(),!1,!0,!1,t.Fq,t.l7),new A.asH(b)),s,s)},
 awG(a,b){var s,r,q,p,o,n=null,m=A.q(a)
 switch(b){case"reforma":s=B.fd
 r="Reforma"
@@ -141569,7 +141569,7 @@ p=A.cL(q.N(0.2),1)
 o=A.al(12)
 return A.au(n,A.aB(A.c([A.bc(s,q,n,12),B.ck,A.E(r,n,n,n,n,A.aj(n,n,q,n,n,n,n,n,n,n,n,10,n,n,B.v,n,n,!0,n,0.3,n,n,n,n,n,n),n,n,n)],t.p),B.l,B.i,B.a_,0,n),B.j,n,n,new A.as(m,n,p,o,n,n,n,B.x),n,n,n,B.e7,n,n,n)},
 aw0(a,b){var s,r,q,p,o,n,m,l=null,k=A.q(a).ax,j=b.f,i=B.f.eL(new A.bJ(Date.now(),0,!1).iY(j).a,36e8),h=t.p,g=A.c([A.ba(A.E(b.b,l,l,l,l,B.b2C,l,l,l),1)],h)
-if(i<24)g.push(A.au(l,B.b7t,B.j,l,l,new A.as(k.fy,l,l,A.al(8),l,l,l,B.x),l,l,B.zf,B.e7,l,l,l))
+if(i<24)g.push(A.au(l,B.b7s,B.j,l,l,new A.as(k.fy,l,l,A.al(8),l,l,l,B.x),l,l,B.zf,B.e7,l,l,l))
 i=A.aB(g,B.W,B.i,B.k,0,l)
 g=b.gOa()
 s=k.rx
@@ -141601,7 +141601,7 @@ p=this.awG(a,p)
 n=A.bc(B.ajH,(r?k.k3:s).N(0.5),l,14)
 j=A.eo("HH:mm",l).ei(j)
 m=k.b
-return new A.af(B.Gx,new A.jd(A.aL(A.c([i,B.hb,g,B.hc,q,B.hc,A.aB(A.c([o,B.aL,p,B.dd,n,B.ck,A.E(j,l,l,l,l,A.aj(l,l,(r?k.k3:s).N(0.6),l,l,l,l,l,l,l,l,12,l,l,B.ap,l,l,!0,l,l,l,l,l,l,l,l),l,l,l),B.eV,A.Ls(B.akv,B.b7_,new A.asA(a,b),A.a6K(l,l,l,l,l,l,l,l,l,m,l,B.xd,B.ah6,l,new A.ca(A.al(24),B.z),new A.aS(m,1.5,B.B,-1),l,l,l,l))],h),B.l,B.i,B.k,0,l)],h),B.W,B.i,B.k,0,B.u),B.cC,l),l)}}
+return new A.af(B.Gx,new A.jd(A.aL(A.c([i,B.hb,g,B.hc,q,B.hc,A.aB(A.c([o,B.aL,p,B.dd,n,B.ck,A.E(j,l,l,l,l,A.aj(l,l,(r?k.k3:s).N(0.6),l,l,l,l,l,l,l,l,12,l,l,B.ap,l,l,!0,l,l,l,l,l,l,l,l),l,l,l),B.eV,A.Ls(B.akv,B.b6Z,new A.asA(a,b),A.a6K(l,l,l,l,l,l,l,l,l,m,l,B.xd,B.ah6,l,new A.ca(A.al(24),B.z),new A.aS(m,1.5,B.B,-1),l,l,l,l))],h),B.l,B.i,B.k,0,l)],h),B.W,B.i,B.k,0,B.u),B.cC,l),l)}}
 A.asD.prototype={
 $0(){return A.jG(this.a,"/profile/settings",t.X)},
 $S:0}
@@ -141699,7 +141699,7 @@ if(r){s=A.c([],n)
 if(h&&B.c.aQ(i).length!==0){h=B.aS.N(0.06)
 q=A.al(12)
 p=A.cL(B.aS.N(0.15),1)
-B.b.J(s,A.c([B.b6p,B.bD,A.au(m,A.E(i,m,m,m,m,B.b4e,m,m,m),B.j,m,m,new A.as(h,m,p,q,m,m,m,B.x),m,m,m,B.bd,m,m,1/0),B.aV],n))}i=k.z
+B.b.J(s,A.c([B.b6o,B.bD,A.au(m,A.E(i,m,m,m,m,B.b4e,m,m,m),B.j,m,m,new A.as(h,m,p,q,m,m,m,B.x),m,m,m,B.bd,m,m,1/0),B.aV],n))}i=k.z
 if(i!=null&&B.c.aQ(i).length!==0){h=B.aj.N(0.06)
 q=A.al(12)
 p=A.cL(B.aj.N(0.15),1)
@@ -141710,7 +141710,7 @@ q=s.to
 if(q==null){q=s.u
 s=q==null?s.k3:q}else s=q
 s=A.cL(s.N(0.5),1)
-B.b.J(o,A.c([B.b87,B.bD,A.au(m,new A.LX(k.c,m),B.j,m,m,new A.as(i,m,s,h,m,m,m,B.x),m,m,m,B.bd,m,m,1/0)],n))}o.push(B.afY)
+B.b.J(o,A.c([B.b86,B.bD,A.au(m,new A.LX(k.c,m),B.j,m,m,new A.as(i,m,s,h,m,m,m,B.x),m,m,m,B.bd,m,m,1/0)],n))}o.push(B.afY)
 o.push(l.a3J(B.aik,"Fuente Oficial","Peri\xf3dico Oficial del Estado / Diario Oficial"))
 o.push(B.aT)
 o.push(l.a3J(B.py,"Fecha de Publicaci\xf3n",j))
@@ -141788,10 +141788,10 @@ k=A.c([new A.bO(0,B.a4,s.N(0.15),B.jo,16)],k)
 r=o.e
 k=A.bB(A.au(p,A.bB(A.bc(B.fd,r==null?o.c:r,p,48),p,p),B.j,p,p,new A.as(i,p,p,p,k,p,p,B.bG),p,96,p,p,p,p,96),p,p)
 i=A.q(a).ok.e
-i=A.E("IusZac",p,p,p,p,i==null?p:i.afk(s,B.v,2),B.b0,p,p)
+i=A.E("IUZ ZAC",p,p,p,p,i==null?p:i.afk(s,B.v,2),B.b0,p,p)
 s=A.q(a).ok.z
 r=t.p
-s=A.c([k,B.dJ,i,B.cs,A.E("Ingresa a tu cuenta",p,p,p,p,s==null?p:s.aVQ(B.aC,0.3),B.b0,p,p),B.de,A.fG(q.x,p,B.Am,!1,B.xn,"Correo Electr\xf3nico",p,new A.b5f()),B.V,A.fG(q.y,p,B.ki,!0,p,"Contrase\xf1a",p,new A.b5g()),B.bD,new A.dW(B.bW,p,p,A.dU(!1,B.b7E,p,p,!0,p,new A.b5h(),p,p),p),B.aT],r)
+s=A.c([k,B.dJ,i,B.cs,A.E("Ingresa a tu cuenta",p,p,p,p,s==null?p:s.aVQ(B.aC,0.3),B.b0,p,p),B.de,A.fG(q.x,p,B.Am,!1,B.xn,"Correo Electr\xf3nico",p,new A.b5f()),B.V,A.fG(q.y,p,B.ki,!0,p,"Contrase\xf1a",p,new A.b5g()),B.bD,new A.dW(B.bW,p,p,A.dU(!1,B.b7D,p,p,!0,p,new A.b5h(),p,p),p),B.aT],r)
 k=q.Q
 if(k!=null)B.b.J(s,A.c([A.E(k,p,p,p,p,A.aj(p,p,o.fy,p,p,p,p,p,p,p,p,13,p,p,p,p,p,!0,p,p,p,p,p,p,p,p),B.b0,p,p),B.aT],r))
 s.push(A.mb(p,p,q.z,!0,"Ingresar",q.gaIU()))
@@ -141887,7 +141887,7 @@ break
 case 6:case 1:return A.x(q,r)
 case 2:return A.w(o.at(-1),r)}})
 return A.y($async$JY,r)},
-F(a){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f=null,e=A.q(a).ax,d=A.fB(f,f,f,!0,!0,f,f,1,f,f,f,!1,f,!1,f,f,A.e3(f,!1,f,f,f,f,f,f,f,B.fe,f,f,f,f,new A.baZ(a),f,f,f,f,f,f,f),f,!0,f,f,f,f,f,B.b6o,f,f,f,1,f,!0),c=A.q(a).ok.f
+F(a){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f=null,e=A.q(a).ax,d=A.fB(f,f,f,!0,!0,f,f,1,f,f,f,!1,f,!1,f,f,A.e3(f,!1,f,f,f,f,f,f,f,B.fe,f,f,f,f,new A.baZ(a),f,f,f,f,f,f,f),f,!0,f,f,f,f,f,B.b6x,f,f,f,1,f,!0),c=A.q(a).ok.f
 c=A.E("Crea tu cuenta profesional",f,f,f,f,c==null?f:c.zU(e.b,B.v),B.b0,f,f)
 s=g.a3M("Datos Personales")
 r=t.p
@@ -141905,13 +141905,13 @@ j=A.fG(g.at,f,B.kj,!1,f,"Instituci\xf3n (Opcional)",f,f)
 i=g.dx
 h=A.a2(i).h("a5<1,ev<j>>")
 i=A.a_(new A.a5(i,new A.bba(),h),h.h("ag.E"))
-c=A.c([c,B.de,s,B.V,q,B.V,p,B.V,o,B.V,n,B.de,m,B.V,l,B.V,j,B.V,A.aE7(B.HD,i,"Semestre / Grado (Opcional)",new A.bbb(g),f,g.ay,k),B.aV,A.auF(B.a5,B.mT,new A.bb1(g),B.b7F,g.ch,f),A.auF(B.a5,B.mT,new A.bb2(g),B.b84,g.CW,f)],r)
+c=A.c([c,B.de,s,B.V,q,B.V,p,B.V,o,B.V,n,B.de,m,B.V,l,B.V,j,B.V,A.aE7(B.HD,i,"Semestre / Grado (Opcional)",new A.bbb(g),f,g.ay,k),B.aV,A.auF(B.a5,B.mT,new A.bb1(g),B.b7E,g.ch,f),A.auF(B.a5,B.mT,new A.bb2(g),B.b83,g.CW,f)],r)
 s=g.cy
 if(s!=null)B.b.J(c,A.c([B.V,A.E(s,f,f,f,f,A.aj(f,f,e.fy,f,f,f,f,f,f,f,f,13,f,f,f,f,f,!0,f,f,f,f,f,f,f,f),B.b0,f,f)],r))
 c.push(B.de)
 c.push(A.mb(f,f,g.cx,!0,"Crear cuenta",g.gaMU()))
 c.push(B.aV)
-c.push(A.aB(A.c([B.b7G,A.hA(f,A.E("Inicia sesi\xf3n",f,f,f,f,A.aj(f,f,e.y,f,f,f,f,f,f,f,f,f,f,f,B.v,f,f,!0,f,f,f,f,f,f,f,f),f,f,f),B.T,!1,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,new A.bb3(a),f,f,f,f,f,f)],r),B.l,B.ce,B.k,0,f))
+c.push(A.aB(A.c([B.b7F,A.hA(f,A.E("Inicia sesi\xf3n",f,f,f,f,A.aj(f,f,e.y,f,f,f,f,f,f,f,f,f,f,f,B.v,f,f,!0,f,f,f,f,f,f,f,f),f,f,f),B.T,!1,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,new A.bb3(a),f,f,f,f,f,f)],r),B.l,B.ce,B.k,0,f))
 return A.eQ(d,f,A.bB(A.h4(A.au(f,A.qi(f,A.aL(c,B.bJ,B.i,B.k,0,B.u),g.w),B.j,f,B.a86,f,f,f,f,f,f,f,f),f,B.T,B.bZ,f,f,B.R),f,f),f,f)},
 a3M(a){var s=null
 return A.aL(A.c([A.E(a.toUpperCase(),s,s,s,s,B.b3p,s,s,s),B.fa],t.p),B.W,B.i,B.k,0,B.u)}}
@@ -141997,7 +141997,7 @@ $0(){return A.cD(this.a).eJ(0,"/login",null)},
 $S:0}
 A.DM.prototype={
 F(a){var s,r,q,p,o=null,n=A.q(a).ax,m=n.b,l=A.bc(B.fd,m,o,80),k=A.q(a).ok.e
-k=A.E("IusZac",o,o,o,o,k==null?o:k.afk(m,B.v,1.2),o,o,o)
+k=A.E("IUZ ZAC",o,o,o,o,k==null?o:k.afk(m,B.v,1.2),o,o,o)
 s=A.q(a).ok.w
 s=A.E("Derecho Digital \xb7 Zacatecas",o,o,o,o,s==null?o:s.zU(n.y,B.d0),o,o,o)
 r=A.q(a).ok.y
@@ -142130,7 +142130,7 @@ s=A.al(10)
 r=o.e
 q=t.p
 s=A.c([A.au(p,A.E(b.c,p,p,p,p,A.aj(p,p,r==null?o.c:r,p,p,p,p,p,p,p,p,12,p,p,B.v,p,p,!0,p,p,p,p,p,p,p,p),p,p,p),B.j,p,p,new A.as(j,p,p,s,p,p,p,B.x),p,p,p,B.agV,p,p,p),B.a4Y,A.ba(A.aL(A.c([A.E(b.d,1,B.ak,p,p,B.xs,p,p,p),B.cr,A.E(b.e,1,B.ak,p,p,B.xq,p,p,p)],q),B.W,B.i,B.k,0,B.u),1),B.aL],q)
-if(b.x)B.b.J(s,A.c([A.au(p,B.b7b,B.j,p,p,new A.as(B.hp,p,p,A.al(6),p,p,p,B.x),p,p,p,B.iO,p,p,p),B.fB],q))
+if(b.x)B.b.J(s,A.c([A.au(p,B.b7a,B.j,p,p,new A.as(B.hp,p,p,A.al(6),p,p,p,B.x),p,p,p,B.iO,p,p,p),B.fB],q))
 s.push(A.bc(B.iS,m,p,18))
 return A.au(p,A.eM(!1,k,!0,new A.jd(A.aB(s,B.l,B.i,B.k,0,p),B.bd,p),p,!0,p,p,p,p,p,p,p,p,p,p,p,new A.aY1(a,b),p,p,p,p,p,p,p),B.j,p,p,new A.as(p,p,p,n,l,p,p,B.x),p,p,p,p,p,p,p)}}
 A.aY5.prototype={
@@ -142154,7 +142154,7 @@ if(q===0){r=this.b
 q=r.ry
 if(q==null){q=r.u
 r=q==null?r.k3:q}else r=q
-return A.bB(new A.af(B.bZ,A.aL(A.c([A.bc(B.pB,r.N(0.3),s,60),B.aT,B.b76,B.cr,B.b6y],t.p),B.l,B.ce,B.k,0,B.u),s),s,s)}return A.ni(new A.aY3(r,p),q,B.fR,s,B.R,!1)},
+return A.bB(new A.af(B.bZ,A.aL(A.c([A.bc(B.pB,r.N(0.3),s,60),B.aT,B.b75,B.cr,B.b6y],t.p),B.l,B.ce,B.k,0,B.u),s),s,s)}return A.ni(new A.aY3(r,p),q,B.fR,s,B.R,!1)},
 $S:856}
 A.aY2.prototype={
 $1(a){var s=this.a.x,r=B.c.m(a.c.toLowerCase(),s),q=B.c.m(a.d.toLowerCase(),s)
@@ -142180,7 +142180,7 @@ l(){var s=this.w
 s.Z$=$.ac()
 s.W$=0
 this.av()},
-F(a){var s=this,r=null,q=s.gfH().cV($.bkz(),t.if),p=A.q(a).ax,o=A.fB(r,r,r,!0,!0,r,r,1,r,r,r,!1,r,!1,r,r,A.e3(r,!1,r,r,r,r,r,r,r,B.fe,r,r,r,r,new A.aZU(a),r,r,r,r,r,r,r),r,!0,r,r,r,r,r,B.b7s,r,r,r,1,r,!0),n=A.fG(s.w,r,B.iT,!1,r,"Buscar c\xf3digo...",new A.aZV(s),r),m=p.ry
+F(a){var s=this,r=null,q=s.gfH().cV($.bkz(),t.if),p=A.q(a).ax,o=A.fB(r,r,r,!0,!0,r,r,1,r,r,r,!1,r,!1,r,r,A.e3(r,!1,r,r,r,r,r,r,r,B.fe,r,r,r,r,new A.aZU(a),r,r,r,r,r,r,r),r,!0,r,r,r,r,r,B.b7r,r,r,r,1,r,!0),n=A.fG(s.w,r,B.iT,!1,r,"Buscar c\xf3digo...",new A.aZV(s),r),m=p.ry
 if(m==null){m=p.u
 if(m==null)m=p.k3}return A.eQ(o,r,A.bB(new A.d8(B.jQ,A.aL(A.c([new A.af(B.bd,n,r),A.jx(m.N(0.15),r,1,r,r),A.ba(A.eG(q,new A.aZW(s,p),new A.aZX(),new A.aZY(),!1,!0,!1,t.iv,t.l7),1)],t.p),B.l,B.i,B.k,0,B.u),r),r,r),r,r)},
 a3C(a,b){var s,r,q,p,o,n,m=null,l=A.q(a).ax,k=b.d,j=k==="Vigente"?B.aj:B.d9,i=A.al(20),h=l.d
@@ -142198,7 +142198,7 @@ p=A.ba(A.aL(A.c([s,B.cs,r,B.bD,A.au(m,A.E(k.toUpperCase(),m,m,m,m,A.aj(m,m,j,m,m
 o=l.b
 q=o.N(0.4)
 q=A.a6K(m,m,m,m,m,m,m,m,m,o,m,m,B.zh,m,new A.ca(A.al(12),B.z),new A.aS(q,1,B.B,-1),m,m,B.b29,m)
-return A.eM(!1,i,!0,new A.jd(A.aB(A.c([h,B.dY,p,B.aL,A.bZ(A.Ls(A.bc(B.iS,o,m,18),B.b82,new A.aZN(a,b),q),40,m)],n),B.l,B.i,B.k,0,m),B.bd,m),m,!0,m,m,m,m,m,m,m,m,m,m,m,new A.aZO(a,b),m,m,m,m,m,m,m)}}
+return A.eM(!1,i,!0,new A.jd(A.aB(A.c([h,B.dY,p,B.aL,A.bZ(A.Ls(A.bc(B.iS,o,m,18),B.b81,new A.aZN(a,b),q),40,m)],n),B.l,B.i,B.k,0,m),B.bd,m),m,!0,m,m,m,m,m,m,m,m,m,m,m,new A.aZO(a,b),m,m,m,m,m,m,m)}}
 A.aZU.prototype={
 $0(){return A.cD(this.a).eJ(0,"/",null)},
 $S:0}
@@ -142420,8 +142420,8 @@ break
 case 6:case 1:return A.x(q,r)
 case 2:return A.w(o.at(-1),r)}})
 return A.y($async$JH,r)},
-F(a){var s,r=this,q=null,p=A.q(a).ax,o=A.fB(q,q,q,!0,!0,q,q,1,q,q,q,!1,q,!1,q,q,A.e3(q,!1,q,q,q,q,q,q,q,B.fe,q,q,q,q,new A.b7Y(a),q,q,q,q,q,q,q),q,!0,q,q,q,q,q,B.b7k,q,q,q,1,q,!0),n=A.q(a).ok.f,m=t.p
-n=A.c([A.E("Plantea tu duda o caso legal",q,q,q,q,n==null?q:n.zU(p.b,B.v),B.b0,q,q),B.bD,B.b89,B.de,A.fG(r.x,q,B.ak5,!1,q,"T\xedtulo del Post",q,new A.b7Z()),B.dJ,A.fG(r.z,q,B.Hy,!1,B.cl,"Hashtags (separados por comas)",q,q),B.aUL,B.dJ,A.i2(!0,q,!1,q,r.y,A.jK(!0,new A.dJ(4,A.al(12),B.hm),q,q,q,q,q,q,!0,q,q,q,q,q,q,p.k2,!0,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,"Cuerpo del Post / Hechos",!0,!0,!1,q,B.aUI,q,q,q,q,q,q,q,q,q,q,q,q),!1,q,q,q,q,8,!1,q,q,q,q,q,q,B.aa,q,new A.b8_()),B.V,A.ab4(B.aS,q,B.a5,new A.b80(r),B.b80,B.b6z,r.Q),B.V],m)
+F(a){var s,r=this,q=null,p=A.q(a).ax,o=A.fB(q,q,q,!0,!0,q,q,1,q,q,q,!1,q,!1,q,q,A.e3(q,!1,q,q,q,q,q,q,q,B.fe,q,q,q,q,new A.b7Y(a),q,q,q,q,q,q,q),q,!0,q,q,q,q,q,B.b7j,q,q,q,1,q,!0),n=A.q(a).ok.f,m=t.p
+n=A.c([A.E("Plantea tu duda o caso legal",q,q,q,q,n==null?q:n.zU(p.b,B.v),B.b0,q,q),B.bD,B.b88,B.de,A.fG(r.x,q,B.ak5,!1,q,"T\xedtulo del Post",q,new A.b7Z()),B.dJ,A.fG(r.z,q,B.Hy,!1,B.cl,"Hashtags (separados por comas)",q,q),B.aUL,B.dJ,A.i2(!0,q,!1,q,r.y,A.jK(!0,new A.dJ(4,A.al(12),B.hm),q,q,q,q,q,q,!0,q,q,q,q,q,q,p.k2,!0,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,"Cuerpo del Post / Hechos",!0,!0,!1,q,B.aUI,q,q,q,q,q,q,q,q,q,q,q,q),!1,q,q,q,q,8,!1,q,q,q,q,q,q,B.aa,q,new A.b8_()),B.V,A.ab4(B.aS,q,B.a5,new A.b80(r),B.b8_,B.b6z,r.Q),B.V],m)
 s=r.at
 if(s!=null)B.b.J(n,A.c([A.E(s,q,q,q,q,A.aj(q,q,p.fy,q,q,q,q,q,q,q,q,13,q,q,q,q,q,!0,q,q,q,q,q,q,q,q),B.b0,q,q),B.aT],m))
 n.push(A.mb(q,q,r.as,!0,"Publicar en el Foro",r.gaJK()))
@@ -142679,7 +142679,7 @@ F(a){var s,r=null,q=this.gfH(),p=q.cV($.jt(),t.QR),o=q.cV($.WA().$1(this.a.d),t.
 q=q.cV($.l4(),t.MX)
 q=q.gp(q)
 s=q==null?r:q.a
-return A.eQ(A.fB(r,r,r,!0,!0,r,r,1,!0,r,r,!1,r,!1,r,r,A.e3(r,!1,r,r,r,r,r,r,r,B.fe,r,r,r,r,new A.ba5(a),r,r,r,r,r,r,r),r,!0,r,r,r,r,r,B.b7R,r,r,r,1,r,!0),n.k2,A.eG(p,new A.ba6(this,s,a,n,o),new A.ba7(),new A.ba8(),!1,!0,!1,t.LN,t.jK),r,r)},
+return A.eQ(A.fB(r,r,r,!0,!0,r,r,1,!0,r,r,!1,r,!1,r,r,A.e3(r,!1,r,r,r,r,r,r,r,B.fe,r,r,r,r,new A.ba5(a),r,r,r,r,r,r,r),r,!0,r,r,r,r,r,B.b7P,r,r,r,1,r,!0),n.k2,A.eG(p,new A.ba6(this,s,a,n,o),new A.ba7(),new A.ba8(),!1,!0,!1,t.LN,t.jK),r,r)},
 aw8(a,a0,a1,a2,a3){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f=null,e=A.q(a).ax,d=a0.f,c=d==null,b=c?f:d.b
 if(b==null)b="Colega"
 s=c?f:d.f
@@ -142742,7 +142742,7 @@ return null},
 $S:0}
 A.b9S.prototype={
 $1(a){var s=this,r=null,q=s.b,p=s.c,o=t.p,n=A.h4(A.aL(A.c([A.E3(r,B.dS,!1,r,!0,B.A,r,A.W7(),q,r,r,r,r,r,2,B.al5,B.T,!0,r,!0,r,!1,r,B.dL,r,r,r,r,r,r,r,r,1,r,r,!1,"\u2022",r,r,r,r,r,!1,r,r,!1,r,!0,r,B.cC,r,r,r,r,r,r,r,r,r,r,r,r,!0,B.aa,r,B.il,r,r,r,r),B.aT,A.E3(r,B.dS,!1,r,!0,B.A,r,A.W7(),p,r,r,r,r,r,2,B.al4,B.T,!0,r,!0,r,!1,r,B.dL,r,r,r,r,r,r,r,r,4,r,r,!1,"\u2022",r,r,r,r,r,!1,r,r,!1,r,!0,r,B.cC,r,r,r,r,r,r,r,r,r,r,r,r,!0,B.aa,r,B.il,r,r,r,r)],o),B.l,B.i,B.a_,0,B.u),r,B.T,r,r,r,B.R)
-return A.lV(A.c([A.dU(!1,B.es,r,r,!0,r,new A.b9Q(a),r,r),A.dU(!1,B.a5z,r,r,!0,r,new A.b9R(s.a,q,p,a,s.d),r,r)],o),r,n,r,B.b7V)},
+return A.lV(A.c([A.dU(!1,B.es,r,r,!0,r,new A.b9Q(a),r,r),A.dU(!1,B.a5z,r,r,!0,r,new A.b9R(s.a,q,p,a,s.d),r,r)],o),r,n,r,B.b7T)},
 $S:45}
 A.b9Q.prototype={
 $0(){A.cn(this.a,!1).eW(null)
@@ -142784,7 +142784,7 @@ return A.y($async$$0,r)},
 $S:8}
 A.b9P.prototype={
 $1(a){var s=null,r=this.b,q=A.E3(s,B.dS,!1,s,!0,B.A,s,A.W7(),r,s,s,s,s,s,2,B.al7,B.T,!0,s,!0,s,!1,s,B.dL,s,s,s,s,s,s,s,s,3,s,s,!1,"\u2022",s,s,s,s,s,!1,s,s,!1,s,!0,s,B.cC,s,s,s,s,s,s,s,s,s,s,s,s,!0,B.aa,s,B.il,s,s,s,s)
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.b9N(a),s,s),A.dU(!1,B.a5z,s,s,!0,s,new A.b9O(this.a,r,a,this.c),s,s)],t.p),s,q,s,B.b7j)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.b9N(a),s,s),A.dU(!1,B.a5z,s,s,!0,s,new A.b9O(this.a,r,a,this.c),s,s)],t.p),s,q,s,B.b7i)},
 $S:45}
 A.b9N.prototype={
 $0(){A.cn(this.a,!1).eW(null)
@@ -142823,7 +142823,7 @@ return A.y($async$$0,r)},
 $S:8}
 A.b9G.prototype={
 $1(a){var s=null
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.b9E(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.b9F(a),s,s)],t.p),s,B.b7w,s,B.a5w)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.b9E(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.b9F(a),s,s)],t.p),s,B.b7v,s,B.a5w)},
 $S:45}
 A.b9E.prototype={
 $0(){A.cn(this.a,!1).eW(!1)
@@ -143057,7 +143057,7 @@ if(s>=900)return 48
 if(s>=600)return 32
 return 16},
 awe(a){var s=null,r=A.q(a).ax,q=this.a7C(a),p=r.b,o=A.c([p,r.y],t._),n=A.al(20),m=A.c([new A.bO(0,B.a4,p.N(0.3),B.l8,12)],t.E),l=t.p
-return new A.af(new A.a6(q,8,q,8),A.au(s,A.aB(A.c([A.au(s,B.akt,B.j,s,s,new A.as(B.m.N(0.2),s,s,s,s,s,s,B.bG),s,s,s,B.fQ,s,s,s),B.dY,A.ba(A.aL(A.c([B.b6Q,B.cr,A.E("Accede m\xe1s r\xe1pido y trabaja sin conexi\xf3n.",s,s,s,s,A.aj(s,s,B.m.N(0.9),s,s,s,s,s,s,s,s,14,s,s,s,s,1.4,!0,s,s,s,s,s,s,s,s),s,s,s)],l),B.W,B.i,B.k,0,B.u),1),B.cj,A.blH(B.akT,B.b6Y,new A.b3M(this,a),A.a0n(s,s,B.m,s,s,s,0,s,s,p,s,B.xd,B.ahg,s,new A.ca(A.al(14),B.z),s,s,s,s,s)),A.e3(s,!1,s,B.om,s,s,s,s,s,B.aki,s,s,s,s,new A.b3N(this),s,s,s,s,s,s,s)],l),B.l,B.i,B.k,0,s),B.j,s,s,new A.as(s,s,s,n,m,new A.d1(B.cx,B.ew,B.ai,o,s,s),s,B.x),s,s,s,B.cC,s,s,s),s)},
+return new A.af(new A.a6(q,8,q,8),A.au(s,A.aB(A.c([A.au(s,B.akt,B.j,s,s,new A.as(B.m.N(0.2),s,s,s,s,s,s,B.bG),s,s,s,B.fQ,s,s,s),B.dY,A.ba(A.aL(A.c([B.b8a,B.cr,A.E("Accede m\xe1s r\xe1pido y trabaja sin conexi\xf3n.",s,s,s,s,A.aj(s,s,B.m.N(0.9),s,s,s,s,s,s,s,s,14,s,s,s,s,1.4,!0,s,s,s,s,s,s,s,s),s,s,s)],l),B.W,B.i,B.k,0,B.u),1),B.cj,A.blH(B.akT,B.b6X,new A.b3M(this,a),A.a0n(s,s,B.m,s,s,s,0,s,s,p,s,B.xd,B.ahg,s,new A.ca(A.al(14),B.z),s,s,s,s,s)),A.e3(s,!1,s,B.om,s,s,s,s,s,B.aki,s,s,s,s,new A.b3N(this),s,s,s,s,s,s,s)],l),B.l,B.i,B.k,0,s),B.j,s,s,new A.as(s,s,s,n,m,new A.d1(B.cx,B.ew,B.ai,o,s,s),s,B.x),s,s,s,B.cC,s,s,s),s)},
 F(a){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f=null,e=g.gfH(),d=e.cV($.Wx(),t.op),c=e.cV($.t1(),t.OV),b=e.cV($.bkz(),t.if)
 if(d==null)s=f
 else{e=d.c
@@ -143093,7 +143093,7 @@ e.push(new A.ms(new A.af(B.mA,A.aL(A.c([new A.af(new A.a6(q,0,q,0),g.T2(a,"C\xf3
 e.push(B.b_w)
 return A.eQ(f,f,A.brY(f,f,B.R,e),f,f)},
 T2(a,b,c,d){var s=null,r=A.q(a).ax,q=A.c([A.au(s,s,B.j,s,s,new A.as(r.y,s,s,A.al(2),s,s,s,B.x),s,24,s,s,s,s,4),B.dd,A.bc(c,r.b,s,20),B.aL,A.ba(A.E(b,s,s,s,s,A.aj(s,s,r.k3,s,s,s,s,s,s,s,s,20,s,s,B.v,s,1.3,!0,s,0.2,s,s,s,s,s,s),s,s,s),1)],t.p)
-if(d!=null)q.push(A.z4(B.HW,B.b7d,d,A.rh(s,s,s,s,s,s,s,s,s,s,s,B.xd,B.zi,s,s,s,s,s,s,s)))
+if(d!=null)q.push(A.z4(B.HW,B.b7c,d,A.rh(s,s,s,s,s,s,s,s,s,s,s,B.xd,B.zi,s,s,s,s,s,s,s)))
 return A.aB(q,B.l,B.i,B.k,0,s)},
 a7B(a,b){var s,r,q,p,o,n=null,m=A.q(a)
 switch(b){case"reforma":s=B.fd
@@ -143130,7 +143130,7 @@ n=e.as
 m=b.as
 l=t.p
 o=A.c([A.au(f,A.E(b.d,f,f,f,f,A.aj(f,f,n==null?e.z:n,f,f,f,f,f,f,f,f,11,f,f,B.v,f,f,!0,f,0.3,f,f,f,f,f,f),f,f,f),B.j,f,f,new A.as(p,f,f,o,f,f,f,B.x),f,f,f,B.pc,f,f,f),B.aL,this.a7B(a,m)],l)
-if(d<24)B.b.J(o,A.c([B.aL,A.au(f,B.b81,B.j,f,f,new A.as(B.yV,f,f,A.al(20),f,f,f,B.x),f,f,f,B.zg,f,f,f)],l))
+if(d<24)B.b.J(o,A.c([B.aL,A.au(f,B.b80,B.j,f,f,new A.as(B.yV,f,f,A.al(20),f,f,f,B.x),f,f,f,B.zg,f,f,f)],l))
 o.push(B.eV)
 d=e.rx
 p=d==null
@@ -143224,7 +143224,7 @@ s=2
 return A.t(A.bpr(),$async$$0)
 case 2:if(b){p=q.a
 if(p.c!=null)p.L(new A.b3L(p))
-o.eY(B.b_Q)}return A.x(null,r)}})
+o.eY(B.b_U)}return A.x(null,r)}})
 return A.y($async$$0,r)},
 $S:8}
 A.b3L.prototype={
@@ -143334,7 +143334,7 @@ p=A.q(a)
 s=n.gp(n)
 if(s==null)s=A.c([],t.Q9)
 r=J.bkD(s,new A.aI_(this))
-return A.eQ(A.fB(q,q,q,!0,!0,q,q,1,q,q,q,!1,q,!1,q,q,q,q,!0,q,q,q,q,q,B.b8a,q,q,q,1,q,!0),q,A.eG(o,new A.aI0(this,p.ax,r,b),new A.aI1(),new A.aI2(),!1,!0,!1,t.gl,t.jK),q,q)},
+return A.eQ(A.fB(q,q,q,!0,!0,q,q,1,q,q,q,!1,q,!1,q,q,q,q,!0,q,q,q,q,q,B.b89,q,q,q,1,q,!0),q,A.eG(o,new A.aI0(this,p.ax,r,b),new A.aI1(),new A.aI2(),!1,!0,!1,t.gl,t.jK),q,q)},
 a3L(a,b){var s=null
 return A.aB(A.c([A.au(s,s,B.j,s,s,new A.as(b.y,s,s,A.al(2),s,s,s,B.x),s,22,s,s,s,s,4),B.dd,A.E(a,s,s,s,s,B.b2t,s,s,s)],t.p),B.l,B.i,B.k,0,s)},
 awz(a,b,c,d){var s,r,q,p,o,n,m=null,l=A.q(a).ax,k=l.RG
@@ -143436,7 +143436,7 @@ f=A.E(f,a,a,a,a,B.b5t,a,a,a)
 e=j?B.aj.N(0.15):B.aC.N(0.12)
 c=j?B.f4:B.cc
 c=A.c([new A.jd(n,B.cC,a),B.aV,new A.jd(s,B.zk,a),B.aV,new A.jd(m,B.cC,a),B.aV,new A.jd(d,B.cC,a),B.xf,A.bZ(A.blH(g,f,h,A.a0n(a,a,i,e,c,a,0,a,a,B.m,a,a,a,a,new A.ca(A.al(14),B.z),a,a,a,a,a)),60,1/0)],o)
-if(b.r)B.b.J(c,A.c([B.hc,A.bZ(A.Ls(B.HV,B.b7x,new A.aHU(q,b.w,a2),A.a6K(a,a,a,a,a,a,a,a,a,a,a,a,a,a,new A.ca(A.al(14),B.z),B.a7T,a,a,a,a)),60,1/0)],o))
+if(b.r)B.b.J(c,A.c([B.hc,A.bZ(A.Ls(B.HV,B.b7w,new A.aHU(q,b.w,a2),A.a6K(a,a,a,a,a,a,a,a,a,a,a,a,a,a,new A.ca(A.al(14),B.z),B.a7T,a,a,a,a)),60,1/0)],o))
 c.push(B.de)
 s=b.f
 c.push(A.eG(s.cV($.bqy().$1(q.a.a),t.Ye),new A.aHV(q,r,s,j,a0),new A.aHW(),new A.aHX(),!1,!0,!1,t.ZP,p))
@@ -143487,7 +143487,7 @@ return A.t(A.W1(o,B.Ax),$async$$0)
 case 6:s=3
 break
 case 4:p=q.c
-if(p.e!=null)p.a3(t.L).f.eY(B.b_S)
+if(p.e!=null)p.a3(t.L).f.eY(B.b_R)
 case 3:return A.x(null,r)}})
 return A.y($async$$0,r)},
 $S:8}
@@ -143561,7 +143561,7 @@ this.av()},
 Kr(){var s=0,r=A.z(t.H),q,p=2,o=[],n=[],m=this,l,k,j,i,h,g,f,e
 var $async$Kr=A.u(function(a,b){if(a===1){o.push(b)
 s=p}for(;;)switch(s){case 0:f=B.c.aQ(m.w.a.a)
-if(J.c5(f)===0){m.c.a3(t.L).f.eY(B.b_U)
+if(J.c5(f)===0){m.c.a3(t.L).f.eY(B.b_T)
 s=1
 break}m.L(new A.bcc(m))
 l=m.c.a3(t.L).f
@@ -143600,7 +143600,7 @@ case 6:case 1:return A.x(q,r)
 case 2:return A.w(o.at(-1),r)}})
 return A.y($async$Kr,r)},
 F(a){var s=this,r=null,q=A.q(a).ax,p=A.al(16),o=A.cL(q.b.N(0.15),1.5)
-return A.au(r,A.aL(A.c([B.b7Z,B.hb,A.aB(A.xw(5,new A.bcg(s),!0,t.l7),B.l,B.i,B.k,0,r),B.hc,A.E3(r,B.dS,!1,r,!0,B.A,r,A.W7(),s.w,r,r,r,r,r,2,A.jK(r,new A.dJ(4,A.al(10),B.hm),r,B.fQ,r,r,r,r,!0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,B.b1m,"\xbfQu\xe9 te pareci\xf3 la mentor\xeda y la explicaci\xf3n del mentor?",r,r,r,r,r,r,r,r,r,!0,!0,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,r),B.T,!0,r,!0,r,!1,r,B.dL,r,r,r,r,r,r,150,r,2,r,r,!1,"\u2022",r,r,r,r,r,!1,r,r,!1,r,!0,r,B.cC,r,r,r,r,r,r,r,r,r,r,r,r,!0,B.aa,r,B.il,r,r,r,r),B.hb,A.bZ(A.mb(r,r,s.y,!0,"Enviar Rese\xf1a",s.gaPk()),r,1/0)],t.p),B.W,B.i,B.k,0,B.u),B.j,r,r,new A.as(q.k2,r,o,p,r,r,r,B.x),r,r,r,B.bd,r,r,r)}}
+return A.au(r,A.aL(A.c([B.b7Y,B.hb,A.aB(A.xw(5,new A.bcg(s),!0,t.l7),B.l,B.i,B.k,0,r),B.hc,A.E3(r,B.dS,!1,r,!0,B.A,r,A.W7(),s.w,r,r,r,r,r,2,A.jK(r,new A.dJ(4,A.al(10),B.hm),r,B.fQ,r,r,r,r,!0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,B.b1m,"\xbfQu\xe9 te pareci\xf3 la mentor\xeda y la explicaci\xf3n del mentor?",r,r,r,r,r,r,r,r,r,!0,!0,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,r),B.T,!0,r,!0,r,!1,r,B.dL,r,r,r,r,r,r,150,r,2,r,r,!1,"\u2022",r,r,r,r,r,!1,r,r,!1,r,!0,r,B.cC,r,r,r,r,r,r,r,r,r,r,r,r,!0,B.aa,r,B.il,r,r,r,r),B.hb,A.bZ(A.mb(r,r,s.y,!0,"Enviar Rese\xf1a",s.gaPk()),r,1/0)],t.p),B.W,B.i,B.k,0,B.u),B.j,r,r,new A.as(q.k2,r,o,p,r,r,r,B.x),r,r,r,B.bd,r,r,r)}}
 A.bcc.prototype={
 $0(){this.a.y=!0},
 $S:0}
@@ -143640,7 +143640,7 @@ k=$.arB().$1(b)
 if(l.e==null)A.I(A.a1(u.w))
 l.geq().eI(k)
 l=o.c
-if(l!=null)l.a3(t.L).f.eY(B.b_R)
+if(l!=null)l.a3(t.L).f.eY(B.b_Q)
 q=1
 s=5
 break
@@ -143719,11 +143719,11 @@ k=A.al(8)
 j=A.cL(B.bC.N(0.3),1)
 n.push(A.au(i,A.aB(A.c([B.akr,B.ck,A.E(""+m+" cupos",i,i,i,i,B.a5q,i,i,i)],p),B.l,B.i,B.a_,0,i),B.j,i,i,new A.as(l,i,j,k,i,i,i,B.x),i,i,i,B.agU,i,i,i))}n.push(B.eV)
 if(r&&!c){m=B.aj.N(0.1)
-B.b.J(n,A.c([A.eq(!1,B.S,!0,i,A.eM(!1,i,!0,B.aUG,B.ho,!0,i,i,i,i,i,i,i,i,i,i,i,new A.b5U(b,s),i,i,i,i,i,i,i),B.j,m,0,i,i,B.ho,i,i,B.cg),B.dd],p))}n.push(A.bZ(A.blH(B.HW,B.b7q,new A.b5V(a,b),A.a0n(i,i,h.b,i,i,i,0,i,i,B.m,i,i,B.ahc,i,new A.ca(A.al(12),B.z),i,i,i,i,i)),48,i))
+B.b.J(n,A.c([A.eq(!1,B.S,!0,i,A.eM(!1,i,!0,B.aUG,B.ho,!0,i,i,i,i,i,i,i,i,i,i,i,new A.b5U(b,s),i,i,i,i,i,i,i),B.j,m,0,i,i,B.ho,i,i,B.cg),B.dd],p))}n.push(A.bZ(A.blH(B.HW,B.b7p,new A.b5V(a,b),A.a0n(i,i,h.b,i,i,i,0,i,i,B.m,i,i,B.ahc,i,new A.ca(A.al(12),B.z),i,i,i,i,i)),48,i))
 return new A.af(B.agF,new A.jd(A.aL(A.c([f,B.V,g,o,A.aB(n,B.l,B.i,B.k,0,i)],p),B.W,B.i,B.k,0,B.u),B.cC,i),i)}}
 A.b60.prototype={
 $1(a){var s=null
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.b5Z(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.b6_(this.a,a,this.b,this.c),s,s)],t.p),s,B.b6X,s,B.b7K)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.b5Z(a),s,s),A.dU(!1,B.jB,s,s,!0,s,new A.b6_(this.a,a,this.b,this.c),s,s)],t.p),s,B.b6W,s,B.b7J)},
 $S:45}
 A.b5Z.prototype={
 $0(){A.cn(this.a,!1).eW(null)
@@ -144326,7 +144326,7 @@ case 6:g=$.l4()
 if(k.e==null)A.I(A.a1(u.w))
 k.geq().eI(g)
 k=n.c
-if(k!=null){k.a3(t.L).f.eY(B.b_T)
+if(k!=null){k.a3(t.L).f.eY(B.b_S)
 k=n.c
 k.toString
 A.cD(k).eJ(0,"/profile",null)}o.push(5)
@@ -144349,7 +144349,7 @@ case 5:return A.x(null,r)
 case 1:return A.w(p.at(-1),r)}})
 return A.y($async$K6,r)},
 F(a){var s=null,r=this.gfH().cV($.l4(),t.MX),q=A.q(a)
-return A.eQ(A.fB(s,s,s,!0,!0,s,s,1,!0,s,s,!1,s,!1,s,s,A.e3(s,!1,s,s,s,s,s,s,s,B.fe,s,s,s,s,new A.b8f(a),s,s,s,s,s,s,s),s,!0,s,s,s,s,s,B.b7P,s,s,s,1,s,!0),s,A.eG(r,new A.b8g(this,a,q.ax),new A.b8h(),new A.b8i(),!1,!0,!1,t.Km,t.jK),s,s)},
+return A.eQ(A.fB(s,s,s,!0,!0,s,s,1,!0,s,s,!1,s,!1,s,s,A.e3(s,!1,s,s,s,s,s,s,s,B.fe,s,s,s,s,new A.b8f(a),s,s,s,s,s,s,s),s,!0,s,s,s,s,s,B.b7N,s,s,s,1,s,!0),s,A.eG(r,new A.b8g(this,a,q.ax),new A.b8h(),new A.b8i(),!1,!0,!1,t.Km,t.jK),s,s)},
 Ig(a,b,c,d){var s,r=null,q=this.c
 q.toString
 q=A.q(q)
@@ -144581,7 +144581,7 @@ return A.y($async$$0,r)},
 $S:8}
 A.aKZ.prototype={
 $1(a){var s=null,r=A.al(20)
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.aKX(a),s,s),A.blN(B.b7i,new A.aKY(a),A.azW(this.a.fy,s,s,s))],t.p),s,B.b7M,new A.ca(r,B.z),B.b77)},
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.aKX(a),s,s),A.blN(B.b7h,new A.aKY(a),A.azW(this.a.fy,s,s,s))],t.p),s,B.b7L,new A.ca(r,B.z),B.b76)},
 $S:45}
 A.aKX.prototype={
 $0(){A.cn(this.a,!1).eW(!1)
@@ -144629,10 +144629,10 @@ return A.y($async$Ih,r)},
 aya(a,b){var s=null
 A.iv(s,s,!0,s,new A.aR_(A.q(a).ax),a,s,!0,t.z)},
 ld(a,b){var s=null,r=b.cV($.l4(),t.MX),q=b.cV($.Wx(),t.op),p=A.q(a)
-return A.eQ(A.fB(s,s,s,!0,!0,s,s,1,!0,s,s,!1,s,!1,s,s,A.e3(s,!1,s,s,s,s,s,s,s,B.fe,s,s,s,s,new A.aR2(a),s,s,s,s,s,s,s),s,!0,s,s,s,s,s,B.b6V,s,s,s,1,s,!0),s,A.eG(r,new A.aR3(this,a,p.ax,b,q),new A.aR4(),new A.aR5(),!1,!0,!1,t.Km,t.jK),s,s)}}
+return A.eQ(A.fB(s,s,s,!0,!0,s,s,1,!0,s,s,!1,s,!1,s,s,A.e3(s,!1,s,s,s,s,s,s,s,B.fe,s,s,s,s,new A.aR2(a),s,s,s,s,s,s,s),s,!0,s,s,s,s,s,B.b6U,s,s,s,1,s,!0),s,A.eG(r,new A.aR3(this,a,p.ax,b,q),new A.aR4(),new A.aR5(),!1,!0,!1,t.Km,t.jK),s,s)}}
 A.aR_.prototype={
-$1(a){var s=null,r=A.al(20),q=this.a.fy,p=t.p,o=A.aB(A.c([A.bc(B.mP,q,s,s),B.aL,B.b7Y],p),B.l,B.i,B.k,0,s)
-return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.aQY(a),s,s),A.blN(B.b85,new A.aQZ(a),A.azW(q,s,s,s))],p),s,B.b7o,new A.ca(r,B.z),o)},
+$1(a){var s=null,r=A.al(20),q=this.a.fy,p=t.p,o=A.aB(A.c([A.bc(B.mP,q,s,s),B.aL,B.b7X],p),B.l,B.i,B.k,0,s)
+return A.lV(A.c([A.dU(!1,B.es,s,s,!0,s,new A.aQY(a),s,s),A.blN(B.b84,new A.aQZ(a),A.azW(q,s,s,s))],p),s,B.b7n,new A.ca(r,B.z),o)},
 $S:45}
 A.aQY.prototype={
 $0(){A.cn(this.a,!1).eW(null)
@@ -144665,7 +144665,7 @@ i=A.au(d,A.bc(B.ajA,h,d,18),B.j,d,d,new A.as(j,d,d,i,d,d,d,B.x),d,d,d,B.e8,d,d,d
 if(n){j=p.u
 if(j==null)j=p.k3}else j=o
 g=e.a
-j=A.nh(!1,d,d,d,!0,d,d,d,!0,d,i,d,d,d,d,new A.aR0(g,s,e.d),!1,d,d,d,d,B.b6N,d,B.b6q,d,A.bc(B.iS,j,d,18),d)
+j=A.nh(!1,d,d,d,!0,d,d,d,!0,d,i,d,d,d,d,new A.aR0(g,s,e.d),!1,d,d,d,d,B.b6N,d,B.b6p,d,A.bc(B.iS,j,d,18),d)
 if(n){i=p.u
 if(i==null)i=p.k3}else i=o
 i=A.jx(i.N(0.08),d,1,56,d)
@@ -144678,7 +144678,7 @@ if(l==null)l="No disponible"
 l=A.E(l,d,d,d,d,A.aj(d,d,p.y,d,d,d,d,d,d,d,d,11,d,d,d,d,d,!0,d,d,d,d,d,d,d,d),d,d,d)
 if(n){o=p.u
 if(o==null)o=p.k3}n=t.p
-q=A.au(d,A.aL(A.c([j,i,A.nh(!1,d,d,d,!0,d,d,d,!0,d,f,d,d,d,d,d,!1,d,d,d,d,l,d,B.b7u,d,A.bc(B.ki,o,d,16),d)],n),B.l,B.i,B.k,0,B.u),B.j,d,d,new A.as(r.at,d,m,q,d,d,d,B.x),d,d,d,d,d,d,d)
+q=A.au(d,A.aL(A.c([j,i,A.nh(!1,d,d,d,!0,d,d,d,!0,d,f,d,d,d,d,d,!1,d,d,d,d,l,d,B.b7t,d,A.bc(B.ki,o,d,16),d)],n),B.l,B.i,B.k,0,B.u),B.j,d,d,new A.as(r.at,d,m,q,d,d,d,B.x),d,d,d,d,d,d,d)
 m=p.id
 r=(m==null?p.fy:m).N(0.08)
 o=A.al(16)
@@ -144688,7 +144688,7 @@ l=A.aB(A.c([A.bc(B.mP,p,d,18),B.aL,A.E("Zona de Peligro",d,d,d,d,A.aj(d,d,p,d,d,
 k=A.bc(B.ajm,p,d,d)
 j=A.E("Eliminar mi cuenta definitivamente",d,d,d,d,A.aj(d,d,p,d,d,d,d,d,d,d,d,d,d,d,B.v,d,d,!0,d,d,d,d,d,d,d,d),d,d,d)
 p=p.N(0.5)
-return A.bB(new A.d8(B.jQ,A.qw(A.c([B.b7U,B.aV,q,B.de,A.au(d,A.aL(A.c([l,B.aT,B.b6b,B.V,A.bZ(A.Ls(k,j,new A.aR1(g,s,a),A.a6K(d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.ca(A.al(12),B.z),new A.aS(p,1,B.B,-1),d,d,d,d)),d,1/0)],n),B.W,B.i,B.k,0,B.u),B.j,d,d,new A.as(r,d,m,o,d,d,d,B.x),d,d,d,B.bd,d,d,d),B.de],n),B.pe,d,B.R,!1),d),d,d)},
+return A.bB(new A.d8(B.jQ,A.qw(A.c([B.b7S,B.aV,q,B.de,A.au(d,A.aL(A.c([l,B.aT,B.b6b,B.V,A.bZ(A.Ls(k,j,new A.aR1(g,s,a),A.a6K(d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.ca(A.al(12),B.z),new A.aS(p,1,B.B,-1),d,d,d,d)),d,1/0)],n),B.W,B.i,B.k,0,B.u),B.j,d,d,new A.as(r,d,m,o,d,d,d,B.x),d,d,d,B.bd,d,d,d),B.de],n),B.pe,d,B.R,!1),d),d,d)},
 $S:193}
 A.aR0.prototype={
 $0(){return this.a.Ih(this.b,this.c)},
@@ -144720,7 +144720,7 @@ return A.eQ(q,r,s.y.length===0?s.awB():s.awy(),r,r)},
 awB(){var s,r=t.p,q=A.c([],r),p=this.z
 if(p.length!==0){s=A.a2(p).h("a5<1,e>")
 p=A.a_(new A.a5(p,new A.b3n(this),s),s.h("ag.E"))
-B.b.J(q,A.c([B.b6U,B.aT,A.pm(B.e_,p,B.fF,B.al,0,8),B.de],r))}q.push(B.b7m)
+B.b.J(q,A.c([B.b6T,B.aT,A.pm(B.e_,p,B.fF,B.al,0,8),B.de],r))}q.push(B.b7l)
 q.push(B.aT)
 r=this.Q
 B.b.J(q,new A.a5(r,new A.b3o(),A.a2(r).h("a5<1,e>")))
@@ -144764,7 +144764,7 @@ $0(){return B.b.G(this.a.z,this.b)},
 $S:0}
 A.b3l.prototype={
 $2(a,b){var s=null,r=A.E("Art. "+(b+100)+" - Ejemplo de resultado",s,s,s,s,s,s,s,s),q=b===1?A.au(s,B.b6D,B.j,s,s,new A.as(B.bC.N(0.1),s,s,A.al(4),s,s,s,B.x),s,s,s,B.iO,s,s,s):B.akS
-return A.nh(!1,s,s,s,!0,s,s,s,!0,s,B.aaI,s,s,s,s,new A.b3k(),!1,s,s,s,s,B.b73,s,r,s,q,s)},
+return A.nh(!1,s,s,s,!0,s,s,s,!0,s,B.aaI,s,s,s,s,new A.b3k(),!1,s,s,s,s,B.b72,s,r,s,q,s)},
 $S:887}
 A.b3k.prototype={
 $0(){},
@@ -144828,7 +144828,7 @@ h=A.al(14)
 h=A.au(g,A.bc(B.fd,j,g,24),B.j,g,g,new A.as(i,g,g,h,g,g,g,B.x),g,44,g,g,g,g,44)
 i=k.$1(!1)
 j=k.$1(!0)
-n=A.aB(A.c([new A.Lh(n.a.a>=1100,new A.af(B.Gy,h,g),A.c([B.aTb,B.aTa,new A.un(i,j==null?i:j,B.b6r),B.aTc,B.aTd],t.P2),o.$0(),new A.aEY(a),g),A.au(g,g,B.j,B.aC.N(0.08),g,g,g,g,g,g,g,g,1),A.ba(this.e,1)],t.p),B.l,B.i,B.k,0,g)}else n=this.e
+n=A.aB(A.c([new A.Lh(n.a.a>=1100,new A.af(B.Gy,h,g),A.c([B.aTb,B.aTa,new A.un(i,j==null?i:j,B.b6q),B.aTc,B.aTd],t.P2),o.$0(),new A.aEY(a),g),A.au(g,g,B.j,B.aC.N(0.08),g,g,g,g,g,g,g,g,1),A.ba(this.e,1)],t.p),B.l,B.i,B.k,0,g)}else n=this.e
 return A.eQ(g,g,n,!m?new A.a6i(o.$0(),A.c([B.aT5,B.aT6,new A.ul(k.$1(!1),k.$1(!0),"Alertas",g),B.aT7,B.aT4],t.p),new A.aEZ(a),2,l.b,g):g,g)}}
 A.aEW.prototype={
 $1(a){return J.pL(a,new A.aEU(new A.bJ(Date.now(),0,!1))).gt(0)},
@@ -154603,15 +154603,15 @@ B.b6G=new A.ay("No se pudo cargar la informaci\xf3n del perfil.",null,null,null,
 B.aax=new A.eC(B.a7,null,null,B.b6G,null)
 B.b6a=new A.ay("Art\xedculo no encontrado.",null,null,null,null,null,null,null,null,null,null)
 B.aay=new A.eC(B.a7,null,null,B.b6a,null)
-B.b6w=new A.ay("No hay publicaciones.",null,null,null,null,null,null,null,null,null,null)
-B.aaz=new A.eC(B.a7,null,null,B.b6w,null)
+B.b6v=new A.ay("No hay publicaciones.",null,null,null,null,null,null,null,null,null,null)
+B.aaz=new A.eC(B.a7,null,null,B.b6v,null)
 B.bI=new A.eC(B.a7,null,null,B.m1,null)
 B.b69=new A.ay("No se encontr\xf3 el perfil",null,null,null,null,null,null,null,null,null,null)
 B.yu=new A.eC(B.a7,null,null,B.b69,null)
-B.b7a=new A.ay("El post no existe o fue eliminado.",null,null,null,null,null,null,null,null,null,null)
-B.aaA=new A.eC(B.a7,null,null,B.b7a,null)
-B.b71=new A.ay("No se encontraron resultados.",null,null,null,null,null,null,null,null,null,null)
-B.aaB=new A.eC(B.a7,null,null,B.b71,null)
+B.b79=new A.ay("El post no existe o fue eliminado.",null,null,null,null,null,null,null,null,null,null)
+B.aaA=new A.eC(B.a7,null,null,B.b79,null)
+B.b70=new A.ay("No se encontraron resultados.",null,null,null,null,null,null,null,null,null,null)
+B.aaB=new A.eC(B.a7,null,null,B.b70,null)
 B.jY=new A.auB(0,"local")
 B.aaC=new A.tq(1,"error")
 B.Fj=new A.tq(5,"heartbeat")
@@ -156246,8 +156246,8 @@ B.b6M=new A.ay("Publicar ahora",null,null,null,null,null,null,null,null,null,nul
 B.ag4=new A.ev("published",B.b6M,B.cv,null,t.b7)
 B.b6c=new A.ay("Borrador",null,null,null,null,null,null,null,null,null,null)
 B.ag2=new A.ev("draft",B.b6c,B.cv,null,t.b7)
-B.b6S=new A.ay("Programar",null,null,null,null,null,null,null,null,null,null)
-B.ag3=new A.ev("scheduled",B.b6S,B.cv,null,t.b7)
+B.b6R=new A.ay("Programar",null,null,null,null,null,null,null,null,null,null)
+B.ag3=new A.ev("scheduled",B.b6R,B.cv,null,t.b7)
 B.anM=s([B.ag4,B.ag2,B.ag3],t.FG)
 B.Lv=s(["1-ci kv.","2-ci kv.","3-c\xfc kv.","4-c\xfc kv."],t.s)
 B.Lw=s(["y\u5e74M\u6708d\u65e5EEEE","y\u5e74M\u6708d\u65e5","y\u5e74M\u6708d\u65e5","d/M/y"],t.s)
@@ -156853,14 +156853,14 @@ B.an5=s([0.00010146692491640572,0.0005364214359186694,0.0032979401770712076],t.n
 B.apm=s([B.amN,B.aoA,B.an5],t.zg)
 B.Pc=s(["Alahady","Alatsinainy","Talata","Alarobia","Alakamisy","Zoma","Asabotsy"],t.s)
 B.Pd=s(["\u099c\u09be\u09a8\u09c1","\u09ab\u09c7\u09ac","\u09ae\u09be\u09b0\u09cd\u099a","\u098f\u09aa\u09cd\u09b0\u09bf","\u09ae\u09c7","\u099c\u09c1\u09a8","\u099c\u09c1\u09b2","\u0986\u0997","\u09b8\u09c7\u09aa","\u0985\u0995\u09cd\u099f\u09cb","\u09a8\u09ad\u09c7","\u09a1\u09bf\u09b8\u09c7"],t.s)
-B.b7X=new A.ay("Reforma / Ley",null,null,null,null,null,null,null,null,null,null)
-B.ag1=new A.ev("reforma",B.b7X,B.cv,null,t.b7)
+B.b7V=new A.ay("Reforma / Ley",null,null,null,null,null,null,null,null,null,null)
+B.ag1=new A.ev("reforma",B.b7V,B.cv,null,t.b7)
 B.b6k=new A.ay("Noticia",null,null,null,null,null,null,null,null,null,null)
 B.ag6=new A.ev("noticia",B.b6k,B.cv,null,t.b7)
-B.b72=new A.ay("Evento",null,null,null,null,null,null,null,null,null,null)
-B.ag5=new A.ev("evento",B.b72,B.cv,null,t.b7)
-B.b7f=new A.ay("Convocatoria",null,null,null,null,null,null,null,null,null,null)
-B.ag0=new A.ev("convocatoria",B.b7f,B.cv,null,t.b7)
+B.b71=new A.ay("Evento",null,null,null,null,null,null,null,null,null,null)
+B.ag5=new A.ev("evento",B.b71,B.cv,null,t.b7)
+B.b7e=new A.ay("Convocatoria",null,null,null,null,null,null,null,null,null,null)
+B.ag0=new A.ev("convocatoria",B.b7e,B.cv,null,t.b7)
 B.apn=s([B.ag1,B.ag6,B.ag5,B.ag0],t.FG)
 B.apo=s([45,95,45,20,45,90,45,45,45],t.n)
 B.Pe=s(["y MMMM d, EEEE","y MMMM d","y MMM d","y-MM-dd"],t.s)
@@ -160422,12 +160422,12 @@ B.wz=new A.a6k(1,"directional")
 B.aT9=new A.um(!0)
 B.a5y=new A.ay("Foros",null,null,null,null,null,null,null,null,null,null)
 B.aTa=new A.un(B.Aq,B.HT,B.a5y)
-B.b7H=new A.ay("Inicio",null,null,null,null,null,null,null,null,null,null)
-B.aTb=new A.un(B.I0,B.HX,B.b7H)
+B.b7G=new A.ay("Inicio",null,null,null,null,null,null,null,null,null,null)
+B.aTb=new A.un(B.I0,B.HX,B.b7G)
 B.a5A=new A.ay("Mentor\xedas",null,null,null,null,null,null,null,null,null,null)
 B.aTc=new A.un(B.I1,B.HO,B.a5A)
-B.b7e=new A.ay("Perfil",null,null,null,null,null,null,null,null,null,null)
-B.aTd=new A.un(B.HZ,B.HP,B.b7e)
+B.b7d=new A.ay("Perfil",null,null,null,null,null,null,null,null,null,null)
+B.aTd=new A.un(B.HZ,B.HP,B.b7d)
 B.Cs=new A.a6l(0,"none")
 B.ake=new A.dc(null,null,null,null,null,B.oT,null,null,null)
 B.a_y=new A.a6l(1,"selected")
@@ -160522,8 +160522,8 @@ B.ahr=new A.a6(5,0,0,0)
 B.aUK=new A.af(B.ahr,null,null)
 B.agX=new A.a6(12,4,0,0)
 B.DF=new A.A(!0,B.aC,null,null,null,null,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7O=new A.ay("Ej: penal, constitucion, uaz",null,B.DF,null,null,null,null,null,null,null,null)
-B.aUL=new A.af(B.agX,B.b7O,null)
+B.b7M=new A.ay("Ej: penal, constitucion, uaz",null,B.DF,null,null,null,null,null,null,null,null)
+B.aUL=new A.af(B.agX,B.b7M,null)
 B.agT=new A.a6(0,7,0,0)
 B.aUM=new A.af(B.agT,null,null)
 B.agM=new A.a6(0,15,0,0)
@@ -160567,8 +160567,8 @@ B.wG=new A.CI(0,"none")
 B.aVD=new A.CI(1,"scroll")
 B.aVE=new A.CI(3,"scale")
 B.aVF=new A.CI(4,"unknown")
-B.b6t=new A.ay("Editar",null,null,null,null,null,null,null,null,null,null)
-B.aVG=new A.CM("edit",B.b6t,null,t.wI)
+B.b6s=new A.ay("Editar",null,null,null,null,null,null,null,null,null,null)
+B.aVG=new A.CM("edit",B.b6s,null,t.wI)
 B.ip=new A.A(!0,B.aS,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.jB=new A.ay("Eliminar",null,B.ip,null,null,null,null,null,null,null,null)
 B.aVH=new A.CM("delete",B.jB,null,t.wI)
@@ -160666,8 +160666,8 @@ B.u=new A.ac2(1,"down")
 B.akj=new A.c8(B.mP,16,B.m,null,null)
 B.aL=new A.cS(8,null,null,null)
 B.b4F=new A.A(!0,B.m,null,null,null,null,11,B.v,null,0.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b6v=new A.ay("CASO URGENTE",null,B.b4F,null,null,null,null,null,null,null,null)
-B.alW=s([B.akj,B.aL,B.b6v],t.p)
+B.b6u=new A.ay("CASO URGENTE",null,B.b4F,null,null,null,null,null,null,null,null)
+B.alW=s([B.akj,B.aL,B.b6u],t.p)
 B.aXR=new A.p6(B.al,B.i,B.k,B.l,null,B.u,null,0,B.alW,null)
 B.ak7=new A.ai(983662,"MaterialIcons",null,!1)
 B.akx=new A.c8(B.ak7,16,B.aj,null,null)
@@ -160678,13 +160678,13 @@ B.anh=s([B.akx,B.fB,B.b6O],t.p)
 B.aXS=new A.p6(B.al,B.i,B.a_,B.l,null,B.u,null,0,B.anh,null)
 B.aku=new A.c8(B.mN,20,B.m,null,null)
 B.b4s=new A.A(!0,B.m,null,null,null,null,14,B.v,null,0.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b6u=new A.ay("Discutir caso",null,B.b4s,null,null,null,null,null,null,null,null)
-B.apI=s([B.aku,B.aL,B.b6u],t.p)
+B.b6t=new A.ay("Discutir caso",null,B.b4s,null,null,null,null,null,null,null,null)
+B.apI=s([B.aku,B.aL,B.b6t],t.p)
 B.aXT=new A.p6(B.al,B.i,B.a_,B.l,null,B.u,null,0,B.apI,null)
 B.akD=new A.c8(B.Hs,20,B.bC,null,null)
 B.a5q=new A.A(!0,B.bC,null,null,null,null,13,B.v,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b6T=new A.ay("REFORMA RECIENTE",null,B.a5q,null,null,null,null,null,null,null,null)
-B.anO=s([B.akD,B.aL,B.b6T],t.p)
+B.b6S=new A.ay("REFORMA RECIENTE",null,B.a5q,null,null,null,null,null,null,null,null)
+B.anO=s([B.akD,B.aL,B.b6S],t.p)
 B.aXU=new A.p6(B.al,B.i,B.k,B.l,null,B.u,null,0,B.anO,null)
 B.a3X=new A.Ng(0,"insert")
 B.a3Y=new A.Ng(1,"delete")
@@ -161110,44 +161110,44 @@ B.b_C=new A.pa(3,"hide")
 B.beh=new A.pa(4,"remove")
 B.b_D=new A.pa(5,"timeout")
 B.b_E=new A.DJ(null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7h=new A.ay("\xa1Gracias por tu retroalimentaci\xf3n! Marcado como \xfatil.",null,null,null,null,null,null,null,null,null,null)
-B.b_F=new A.fi(B.b7h,null,null,null,null,null,null,null,null,null,null,null,null,B.k6,!1,null,null,null,B.A,null)
-B.b7L=new A.ay("El hilo ha sido cerrado por el autor.",null,null,null,null,null,null,null,null,null,null)
-B.b_G=new A.fi(B.b7L,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b70=new A.ay("Guardado correctamente \ud83c\udf89",null,null,null,null,null,null,null,null,null,null)
-B.b_H=new A.fi(B.b70,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b7W=new A.ay("Publicaci\xf3n eliminada correctamente.",null,null,null,null,null,null,null,null,null,null)
-B.b_I=new A.fi(B.b7W,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b7r=new A.ay("Registro exitoso. Revisa tu correo de confirmaci\xf3n o inicia sesi\xf3n.",null,null,null,null,null,null,null,null,null,null)
-B.b_J=new A.fi(B.b7r,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b6Z=new A.ay("\xa1Gracias por tu comentario! Rese\xf1a guardada con \xe9xito.",null,null,null,null,null,null,null,null,null,null)
-B.b_K=new A.fi(B.b6Z,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b6W=new A.ay("Publicaci\xf3n creada exitosamente",null,null,null,null,null,null,null,null,null,null)
-B.b_L=new A.fi(B.b6W,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b7g=new A.ay("\xa1Gracias por tu retroalimentaci\xf3n! Marcado como \xfatil.",null,null,null,null,null,null,null,null,null,null)
+B.b_F=new A.fi(B.b7g,null,null,null,null,null,null,null,null,null,null,null,null,B.k6,!1,null,null,null,B.A,null)
+B.b7K=new A.ay("El hilo ha sido cerrado por el autor.",null,null,null,null,null,null,null,null,null,null)
+B.b_G=new A.fi(B.b7K,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b7_=new A.ay("Guardado correctamente \ud83c\udf89",null,null,null,null,null,null,null,null,null,null)
+B.b_H=new A.fi(B.b7_,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b7U=new A.ay("Publicaci\xf3n eliminada correctamente.",null,null,null,null,null,null,null,null,null,null)
+B.b_I=new A.fi(B.b7U,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b7q=new A.ay("Registro exitoso. Revisa tu correo de confirmaci\xf3n o inicia sesi\xf3n.",null,null,null,null,null,null,null,null,null,null)
+B.b_J=new A.fi(B.b7q,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b6Y=new A.ay("\xa1Gracias por tu comentario! Rese\xf1a guardada con \xe9xito.",null,null,null,null,null,null,null,null,null,null)
+B.b_K=new A.fi(B.b6Y,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b6V=new A.ay("Publicaci\xf3n creada exitosamente",null,null,null,null,null,null,null,null,null,null)
+B.b_L=new A.fi(B.b6V,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
 B.b6i=new A.ay("Comentario eliminado correctamente",null,null,null,null,null,null,null,null,null,null)
 B.b_M=new A.fi(B.b6i,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b6x=new A.ay("Permisos actualizados correctamente",null,null,null,null,null,null,null,null,null,null)
-B.b_N=new A.fi(B.b6x,null,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b6w=new A.ay("Permisos actualizados correctamente",null,null,null,null,null,null,null,null,null,null)
+B.b_N=new A.fi(B.b6w,null,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
 B.b6P=new A.ay("Ingresa t\xedtulos/descripciones v\xe1lidas",null,null,null,null,null,null,null,null,null,null)
 B.b_O=new A.fi(B.b6P,B.bC,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b79=new A.ay("Perfil actualizado correctamente",null,null,null,null,null,null,null,null,null,null)
-B.b_P=new A.fi(B.b79,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b7N=new A.ay("\xa1Gracias por instalar IusZac!",null,null,null,null,null,null,null,null,null,null)
-B.b_Q=new A.fi(B.b7N,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b7T=new A.ay("Sesi\xf3n de mentor\xeda eliminada.",null,null,null,null,null,null,null,null,null,null)
-B.b_R=new A.fi(B.b7T,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b7I=new A.ay("No se pudo abrir WhatsApp",null,null,null,null,null,null,null,null,null,null)
-B.b_S=new A.fi(B.b7I,null,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b6s=new A.ay("Preferencias de notificaci\xf3n guardadas correctamente",null,null,null,null,null,null,null,null,null,null)
-B.b_T=new A.fi(B.b6s,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b78=new A.ay("Por favor escribe un comentario para tu rese\xf1a.",null,null,null,null,null,null,null,null,null,null)
-B.b_U=new A.fi(B.b78,B.bC,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b78=new A.ay("Perfil actualizado correctamente",null,null,null,null,null,null,null,null,null,null)
+B.b_P=new A.fi(B.b78,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b7R=new A.ay("Sesi\xf3n de mentor\xeda eliminada.",null,null,null,null,null,null,null,null,null,null)
+B.b_Q=new A.fi(B.b7R,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b7H=new A.ay("No se pudo abrir WhatsApp",null,null,null,null,null,null,null,null,null,null)
+B.b_R=new A.fi(B.b7H,null,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b6r=new A.ay("Preferencias de notificaci\xf3n guardadas correctamente",null,null,null,null,null,null,null,null,null,null)
+B.b_S=new A.fi(B.b6r,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b77=new A.ay("Por favor escribe un comentario para tu rese\xf1a.",null,null,null,null,null,null,null,null,null,null)
+B.b_T=new A.fi(B.b77,B.bC,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b7W=new A.ay("\xa1Gracias por instalar IUZ ZAC!",null,null,null,null,null,null,null,null,null,null)
+B.b_U=new A.fi(B.b7W,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
 B.b6K=new A.ay("Publicaci\xf3n eliminada correctamente",null,null,null,null,null,null,null,null,null,null)
 B.b_V=new A.fi(B.b6K,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
 B.b6E=new A.ay("Noticia eliminada correctamente",null,null,null,null,null,null,null,null,null,null)
 B.b_W=new A.fi(B.b6E,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b6R=new A.ay("\xa1Te has inscrito exitosamente! \ud83c\udf89",null,null,null,null,null,null,null,null,null,null)
-B.b_X=new A.fi(B.b6R,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
+B.b6Q=new A.ay("\xa1Te has inscrito exitosamente! \ud83c\udf89",null,null,null,null,null,null,null,null,null,null)
+B.b_X=new A.fi(B.b6Q,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
 B.a51=new A.O5(0,"permissive")
 B.b_Y=new A.O5(1,"normal")
 B.b_Z=new A.O5(2,"forced")
@@ -161615,12 +161615,12 @@ B.a5u=new A.ay("Ver",null,B.xr,null,null,null,null,null,null,null,null)
 B.b6l=new A.ay("\xbfEliminar actualizaci\xf3n?",null,null,null,null,null,null,null,null,null,null)
 B.b6m=new A.ay("\ud83d\udcf0 Puede publicar noticias",null,null,null,null,null,null,null,null,null,null)
 B.b6n=new A.ay("Sin respuestas a\xfan. \xa1S\xe9 el primero!",null,B.DL,null,null,null,null,null,null,null,null)
-B.b6o=new A.ay("Registro IusZac",null,null,null,null,null,null,null,null,null,null)
 B.DK=new A.A(!0,B.aC,null,null,null,null,11,B.v,null,0.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b6p=new A.ay("TEXTO ANTERIOR",null,B.DK,null,null,null,null,null,null,null,null)
-B.b6q=new A.ay("Cambiar Contrase\xf1a",null,B.DJ,null,null,null,null,null,null,null,null)
-B.b6r=new A.ay("Alertas",null,null,null,null,null,null,null,null,null,null)
+B.b6o=new A.ay("TEXTO ANTERIOR",null,B.DK,null,null,null,null,null,null,null,null)
+B.b6p=new A.ay("Cambiar Contrase\xf1a",null,B.DJ,null,null,null,null,null,null,null,null)
+B.b6q=new A.ay("Alertas",null,null,null,null,null,null,null,null,null,null)
 B.a5v=new A.ay("\xbfEliminar publicaci\xf3n?",null,null,null,null,null,null,null,null,null,null)
+B.b6x=new A.ay("Registro IUZ ZAC",null,null,null,null,null,null,null,null,null,null)
 B.b6y=new A.ay("Intenta cambiar los t\xe9rminos de b\xfasqueda.",null,B.DH,null,null,null,null,null,null,null,null)
 B.b6z=new A.ay("Marcar como asunto urgente",null,B.DG,null,null,null,null,null,null,null,null)
 B.b6A=new A.ay("NUEVO",null,B.DC,null,null,null,null,null,null,null,null)
@@ -161634,81 +161634,81 @@ B.b6I=new A.ay("Detalle de Reforma",null,null,null,null,null,null,null,null,null
 B.b6J=new A.ay("Permisos",null,null,null,null,null,null,null,null,null,null)
 B.b6L=new A.ay("\ud83c\udf93 Puede publicar mentor\xedas",null,null,null,null,null,null,null,null,null,null)
 B.b6N=new A.ay("Te enviaremos un correo de recuperaci\xf3n",null,B.DI,null,null,null,null,null,null,null,null)
-B.b3W=new A.A(!0,B.m,null,null,null,null,17,B.v,null,null,null,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b6Q=new A.ay("\xa1Instala IusZac!",null,B.b3W,null,null,null,null,null,null,null,null)
-B.b6U=new A.ay("B\xfasquedas Recientes",null,B.lA,null,null,null,null,null,null,null,null)
-B.b6V=new A.ay("Seguridad y Privacidad",null,B.cX,null,null,null,null,null,null,null,null)
-B.b6X=new A.ay("Esta acci\xf3n es irreversible y remover\xe1 la sesi\xf3n.",null,null,null,null,null,null,null,null,null,null)
+B.b6T=new A.ay("B\xfasquedas Recientes",null,B.lA,null,null,null,null,null,null,null,null)
+B.b6U=new A.ay("Seguridad y Privacidad",null,B.cX,null,null,null,null,null,null,null,null)
+B.b6W=new A.ay("Esta acci\xf3n es irreversible y remover\xe1 la sesi\xf3n.",null,null,null,null,null,null,null,null,null,null)
 B.a5w=new A.ay("\xbfEliminar comentario?",null,null,null,null,null,null,null,null,null,null)
-B.b6Y=new A.ay("Instalar",null,B.io,null,null,null,null,null,null,null,null)
+B.b6X=new A.ay("Instalar",null,B.io,null,null,null,null,null,null,null,null)
 B.b1U=new A.A(!0,null,null,null,null,null,13,B.d0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7_=new A.ay("Ver cambios",null,B.b1U,null,null,null,null,null,null,null,null)
+B.b6Z=new A.ay("Ver cambios",null,B.b1U,null,null,null,null,null,null,null,null)
 B.es=new A.ay("Cancelar",null,null,null,null,null,null,null,null,null,null)
-B.b73=new A.ay("C\xf3digo Civil del Estado de Zacatecas",null,null,null,null,null,null,null,null,null,null)
-B.b74=new A.ay("Esta acci\xf3n es irreversible y remover\xe1 el comentario del foro.",null,null,null,null,null,null,null,null,null,null)
-B.b75=new A.ay("Alertas de Reforma",null,B.cX,null,null,null,null,null,null,null,null)
-B.b76=new A.ay("No se encontraron art\xedculos",null,B.io,null,null,null,null,null,null,null,null)
-B.b77=new A.ay("Cerrar Sesi\xf3n",null,null,null,null,null,null,null,null,null,null)
+B.b72=new A.ay("C\xf3digo Civil del Estado de Zacatecas",null,null,null,null,null,null,null,null,null,null)
+B.b73=new A.ay("Esta acci\xf3n es irreversible y remover\xe1 el comentario del foro.",null,null,null,null,null,null,null,null,null,null)
+B.b74=new A.ay("Alertas de Reforma",null,B.cX,null,null,null,null,null,null,null,null)
+B.b75=new A.ay("No se encontraron art\xedculos",null,B.io,null,null,null,null,null,null,null,null)
+B.b76=new A.ay("Cerrar Sesi\xf3n",null,null,null,null,null,null,null,null,null,null)
 B.b31=new A.A(!0,B.m,null,null,null,null,8,B.v,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7b=new A.ay("REFORMADO",null,B.b31,null,null,null,null,null,null,null,null)
-B.b7c=new A.ay("Ver hilo",null,B.xr,null,null,null,null,null,null,null,null)
-B.b7d=new A.ay("Ver todos",null,B.DD,null,null,null,null,null,null,null,null)
+B.b7a=new A.ay("REFORMADO",null,B.b31,null,null,null,null,null,null,null,null)
+B.b7b=new A.ay("Ver hilo",null,B.xr,null,null,null,null,null,null,null,null)
+B.b7c=new A.ay("Ver todos",null,B.DD,null,null,null,null,null,null,null,null)
 B.b5s=new A.A(!0,B.aS,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.a5x=new A.ay("Eliminar",null,B.b5s,null,null,null,null,null,null,null,null)
-B.b7g=new A.ay("Guardar Cambios",null,B.cX,null,null,null,null,null,null,null,null)
-B.b7i=new A.ay("Salir",null,null,null,null,null,null,null,null,null,null)
-B.b7j=new A.ay("Editar comentario",null,null,null,null,null,null,null,null,null,null)
-B.b7k=new A.ay("Nueva Publicaci\xf3n",null,null,null,null,null,null,null,null,null,null)
-B.b7l=new A.ay("Suspender",null,B.ip,null,null,null,null,null,null,null,null)
-B.b7m=new A.ay("Art\xedculos Populares",null,B.lA,null,null,null,null,null,null,null,null)
-B.b7n=new A.ay("Page Not Found",null,null,null,null,null,null,null,null,null,null)
-B.b7o=new A.ay("\xbfEst\xe1s seguro? Esta acci\xf3n eliminar\xe1 permanentemente tu cuenta y todos tus datos. No se puede deshacer.",null,null,null,null,null,null,null,null,null,null)
-B.b7p=new A.ay("Esta acci\xf3n es irreversible y remover\xe1 la noticia de todos los paneles de usuario.",null,null,null,null,null,null,null,null,null,null)
-B.b7q=new A.ay("Ver m\xe1s",null,B.DD,null,null,null,null,null,null,null,null)
-B.b7s=new A.ay("Cat\xe1logo de C\xf3digos",null,null,null,null,null,null,null,null,null,null)
+B.b7f=new A.ay("Guardar Cambios",null,B.cX,null,null,null,null,null,null,null,null)
+B.b7h=new A.ay("Salir",null,null,null,null,null,null,null,null,null,null)
+B.b7i=new A.ay("Editar comentario",null,null,null,null,null,null,null,null,null,null)
+B.b7j=new A.ay("Nueva Publicaci\xf3n",null,null,null,null,null,null,null,null,null,null)
+B.b7k=new A.ay("Suspender",null,B.ip,null,null,null,null,null,null,null,null)
+B.b7l=new A.ay("Art\xedculos Populares",null,B.lA,null,null,null,null,null,null,null,null)
+B.b7m=new A.ay("Page Not Found",null,null,null,null,null,null,null,null,null,null)
+B.b7n=new A.ay("\xbfEst\xe1s seguro? Esta acci\xf3n eliminar\xe1 permanentemente tu cuenta y todos tus datos. No se puede deshacer.",null,null,null,null,null,null,null,null,null,null)
+B.b7o=new A.ay("Esta acci\xf3n es irreversible y remover\xe1 la noticia de todos los paneles de usuario.",null,null,null,null,null,null,null,null,null,null)
+B.b7p=new A.ay("Ver m\xe1s",null,B.DD,null,null,null,null,null,null,null,null)
+B.b7r=new A.ay("Cat\xe1logo de C\xf3digos",null,null,null,null,null,null,null,null,null,null)
 B.b1l=new A.A(!0,B.m,null,null,null,null,11,B.v,null,0.3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7t=new A.ay("NUEVO",null,B.b1l,null,null,null,null,null,null,null,null)
-B.b7u=new A.ay("Correo Electr\xf3nico",null,B.DJ,null,null,null,null,null,null,null,null)
-B.b7v=new A.ay("Panel de Administraci\xf3n",null,B.cX,null,null,null,null,null,null,null,null)
-B.b7w=new A.ay("Esta acci\xf3n remover\xe1 tu comentario del foro.",null,null,null,null,null,null,null,null,null,null)
+B.b7s=new A.ay("NUEVO",null,B.b1l,null,null,null,null,null,null,null,null)
+B.b7t=new A.ay("Correo Electr\xf3nico",null,B.DJ,null,null,null,null,null,null,null,null)
+B.b7u=new A.ay("Panel de Administraci\xf3n",null,B.cX,null,null,null,null,null,null,null,null)
+B.b7v=new A.ay("Esta acci\xf3n remover\xe1 tu comentario del foro.",null,null,null,null,null,null,null,null,null,null)
 B.b18=new A.A(!0,B.aj,null,null,null,null,16,B.v,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7x=new A.ay("Contactar por WhatsApp",null,B.b18,null,null,null,null,null,null,null,null)
-B.b7y=new A.ay("Personalizado",null,null,null,null,null,null,null,null,null,null)
-B.b7z=new A.ay("Suspender Usuario",null,B.cX,null,null,null,null,null,null,null,null)
+B.b7w=new A.ay("Contactar por WhatsApp",null,B.b18,null,null,null,null,null,null,null,null)
+B.b7x=new A.ay("Personalizado",null,null,null,null,null,null,null,null,null,null)
+B.b7y=new A.ay("Suspender Usuario",null,B.cX,null,null,null,null,null,null,null,null)
 B.b2q=new A.A(!0,B.m,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7A=new A.ay("Go to home page",null,B.b2q,null,null,null,null,null,null,null,null)
-B.b7B=new A.ay("Permite crear sesiones y recibir estudiantes",null,null,null,null,null,null,null,null,null,null)
-B.b7C=new A.ay("Elegir",null,null,null,null,null,null,null,null,null,null)
-B.b7D=new A.ay("Suspender",null,B.cX,null,null,null,null,null,null,null,null)
-B.b7E=new A.ay("\xbfOlvidaste tu contrase\xf1a?",null,null,null,null,null,null,null,null,null,null)
-B.b7F=new A.ay("Acepto los t\xe9rminos y condiciones",null,null,null,null,null,null,null,null,null,null)
-B.b7G=new A.ay("\xbfYa tienes cuenta? ",null,null,null,null,null,null,null,null,null,null)
+B.b7z=new A.ay("Go to home page",null,B.b2q,null,null,null,null,null,null,null,null)
+B.b7A=new A.ay("Permite crear sesiones y recibir estudiantes",null,null,null,null,null,null,null,null,null,null)
+B.b7B=new A.ay("Elegir",null,null,null,null,null,null,null,null,null,null)
+B.b7C=new A.ay("Suspender",null,B.cX,null,null,null,null,null,null,null,null)
+B.b7D=new A.ay("\xbfOlvidaste tu contrase\xf1a?",null,null,null,null,null,null,null,null,null,null)
+B.b7E=new A.ay("Acepto los t\xe9rminos y condiciones",null,null,null,null,null,null,null,null,null,null)
+B.b7F=new A.ay("\xbfYa tienes cuenta? ",null,null,null,null,null,null,null,null,null,null)
 B.a5z=new A.ay("Guardar",null,null,null,null,null,null,null,null,null,null)
-B.b7J=new A.ay("Da acceso al panel de redacci\xf3n de reformas",null,null,null,null,null,null,null,null,null,null)
-B.b7K=new A.ay("\xbfEliminar sesi\xf3n de mentor\xeda?",null,null,null,null,null,null,null,null,null,null)
-B.b7M=new A.ay("\xbfEst\xe1s seguro de que deseas salir?",null,null,null,null,null,null,null,null,null,null)
-B.b7P=new A.ay("Notificaciones",null,B.cX,null,null,null,null,null,null,null,null)
-B.b7Q=new A.ay("Esta acci\xf3n es irreversible. Al eliminar la publicaci\xf3n, tambi\xe9n se eliminar\xe1n todos sus comentarios asociados.",null,null,null,null,null,null,null,null,null,null)
-B.b7R=new A.ay("Caso de Discusi\xf3n",null,null,null,null,null,null,null,null,null,null)
+B.b7I=new A.ay("Da acceso al panel de redacci\xf3n de reformas",null,null,null,null,null,null,null,null,null,null)
+B.b7J=new A.ay("\xbfEliminar sesi\xf3n de mentor\xeda?",null,null,null,null,null,null,null,null,null,null)
+B.b7L=new A.ay("\xbfEst\xe1s seguro de que deseas salir?",null,null,null,null,null,null,null,null,null,null)
+B.b7N=new A.ay("Notificaciones",null,B.cX,null,null,null,null,null,null,null,null)
+B.b7O=new A.ay("Esta acci\xf3n es irreversible. Al eliminar la publicaci\xf3n, tambi\xe9n se eliminar\xe1n todos sus comentarios asociados.",null,null,null,null,null,null,null,null,null,null)
+B.b7P=new A.ay("Caso de Discusi\xf3n",null,null,null,null,null,null,null,null,null,null)
 B.b2_=new A.A(!0,B.aC,null,null,null,null,10,B.v,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b7S=new A.ay("Borrador",null,B.b2_,null,null,null,null,null,null,null,null)
-B.b7U=new A.ay("Administra las credenciales de tu cuenta y la seguridad de tus datos.",null,B.a5t,null,null,null,null,null,null,null,null)
-B.b7V=new A.ay("Editar publicaci\xf3n",null,null,null,null,null,null,null,null,null,null)
-B.b7Y=new A.ay("Eliminar cuenta",null,null,null,null,null,null,null,null,null,null)
-B.b7Z=new A.ay("Calificar esta sesi\xf3n",null,B.io,null,null,null,null,null,null,null,null)
-B.b8_=new A.ay("\ud83d\udee1 Puede moderar contenido",null,null,null,null,null,null,null,null,null,null)
-B.b80=new A.ay("A\xf1ade un aviso visual para obtener ayuda r\xe1pida",null,B.DI,null,null,null,null,null,null,null,null)
+B.b7Q=new A.ay("Borrador",null,B.b2_,null,null,null,null,null,null,null,null)
+B.b7S=new A.ay("Administra las credenciales de tu cuenta y la seguridad de tus datos.",null,B.a5t,null,null,null,null,null,null,null,null)
+B.b7T=new A.ay("Editar publicaci\xf3n",null,null,null,null,null,null,null,null,null,null)
+B.b7X=new A.ay("Eliminar cuenta",null,null,null,null,null,null,null,null,null,null)
+B.b7Y=new A.ay("Calificar esta sesi\xf3n",null,B.io,null,null,null,null,null,null,null,null)
+B.b7Z=new A.ay("\ud83d\udee1 Puede moderar contenido",null,null,null,null,null,null,null,null,null,null)
+B.b8_=new A.ay("A\xf1ade un aviso visual para obtener ayuda r\xe1pida",null,B.DI,null,null,null,null,null,null,null,null)
 B.b5C=new A.A(!0,B.m,null,null,null,null,10,B.v,null,0.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b81=new A.ay("NUEVO",null,B.b5C,null,null,null,null,null,null,null,null)
-B.b82=new A.ay("Ver",null,null,null,null,null,null,null,null,null,null)
-B.b83=new A.ay("Gesti\xf3n de Usuarios",null,B.cX,null,null,null,null,null,null,null,null)
-B.b84=new A.ay("Recibir alertas de reforma por correo",null,null,null,null,null,null,null,null,null,null)
-B.b85=new A.ay("Eliminar definitivamente",null,null,null,null,null,null,null,null,null,null)
-B.b86=new A.ay("Permite eliminar posts y comentarios en foros",null,null,null,null,null,null,null,null,null,null)
-B.b87=new A.ay("DETALLES DE LA PUBLICACI\xd3N",null,B.DK,null,null,null,null,null,null,null,null)
-B.b88=new A.ay("\xbfAplicar suspensi\xf3n?",null,null,null,null,null,null,null,null,null,null)
-B.b89=new A.ay("Describe los hechos detalladamente y utiliza hashtags para categorizar tu consulta.",null,B.DL,B.b0,null,null,null,null,null,null,null)
-B.b8a=new A.ay("Detalle de Mentor\xeda",null,null,null,null,null,null,null,null,null,null)
+B.b80=new A.ay("NUEVO",null,B.b5C,null,null,null,null,null,null,null,null)
+B.b81=new A.ay("Ver",null,null,null,null,null,null,null,null,null,null)
+B.b82=new A.ay("Gesti\xf3n de Usuarios",null,B.cX,null,null,null,null,null,null,null,null)
+B.b83=new A.ay("Recibir alertas de reforma por correo",null,null,null,null,null,null,null,null,null,null)
+B.b84=new A.ay("Eliminar definitivamente",null,null,null,null,null,null,null,null,null,null)
+B.b85=new A.ay("Permite eliminar posts y comentarios en foros",null,null,null,null,null,null,null,null,null,null)
+B.b86=new A.ay("DETALLES DE LA PUBLICACI\xd3N",null,B.DK,null,null,null,null,null,null,null,null)
+B.b87=new A.ay("\xbfAplicar suspensi\xf3n?",null,null,null,null,null,null,null,null,null,null)
+B.b88=new A.ay("Describe los hechos detalladamente y utiliza hashtags para categorizar tu consulta.",null,B.DL,B.b0,null,null,null,null,null,null,null)
+B.b89=new A.ay("Detalle de Mentor\xeda",null,null,null,null,null,null,null,null,null,null)
+B.b3W=new A.A(!0,B.m,null,null,null,null,17,B.v,null,null,null,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.b8a=new A.ay("\xa1Instala IUZ ZAC!",null,B.b3W,null,null,null,null,null,null,null,null)
 B.a5B=new A.pi(0,"system")
 B.b8b=new A.pi(2,"dark")
 B.aUb=new A.k(0.056,0.024)
