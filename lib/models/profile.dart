@@ -9,6 +9,12 @@ class Profile {
   final String? institution;
   final String? semesterDegree;
   final String? phoneWhatsapp;
+  // Permissions
+  final bool canMentor;
+  final bool canPublish;
+  final bool canModerate;
+  final bool canManageUsers;
+  // Suspension
   final bool isSuspended;
   final DateTime? suspendedUntil;
   final String? suspensionReason;
@@ -32,6 +38,10 @@ class Profile {
     this.institution,
     this.semesterDegree,
     this.phoneWhatsapp,
+    this.canMentor = false,
+    this.canPublish = false,
+    this.canModerate = false,
+    this.canManageUsers = false,
     this.isSuspended = false,
     this.suspendedUntil,
     this.suspensionReason,
@@ -44,6 +54,8 @@ class Profile {
   });
 
   String get role => userType;
+  bool get isAdmin => userType == 'admin';
+  bool get isActivelySuspended => isSuspended && (suspendedUntil?.isAfter(DateTime.now()) ?? true);
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
@@ -57,6 +69,10 @@ class Profile {
       institution: json['institution'],
       semesterDegree: json['semester_degree'],
       phoneWhatsapp: json['phone_whatsapp'],
+      canMentor: json['can_mentor'] ?? false,
+      canPublish: json['can_publish'] ?? false,
+      canModerate: json['can_moderate'] ?? false,
+      canManageUsers: json['can_manage_users'] ?? false,
       isSuspended: json['is_suspended'] ?? false,
       suspendedUntil: json['suspended_until'] != null
           ? DateTime.parse(json['suspended_until'])
@@ -83,6 +99,10 @@ class Profile {
       'institution': institution,
       'semester_degree': semesterDegree,
       'phone_whatsapp': phoneWhatsapp,
+      'can_mentor': canMentor,
+      'can_publish': canPublish,
+      'can_moderate': canModerate,
+      'can_manage_users': canManageUsers,
       'is_suspended': isSuspended,
       'suspended_until': suspendedUntil?.toIso8601String(),
       'suspension_reason': suspensionReason,
@@ -104,6 +124,10 @@ class Profile {
     String? phoneWhatsapp,
     String? userType,
     String? label,
+    bool? canMentor,
+    bool? canPublish,
+    bool? canModerate,
+    bool? canManageUsers,
     bool? isSuspended,
     DateTime? suspendedUntil,
     String? suspensionReason,
@@ -125,6 +149,10 @@ class Profile {
       institution: institution ?? this.institution,
       semesterDegree: semesterDegree ?? this.semesterDegree,
       phoneWhatsapp: phoneWhatsapp ?? this.phoneWhatsapp,
+      canMentor: canMentor ?? this.canMentor,
+      canPublish: canPublish ?? this.canPublish,
+      canModerate: canModerate ?? this.canModerate,
+      canManageUsers: canManageUsers ?? this.canManageUsers,
       isSuspended: isSuspended ?? this.isSuspended,
       suspendedUntil: suspendedUntil ?? this.suspendedUntil,
       suspensionReason: suspensionReason ?? this.suspensionReason,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../providers/database_provider.dart';
 import '../../models/profile.dart';
@@ -250,7 +249,7 @@ class _AdminSuspendViewState extends ConsumerState<AdminSuspendView> {
                             isLoading: _isLoading,
                             isPrimary: false,
                             backgroundColor: colorScheme.outline,
-                            onPressed: () => _liftSuspension(context, user),
+                            onPressed: () => _liftSuspension(user),
                           ),
                         ),
                       ],
@@ -321,7 +320,6 @@ class _AdminSuspendViewState extends ConsumerState<AdminSuspendView> {
   Future<void> _applySuspension(Profile user) async {
     setState(() => _isLoading = true);
     final messenger = ScaffoldMessenger.of(context);
-    final router = GoRouter.of(context);
 
     try {
       final dbService = ref.read(databaseServiceProvider);
@@ -340,7 +338,9 @@ class _AdminSuspendViewState extends ConsumerState<AdminSuspendView> {
           backgroundColor: Colors.green,
         ),
       );
-      router.pop(); // return to user management
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } catch (e) {
       messenger.showSnackBar(
         SnackBar(
@@ -353,10 +353,9 @@ class _AdminSuspendViewState extends ConsumerState<AdminSuspendView> {
     }
   }
 
-  Future<void> _liftSuspension(BuildContext context, Profile user) async {
+  Future<void> _liftSuspension(Profile user) async {
     setState(() => _isLoading = true);
     final messenger = ScaffoldMessenger.of(context);
-    final router = GoRouter.of(context);
 
     try {
       final dbService = ref.read(databaseServiceProvider);
@@ -369,7 +368,9 @@ class _AdminSuspendViewState extends ConsumerState<AdminSuspendView> {
           backgroundColor: Colors.green,
         ),
       );
-      router.pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } catch (e) {
       messenger.showSnackBar(
         SnackBar(

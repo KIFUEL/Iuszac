@@ -25,7 +25,7 @@ import '../views/codes/article_detail_view.dart';
 import '../views/search/global_search_view.dart';
 import '../views/admin/admin_dashboard_view.dart';
 import '../views/admin/new_legal_update_view.dart';
-import '../views/admin/admin_mentors_view.dart';
+import '../views/admin/admin_users_view.dart';
 import '../views/admin/admin_moderation_view.dart';
 import '../views/admin/admin_suspend_view.dart';
 import '../widgets/main_layout.dart';
@@ -76,10 +76,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final profile = profileAsync.value;
 
       if (profile != null) {
-        final now = DateTime.now();
-        final isSuspended = profile.isSuspended && (profile.suspendedUntil == null || profile.suspendedUntil!.isAfter(now));
-        
-        if (isSuspended) {
+        if (profile.isActivelySuspended) {
           if (state.matchedLocation != '/suspended') {
             return '/suspended';
           }
@@ -91,15 +88,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         }
 
         // Check admin routes
-        if (state.matchedLocation.startsWith('/admin')) {
-          if (profile.userType != 'admin') {
-            return '/';
-          }
+        if (state.matchedLocation.startsWith('/admin/new-update')) {
+          if (!profile.canPublish) return '/';
+        } else if (state.matchedLocation.startsWith('/admin/moderation')) {
+          if (!profile.canModerate) return '/';
+        } else if (state.matchedLocation.startsWith('/admin/mentors') || state.matchedLocation.startsWith('/admin/suspend') || state.matchedLocation.startsWith('/admin/users')) {
+          if (!profile.canManageUsers) return '/';
+        } else if (state.matchedLocation.startsWith('/admin')) {
+          if (!profile.canPublish && !profile.canModerate && !profile.canManageUsers) return '/';
         }
 
         // Check mentor routes
         if (state.matchedLocation.startsWith('/mentorship/new') || state.matchedLocation.startsWith('/mentorship/edit')) {
-          if (profile.userType != 'mentor') {
+          if (!profile.canMentor) {
             return '/mentorship';
           }
         }
@@ -239,8 +240,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (context, state) => const NewLegalUpdateView(),
               ),
               GoRoute(
-                path: 'mentors',
-                builder: (context, state) => const AdminMentorsView(),
+                path: 'users',
+                builder: (context, state) => const AdminUsersView(),
               ),
               GoRoute(
                 path: 'moderation',

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../providers/database_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../models/legal_update.dart';
 import '../../widgets/common_widgets.dart';
 
@@ -11,9 +12,12 @@ class AdminDashboardView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider).value;
     final updatesAsync = ref.watch(legalUpdatesProvider);
     final postsAsync = ref.watch(forumPostsProvider);
     final usersAsync = ref.watch(allUsersProvider);
+    final draftsAsync = ref.watch(myDraftsProvider);
+    final scheduledAsync = ref.watch(scheduledUpdatesProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
     // Get statistics reactively
@@ -32,6 +36,8 @@ class AdminDashboardView extends ConsumerWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () {
               ref.invalidate(legalUpdatesProvider);
+              ref.invalidate(myDraftsProvider);
+              ref.invalidate(scheduledUpdatesProvider);
               ref.invalidate(forumPostsProvider);
               ref.invalidate(allUsersProvider);
             },
@@ -113,81 +119,64 @@ class AdminDashboardView extends ConsumerWidget {
                   mainAxisSpacing: 12,
                   childAspectRatio: isWide ? 2.5 : 1.8,
                   children: [
-                    _buildActionButton(
-                      context,
-                      'Publicar Noticia',
-                      Icons.add_photo_alternate_outlined,
-                      colorScheme.primary,
-                      () => context.push('/admin/new-update'),
-                    ),
-                    _buildActionButton(
-                      context,
-                      'Gestión de Usuarios',
-                      Icons.manage_accounts_rounded,
-                      colorScheme.secondary,
-                      () => context.push('/admin/mentors'),
-                    ),
-                    _buildActionButton(
-                      context,
-                      'Moderar Contenido',
-                      Icons.gavel_rounded,
-                      colorScheme.error,
-                      () => context.push('/admin/moderation'),
-                    ),
+                    if (profile?.canPublish ?? false)
+                      _buildActionButton(
+                        context,
+                        'Publicar Noticia',
+                        Icons.add_photo_alternate_outlined,
+                        colorScheme.primary,
+                        () => context.push('/admin/new-update'),
+                      ),
+                    if (profile?.canManageUsers ?? false)
+                      _buildActionButton(
+                        context,
+                        'Gestión de Usuarios',
+                        Icons.manage_accounts_rounded,
+                        colorScheme.secondary,
+                        () => context.push('/admin/users'),
+                      ),
+                    if (profile?.canModerate ?? false)
+                      _buildActionButton(
+                        context,
+                        'Moderar Contenido',
+                        Icons.gavel_rounded,
+                        colorScheme.error,
+                        () => context.push('/admin/moderation'),
+                      ),
                   ],
                 );
               },
             ),
             const SizedBox(height: 24),
 
-            // Publicaciones Recientes Section
-            Text(
-              'Publicaciones Recientes',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.primary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            updatesAsync.when(
-              data: (updates) {
-                if (updates.isEmpty) {
-                  return Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: const Padding(
-                      padding: EdgeInsets.all(24.0),
-                      child: Center(
-                        child: Text('No hay publicaciones recientes.'),
-                      ),
+            DefaultTabController(
+              length: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TabBar(
+                    tabs: const [
+                      Tab(text: 'Publicadas'),
+                      Tab(text: 'Borradores'),
+                      Tab(text: 'Programadas'),
+                    ],
+                    labelColor: colorScheme.primary,
+                    unselectedLabelColor: colorScheme.onSurfaceVariant,
+                    indicatorColor: colorScheme.primary,
+                    dividerColor: Colors.transparent,
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 400,
+                    child: TabBarView(
+                      children: [
+                        _buildUpdatesList(context, ref, updatesAsync),
+                        _buildUpdatesList(context, ref, draftsAsync),
+                        _buildUpdatesList(context, ref, scheduledAsync),
+                      ],
                     ),
-                  );
-                }
-
-                // Show only the 5 most recent updates
-                final recentUpdates = updates.take(5).toList();
-
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: recentUpdates.length,
-                  itemBuilder: (context, index) {
-                    final update = recentUpdates[index];
-                    return _buildAdminUpdateCard(context, ref, update);
-                  },
-                );
-              },
-              loading: () => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              error: (err, _) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Text('Error al cargar publicaciones: $err', style: const TextStyle(color: Colors.red)),
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -290,20 +279,51 @@ class AdminDashboardView extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    update.category,
-                    style: TextStyle(
-                      color: colorScheme.onSecondaryContainer,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: colorScheme.secondaryContainer,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        update.category,
+                        style: TextStyle(
+                          color: colorScheme.onSecondaryContainer,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    if (update.status == 'draft')
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withValues(alpha: 0.1),
+                          border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          'Borrador',
+                          style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    else if (update.status == 'scheduled')
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.purple.withValues(alpha: 0.1),
+                          border: Border.all(color: Colors.purple.withValues(alpha: 0.3)),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          'Programado: ${update.publishedAt != null ? DateFormat('dd/MM HH:mm').format(update.publishedAt!) : ''}',
+                          style: const TextStyle(color: Colors.purple, fontSize: 10, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                  ],
                 ),
                 Text(
                   formattedDate,
@@ -324,7 +344,7 @@ class AdminDashboardView extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              update.content,
+              update.plainContent,
               style: TextStyle(
                 fontSize: 13,
                 color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
@@ -375,6 +395,8 @@ class AdminDashboardView extends ConsumerWidget {
               try {
                 await ref.read(databaseServiceProvider).deleteLegalUpdate(id);
                 ref.invalidate(legalUpdatesProvider);
+                ref.invalidate(myDraftsProvider);
+                ref.invalidate(scheduledUpdatesProvider);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -400,6 +422,45 @@ class AdminDashboardView extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUpdatesList(BuildContext context, WidgetRef ref, AsyncValue<List<LegalUpdate>> updatesAsync) {
+    return updatesAsync.when(
+      data: (updates) {
+        if (updates.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                'No hay publicaciones en esta categoría.',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: updates.length,
+          itemBuilder: (context, index) {
+            final update = updates[index];
+            return _buildAdminUpdateCard(context, ref, update);
+          },
+        );
+      },
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (err, _) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Text('Error al cargar publicaciones: $err', style: const TextStyle(color: Colors.red)),
+        ),
       ),
     );
   }

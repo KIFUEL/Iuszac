@@ -181,6 +181,65 @@ class AlertsView extends ConsumerWidget {
     );
   }
 
+  Widget _buildTypeChip(BuildContext context, String contentType) {
+    final colorScheme = Theme.of(context).colorScheme;
+    IconData icon;
+    String label;
+    Color color;
+    
+    switch (contentType) {
+      case 'reforma':
+        icon = Icons.gavel_rounded;
+        label = 'Reforma';
+        color = Colors.blue;
+        break;
+      case 'noticia':
+        icon = Icons.newspaper_rounded;
+        label = 'Noticia';
+        color = Colors.orange;
+        break;
+      case 'evento':
+        icon = Icons.event_rounded;
+        label = 'Evento';
+        color = Colors.green;
+        break;
+      case 'convocatoria':
+        icon = Icons.campaign_rounded;
+        label = 'Convocatoria';
+        color = Colors.purple;
+        break;
+      default:
+        icon = Icons.article_rounded;
+        label = 'Publicación';
+        color = colorScheme.primary;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 10,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildAlertCard(BuildContext context, LegalUpdate alert) {
     final colorScheme = Theme.of(context).colorScheme;
     final isNew = DateTime.now().difference(alert.createdAt).inHours < 24;
@@ -230,15 +289,80 @@ class AlertsView extends ConsumerWidget {
             const SizedBox(height: 10),
 
             // ── Content body ──
-            Text(
-              alert.content,
-              style: TextStyle(
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-                fontSize: 14,
-                height: 1.5,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  alert.plainContent,
+                  style: TextStyle(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                    fontSize: 14,
+                    height: 1.5,
+                  ),
+                  maxLines: alert.contentType == 'evento' || alert.contentType == 'convocatoria' ? 2 : 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (alert.contentType == 'evento') ...[
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.event, size: 13, color: Colors.green.shade700),
+                      const SizedBox(width: 4),
+                      Text(
+                        alert.eventStart != null
+                            ? DateFormat('dd/MM/yyyy HH:mm').format(alert.eventStart!)
+                            : 'Fecha pendiente',
+                        style: TextStyle(fontSize: 11, color: Colors.green.shade700, fontWeight: FontWeight.bold),
+                      ),
+                      if (alert.eventLocation != null) ...[
+                        const SizedBox(width: 8),
+                        Icon(Icons.location_on, size: 13, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                        const SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            alert.eventLocation!,
+                            style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+                if (alert.contentType == 'convocatoria' && alert.deadline != null) ...[
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      const Icon(Icons.timer_outlined, size: 13, color: Colors.purple),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Límite: ${alert.deadline}',
+                        style: const TextStyle(fontSize: 11, color: Colors.purple, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+                if (alert.tags.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: alert.tags.map((tag) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '#$tag',
+                        style: TextStyle(fontSize: 9, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8)),
+                      ),
+                    )).toList(),
+                  ),
+                ],
+              ],
             ),
 
             const SizedBox(height: 14),
@@ -271,6 +395,8 @@ class AlertsView extends ConsumerWidget {
                     ),
                   ),
                 ),
+                const SizedBox(width: 8),
+                _buildTypeChip(context, alert.contentType),
                 const SizedBox(width: 10),
                 Icon(
                   Icons.access_time_rounded,

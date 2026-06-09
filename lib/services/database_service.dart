@@ -14,12 +14,40 @@ import '../models/mentorship_review.dart';
 class DatabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  // 1. Actualizaciones Legales (Reformas)
+  // 1. Actualizaciones Legales (Noticias / Reformas / Eventos)
   Future<List<LegalUpdate>> getLegalUpdates() async {
     final response = await _supabase
         .from('legal_updates')
         .select('*, profiles(*)')
+        .eq('status', 'published')
         .order('created_at', ascending: false);
+
+    return (response as List)
+        .map((json) => LegalUpdate.fromJson(json))
+        .toList();
+  }
+
+  Future<List<LegalUpdate>> getMyDrafts() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return [];
+    final response = await _supabase
+        .from('legal_updates')
+        .select('*, profiles(*)')
+        .eq('status', 'draft')
+        .eq('author_id', userId)
+        .order('created_at', ascending: false);
+
+    return (response as List)
+        .map((json) => LegalUpdate.fromJson(json))
+        .toList();
+  }
+
+  Future<List<LegalUpdate>> getScheduledUpdates() async {
+    final response = await _supabase
+        .from('legal_updates')
+        .select('*, profiles(*)')
+        .eq('status', 'scheduled')
+        .order('published_at', ascending: true);
 
     return (response as List)
         .map((json) => LegalUpdate.fromJson(json))
@@ -30,24 +58,47 @@ class DatabaseService {
     required String title,
     required String content,
     required String category,
+    required String status,
+    required String contentType,
+    List<String> tags = const [],
     String? imageUrl,
+    String? sourceName,
+    String? sourceUrl,
+    DateTime? eventStart,
+    DateTime? eventEnd,
+    String? eventLocation,
+    String? eventLink,
+    String? deadline,
+    DateTime? publishedAt,
+    // Específico de reformas
     String? articleId,
     String? oldContent,
     String? newContent,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
-      throw Exception('Inicia sesión para poder crear una actualización');
+      throw Exception('Inicia sesión para poder crear una publicación');
     }
 
     final response = await _supabase
         .from('legal_updates')
         .insert({
+          'author_id': userId,
           'title': title,
           'content': content,
           'category': category,
+          'status': status,
+          'content_type': contentType,
+          'tags': tags,
           'image_url': imageUrl,
-          'author_id': userId,
+          'source_name': sourceName,
+          'source_url': sourceUrl,
+          'event_start': eventStart?.toIso8601String(),
+          'event_end': eventEnd?.toIso8601String(),
+          'event_location': eventLocation,
+          'event_link': eventLink,
+          'deadline': deadline,
+          'published_at': publishedAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
           'article_id': articleId,
           'old_content': oldContent,
           'new_content': newContent,
@@ -376,9 +427,14 @@ class DatabaseService {
     return (response as List).map((json) => Profile.fromJson(json)).toList();
   }
 
-  /// Actualiza el tipo de usuario (user_type) de un perfil
-  Future<void> updateUserType(String userId, String userType) async {
-    await _supabase.from('profiles').update({'user_type': userType}).eq('id', userId);
+  /// Actualiza los permisos de un usuario usando la función de BD
+  Future<void> updateUserPermissions(String userId, bool canMentor, bool canPublish, bool canModerate) async {
+    await _supabase.rpc('admin_set_permissions', params: {
+      'target_id': userId,
+      'new_can_mentor': canMentor,
+      'new_can_publish': canPublish,
+      'new_can_moderate': canModerate,
+    });
   }
 
   /// Aplica una suspensión temporal usando la función de BD

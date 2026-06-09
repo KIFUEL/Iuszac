@@ -55,10 +55,19 @@ erDiagram
     *   `full_name`: `TEXT` (Requerido)
     *   `last_name`: `TEXT` (Opcional)
     *   `avatar_url`: `TEXT` (Opcional)
-    *   `role`: `TEXT` (admin, mentor, user)
+    *   `user_type`: `TEXT` (admin, user)
+    *   `label`: `TEXT` (Opcional)
     *   `institution`: `TEXT` (Opcional)
     *   `semester_degree`: `TEXT` (Opcional)
+    *   `phone_whatsapp`: `TEXT` (Opcional)
     *   `bio`: `TEXT` (Opcional)
+    *   `can_mentor`: `BOOLEAN` (Def: false, Requerido)
+    *   `can_publish`: `BOOLEAN` (Def: false, Requerido)
+    *   `can_moderate`: `BOOLEAN` (Def: false, Requerido)
+    *   `can_manage_users`: `BOOLEAN` (Def: false, Requerido)
+    *   `is_suspended`: `BOOLEAN` (Def: false, Requerido)
+    *   `suspended_until`: `TIMESTAMP` (Opcional)
+    *   `suspension_reason`: `TEXT` (Opcional)
     *   `notif_alerts_reforma`: `BOOLEAN` (Def: true)
     *   `notif_email_resumen`: `BOOLEAN` (Def: true)
     *   `notif_foro`: `BOOLEAN` (Def: true)
@@ -102,7 +111,7 @@ erDiagram
 6.  **`legal_updates`**
     *   `id`: `UUID` (PK)
     *   `title`: `TEXT` (Requerido)
-    *   `content`: `TEXT` (Requerido)
+    *   `content`: `TEXT` (Requerido, JSON Delta de Quill)
     *   `category`: `TEXT` (Requerido)
     *   `image_url`: `TEXT` (Opcional)
     *   `created_at`: `TIMESTAMP`
@@ -110,8 +119,24 @@ erDiagram
     *   `article_id`: `UUID` (FK a `legal_articles`, Opcional)
     *   `old_content`: `TEXT` (Opcional)
     *   `new_content`: `TEXT` (Opcional)
+    *   `status`: `TEXT` (Def: 'published', Requerido)
+    *   `content_type`: `TEXT` (Def: 'reforma', Requerido)
+    *   `tags`: `TEXT[]` (Def: '{}')
+    *   `source_name`: `TEXT` (Opcional)
+    *   `source_url`: `TEXT` (Opcional)
+    *   `event_start`: `TIMESTAMP` (Opcional)
+    *   `event_end`: `TIMESTAMP` (Opcional)
+    *   `event_location`: `TEXT` (Opcional)
+    *   `event_link`: `TEXT` (Opcional)
+    *   `deadline`: `TEXT` (Opcional)
+    *   `published_at`: `TIMESTAMP` (Opcional)
 
-7.  **`mentorship_sessions`**
+7.  **`legal_update_articles`**
+    *   `id`: `UUID` (PK)
+    *   `update_id`: `UUID` (FK a `legal_updates`, ON DELETE CASCADE)
+    *   `article_id`: `UUID` (FK a `legal_articles`, ON DELETE CASCADE)
+
+8.  **`mentorship_sessions`**
     *   `id`: `UUID` (PK)
     *   `mentor_id`: `UUID` (FK a `profiles`)
     *   `title`: `TEXT` (Requerido)
@@ -122,7 +147,7 @@ erDiagram
     *   `expires_at`: `TIMESTAMP` (Requerido, para soft-delete)
     *   `created_at`: `TIMESTAMP`
 
-8.  **`mentorship_enrollments`**
+9.  **`mentorship_enrollments`**
     *   `id`: `UUID` (PK)
     *   `session_id`: `UUID` (FK a `mentorship_sessions`)
     *   `user_id`: `UUID` (FK a `profiles`)
@@ -680,45 +705,100 @@ Tablero de control exclusivo para perfiles con rol `admin` para la revisión de 
 **Estado:** ✅ Implementado  
 
 #### Descripción General
-Formulario para que administradores inserten reformas y noticias en el feed global y en el historial.
+Formulario dinámico adaptado al tipo de contenido seleccionado para que administradores o usuarios con permisos de publicación inserten reformas, noticias, eventos y convocatorias usando un editor de texto enriquecido (Quill) y programen o guarden borradores.
 
 #### Boceto de Referencia (Wireframe)
 ```
 ┌──────────────────────────────────────────┐
-│  ← Nueva Noticia / Cambio Legal          │
+│  ← Crear Publicación                     │
 ├──────────────────────────────────────────┤
-│  Artículo Afectado                       │
-│  [ Buscar artículo...               ▼ ]  │
+│  Tipo de Contenido        Estado         │
+│  [ Reforma    ▼ ]        [ Borrador  ▼ ] │
 │                                          │
-│  Resumen del Cambio                      │
+│  Título de la publicación                │
 │  ┌────────────────────────────────────┐  │
-│  │ Se modifica la sanción mínima...   │  │
+│  │ Ingresa el título aquí...          │  │
 │  └────────────────────────────────────┘  │
-│  Texto Anterior                          │
-│  ┌────────────────────────────────────┐  │
-│  │ Texto original del artículo...     │  │
-│  └────────────────────────────────────┘  │
-│  Texto Nuevo                             │
-│  ┌────────────────────────────────────┐  │
-│  │ Texto reformado del artículo...     │  │
-│  └────────────────────────────────────┘  │
-│  Fecha Publicación      Tipo de Cambio   │
-│  [ 08/06/2026 ]        [ Reforma  ▼ ]    │
+│  Categoría                Etiquetas      │
+│  [ Penal      ▼ ]        [ penal, ley  ] │
 │                                          │
-│  [ Cancelar ]          [ Publicar Cambio ]│
+│  [ Negrita ] [ Cursiva ] [ Lista ]       │
+│  ┌────────────────────────────────────┐  │
+│  │ Cuerpo del Contenido (Editor Quill)│  │
+│  └────────────────────────────────────┘  │
+│  [ Cancelar ]          [ Guardar/Publicar]│
 └──────────────────────────────────────────┘
 ```
 
 #### Interfaz y Validaciones
 | **Campo / Elemento** | **Tipo** | **Requerido** | **Detalles / Validación** |
 | --- | --- | --- | --- |
-| Artículo Vinculado | Dropdown Buscable| Sí | Lista completa de artículos legales para vincular la comparativa. |
-| Resumen de Reforma | TextArea | Sí | Explicación breve de la reforma (máximo 3 líneas). |
-| Texto Original | TextArea | No | Copia fiel del texto del artículo previo al cambio. |
-| Texto Reformado | TextArea | No | Texto nuevo vigente a publicar. |
-| Fecha de Publicación | DatePicker | Sí | Por defecto el día de hoy; permite fechas previas. |
-| Tipo de Modificación | Dropdown | Sí | Selección: Reforma / Adición / Derogación / Corrección. |
-| Publicar Cambio | Botón | Sí | Ejecuta inserción en `legal_updates`, limpia cache y regresa. |
+| Tipo de Contenido | Dropdown | Sí | Selección: Reforma / Noticia / Evento / Convocatoria. Cambia dinámicamente los campos mostrados. |
+| Estado | Dropdown | Sí | Selección: Publicar ahora / Borrador / Programar (muestra selector de fecha futura si se programa). |
+| Título | Input Texto | Sí | Mínimo 5 caracteres. |
+| Categoría | Dropdown | Sí | Selección de la categoría temática (ej. Penal, Civil, Constitucional). |
+| Etiquetas | Input Texto | No | Lista separada por comas parseada a arreglo. |
+| Editor Quill | Widget Rich-Text | Sí | Cuerpo en texto enriquecido guardado como Delta JSON. |
+| Sección Reforma | Dinámico | No | Muestra selector de Código, selector de Artículo y cuadros de Texto Anterior y Texto Nuevo. |
+| Sección Evento | Dinámico | No | Muestra fecha de inicio/fin, ubicación y enlace de registro. |
+| Sección Convocatoria | Dinámico | No | Muestra fecha límite de recepción de documentos/postulación. |
+
+---
+
+### Pantalla 21 · Gestión de Usuarios y Permisos
+**Sección:** Administración  
+**Ruta:** `/admin/users`  
+**Estado:** ✅ Implementado  
+
+#### Descripción General
+Panel interactivo para administrar el listado de usuarios de la plataforma, filtrar y configurar individualmente permisos de mentoría, publicación, moderación y suspender perfiles.
+
+#### Interfaz y Validaciones
+| **Campo / Elemento** | **Tipo** | **Requerido** | **Detalles / Validación** |
+| --- | --- | --- | --- |
+| Buscador | Input Texto | No | Filtra reactivamente por nombre, apellido, correo, institución o biografía. |
+| Filtros | Chips | Sí | Filtra la lista por: Todos, Con Permisos (can_mentor, can_publish, can_moderate, admin), Suspendidos. |
+| Tarjeta de Usuario | Tarjeta | Sí | Muestra avatar, nombre completo, rol básico, etiquetas, chips de permisos activos (🎓 Mentor, 📰 Editor, 🛡 Moderador, 👑 Admin) e insignia "SUSPENDIDO" (con tiempo restante). |
+| Botón Permisos | Botón | Sí | Abre un Bottom Sheet contextual para editar los permisos y acceder a la suspensión. |
+| Toggles de Permisos | SwitchListTile | Sí | Controla de manera granular: "Puede publicar mentorías" (`can_mentor`), "Puede publicar noticias" (`can_publish`) y "Puede moderar contenido" (`can_moderate`). |
+| Guardar Cambios | Botón | Sí | Llama al RPC `admin_set_permissions()` para aplicar los cambios de manera atómica. |
+
+---
+
+### Pantalla 23 · Formulario de Suspensión de Usuarios
+**Sección:** Administración  
+**Ruta:** `/admin/suspend/:userId` (o Modal Dialog flotante)  
+**Estado:** ✅ Implementado  
+
+#### Descripción General
+Diálogo o ventana emergente dedicada a aplicar suspensiones temporales a usuarios infractores indicando un motivo detallado, o levantar suspensiones existentes de forma anticipada.
+
+#### Interfaz y Validaciones
+| **Campo / Elemento** | **Tipo** | **Requerido** | **Detalles / Validación** |
+| --- | --- | --- | --- |
+| Resumen de Perfil | Visual | Sí | Muestra nombre completo, rol actual y estado actual del usuario a suspender. |
+| Duración | Chips de opción | Sí | Opciones rápidas de 1, 3, 7, 15, 30 días, o "Personalizado" (activa un DatePicker de fecha fin). |
+| Motivo | Input Texto | Sí | Campo de texto multilínea descriptivo (mínimo 10 caracteres). |
+| Aplicar Suspensión | Botón | Sí | Llama a la base de datos a través del RPC `admin_suspend_user()` e invalida los perfiles y estadísticas. |
+| Levantar Suspensión | Botón | No | Visible únicamente si el usuario está suspendido; llama al RPC `admin_lift_suspension()`. |
+
+---
+
+### Pantalla 24 · Aviso de Cuenta Suspendida
+**Sección:** Autenticación  
+**Ruta:** `/suspended`  
+**Estado:** ✅ Implementado  
+
+#### Descripción General
+Pantalla de bloqueo de seguridad sin barra de navegación a la que es redirigido de manera forzosa todo usuario que cuente con una suspensión vigente al intentar utilizar la app.
+
+#### Interfaz y Validaciones
+| **Campo / Elemento** | **Tipo** | **Requerido** | **Detalles / Validación** |
+| --- | --- | --- | --- |
+| Icono de Bloqueo | Visual | Sí | Icono de stop/restringido en color rojo. |
+| Fecha de Finalización | Texto | Sí | Muestra el día y hora exactos en español en los que expira la sanción. |
+| Motivo de Sanción | Contenedor | Sí | Texto explicativo del motivo de la suspensión ingresado por el administrador. |
+| Cerrar Sesión | Botón | Sí | Ejecuta el método `signOut()`, borra la sesión de Supabase Auth y redirige al usuario a `/splash`. |
 
 ---
 
@@ -729,15 +809,16 @@ El enrutador está construido sobre GoRouter y define la jerarquía de navegaci�
 ```
 /splash (Splash inicial de bienvenida)
  ├── /login (Ingreso de usuario)
- └── /register (Creación de cuenta)
+ ├── /register (Creación de cuenta)
+ └── /suspended (Pantalla de bloqueo por suspensión activa)
 
 / [ShellRoute - MainLayout]
- ├── / (Inicio / Dashboard)
+ ├── / (Inicio / Dashboard - con chips de tipo de contenido y visualización dinámica de eventos/convocatorias)
  ├── /forum (Lista de dudas del foro)
  │    ├── /forum/new (Nueva duda)
  │    └── /forum/:id (Detalle de duda y respuestas)
  ├── /alerts (Feed de reformas)
- │    └── /alerts/detail/:id (Comparativa Rojo/Verde)
+ │    └── /alerts/detail/:id (Comparativa y Lector de texto enriquecido Quill)
  ├── /mentorship (Lista de mentorías)
  │    ├── /mentorship/new (Publicar mentoría)
  │    └── /mentorship/:id (Temario e inscripción)
@@ -747,8 +828,10 @@ El enrutador está construido sobre GoRouter y define la jerarquía de navegaci�
  │    └── /codes/:codeId (Artículos del código)
  ├── /article/:id (Lector del artículo individual)
  ├── /search (Búsqueda global)
- └── /admin (Dashboard Administrador)
-      └── /admin/new-update (Formulario de publicación de cambios)
+ └── /admin (Dashboard Administrador - Administra publicaciones por tabs)
+      ├── /admin/new-update (Formulario de publicación de cambios con Quill)
+      ├── /admin/users (Administración granular de perfiles y permisos)
+      └── /admin/moderation (Moderación de posts y comentarios)
 ```
 
 ---
@@ -760,7 +843,9 @@ La aplicación maneja el estado reactivo con los siguientes Riverpod Providers:
 | **Provider** | **Tipo** | **Descripción / Origen** |
 | --- | --- | --- |
 | `databaseServiceProvider` | `Provider` | Inicializa el servicio de base de datos `DatabaseService`. |
-| `legalUpdatesProvider` | `FutureProvider` | Retorna el listado completo de alertas en `legal_updates`. |
+| `legalUpdatesProvider` | `FutureProvider` | Retorna el listado de actualizaciones públicas vigentes (`status = 'published'`). |
+| `myDraftsProvider` | `FutureProvider` | Retorna los borradores del usuario actual (`status = 'draft'`). |
+| `scheduledUpdatesProvider` | `FutureProvider` | Retorna las publicaciones programadas del usuario actual (`status = 'scheduled'`). |
 | `forumPostsProvider` | `FutureProvider` | Obtiene los hilos activos del foro con autor y comentarios. |
 | `forumCommentsProvider` | `FutureProvider.family`| Obtiene las respuestas asociadas a un post por su `postId`. |
 | `mentorsProvider` | `FutureProvider` | Directorio de mentores con perfil verificado. |
@@ -771,10 +856,20 @@ La aplicación maneja el estado reactivo con los siguientes Riverpod Providers:
 | `featuredArticleProvider` | `FutureProvider` | Obtiene el primer artículo en base de datos para el home. |
 | `articleDetailProvider` | `FutureProvider.family`| Carga datos de un artículo mediante su `articleId` (JOIN a código). |
 | `profileStatsProvider` | `FutureProvider` | Conteo de aportes en foro y mentorías del perfil activo. |
+| `allUsersProvider` | `FutureProvider` | Carga la lista completa de perfiles para administración. |
+| `suspendedUsersProvider` | `FutureProvider` | Filtra únicamente los usuarios suspendidos vigentes. |
+| `isSuspendedProvider` | `Provider` | Evalúa síncronamente si el usuario actual está suspendido. |
 
 ---
 
 ## 6. Historial de Cambios y Hitos Completados
+
+### Hitos de la Versión 5.0 (Junio 2026)
+*   **Granularidad de Permisos**: Migración completa del esquema de roles basado en `userType` a una tabla y modelo de perfiles con banderas booleanas específicas (`can_mentor`, `can_publish`, `can_moderate`, `can_manage_users`), soportado por el RPC atómico `admin_set_permissions()`.
+*   **Editor Quill y Tipos de Publicación**: Actualización e integración completa de `flutter_quill` v11.x, permitiendo cuerpo en texto enriquecido. Implementación de formulario dinámico para insertar Reformas (con artículo e historial de texto comparativo), Noticias, Eventos (con fechas y lugar) y Convocatorias (con fecha límite).
+*   **Soporte de Visualización de Quill**: Incorporación de un widget lector inteligente `QuillContentViewer` en la vista de detalle de reformas, detectando el formato JSON Delta para mostrarlo con estilos tipográficos correctos o caer en texto plano si no se dispone del formato.
+*   **Organización del Panel por Pestañas**: Reestructuración del panel de administración para catalogar las noticias en pestañas dedicadas: "Publicadas", "Borradores" (empleando `myDraftsProvider`) y "Programadas" (empleando `scheduledUpdatesProvider`), logrando un workflow de administración limpio.
+*   **Sistema y Vista de Suspensión**: Implementación de bloqueo forzoso para usuarios suspendidos a través de la pantalla `/suspended` y su guard en GoRouter, complementado con el modal dialog interactivo de suspensión administrada con cálculo rápido de días y motivo obligatorio.
 
 ### Hitos de la Versión 3.0 (Junio 2026)
 *   **Implementación de Instalación PWA:** Creación de un helper dinámico en Dart (`PwaHelper`) con soporte interop para web mediante `dart:js` y stubs para no romper la compilación nativa en móviles. Añade un banner estético en el Home que ejecuta el prompt del navegador para la instalación.

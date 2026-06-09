@@ -24,6 +24,18 @@ final legalUpdatesProvider = FutureProvider<List<LegalUpdate>>((ref) async {
   return await dbService.getLegalUpdates();
 });
 
+// Proveedor para obtener los borradores del usuario actual
+final myDraftsProvider = FutureProvider<List<LegalUpdate>>((ref) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getMyDrafts();
+});
+
+// Proveedor para obtener las publicaciones programadas (requiere ser admin o tener permiso de publicador, aunque la BD debería filtrarlo o nosotros lo validamos visualmente)
+final scheduledUpdatesProvider = FutureProvider<List<LegalUpdate>>((ref) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getScheduledUpdates();
+});
+
 // Proveedor para obtener la lista de Hilos de Discusión del Foro
 final forumPostsProvider = FutureProvider<List<ForumPost>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
@@ -127,7 +139,7 @@ final allUsersProvider = FutureProvider<List<Profile>>((ref) async {
 // Proveedor para obtener los mentores del sistema
 final mentorUsersProvider = FutureProvider<List<Profile>>((ref) async {
   final users = await ref.watch(allUsersProvider.future);
-  return users.where((u) => u.userType == 'mentor').toList();
+  return users.where((u) => u.canMentor).toList();
 });
 
 // Proveedor para obtener los usuarios suspendidos

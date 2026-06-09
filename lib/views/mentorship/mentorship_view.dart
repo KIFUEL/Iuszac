@@ -72,7 +72,7 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
     final profile = ref.watch(userProfileProvider).value;
     final colorScheme = Theme.of(context).colorScheme;
 
-    final isMentor = profile?.userType == 'mentor';
+    final isMentor = profile?.canMentor ?? false;
 
     return DefaultTabController(
       length: isMentor ? 3 : 2,

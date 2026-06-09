@@ -74,17 +74,17 @@ class ProfileView extends ConsumerWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  profile.userType == 'admin' 
+                                  profile.isAdmin 
                                       ? Icons.admin_panel_settings_rounded 
-                                      : (profile.userType == 'mentor' ? Icons.school_rounded : Icons.person_rounded),
+                                      : (profile.canMentor ? Icons.school_rounded : Icons.person_rounded),
                                   size: 16, 
                                   color: Colors.white,
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  profile.userType == 'admin' 
+                                  profile.isAdmin 
                                       ? 'ADMINISTRADOR' 
-                                      : (profile.userType == 'mentor' ? 'MENTOR' : 'USUARIO'),
+                                      : (profile.canMentor ? 'MENTOR' : 'USUARIO'),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
@@ -169,7 +169,7 @@ class ProfileView extends ConsumerWidget {
                                 ],
                               ),
                               // Píldora de Mentor (Estrellas)
-                              if (profile.userType == 'mentor')
+                              if (profile.canMentor)
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:intl/intl.dart';
 import '../../providers/database_provider.dart';
 
@@ -137,14 +139,7 @@ class ReformDetailView extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
                     ),
-                    child: Text(
-                      alert.content,
-                      style: TextStyle(
-                        color: colorScheme.onSurface,
-                        fontSize: 14,
-                        height: 1.6,
-                      ),
-                    ),
+                    child: QuillContentViewer(content: alert.content),
                   ),
                 ],
 
@@ -180,6 +175,67 @@ class ReformDetailView extends ConsumerWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class QuillContentViewer extends StatefulWidget {
+  final String content;
+
+  const QuillContentViewer({super.key, required this.content});
+
+  @override
+  State<QuillContentViewer> createState() => _QuillContentViewerState();
+}
+
+class _QuillContentViewerState extends State<QuillContentViewer> {
+  late quill.QuillController _controller;
+  bool _isJson = false;
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      final decoded = jsonDecode(widget.content);
+      if (decoded is List) {
+        _controller = quill.QuillController(
+          document: quill.Document.fromJson(decoded),
+          selection: const TextSelection.collapsed(offset: 0),
+        );
+        _controller.readOnly = true;
+        _isJson = true;
+      } else {
+        _controller = quill.QuillController.basic();
+      }
+    } catch (_) {
+      _controller = quill.QuillController.basic();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isJson) {
+      return Text(
+        widget.content,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface,
+          fontSize: 14,
+          height: 1.6,
+        ),
+      );
+    }
+
+    return quill.QuillEditor.basic(
+      controller: _controller,
+      config: const quill.QuillEditorConfig(
+        showCursor: false,
+      ),
     );
   }
 }

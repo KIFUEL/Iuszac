@@ -467,6 +467,65 @@ class _HomeViewState extends ConsumerState<HomeView> {
     );
   }
 
+  Widget _buildTypeChip(BuildContext context, String contentType) {
+    final colorScheme = Theme.of(context).colorScheme;
+    IconData icon;
+    String label;
+    Color color;
+    
+    switch (contentType) {
+      case 'reforma':
+        icon = Icons.gavel_rounded;
+        label = 'Reforma';
+        color = Colors.blue;
+        break;
+      case 'noticia':
+        icon = Icons.newspaper_rounded;
+        label = 'Noticia';
+        color = Colors.orange;
+        break;
+      case 'evento':
+        icon = Icons.event_rounded;
+        label = 'Evento';
+        color = Colors.green;
+        break;
+      case 'convocatoria':
+        icon = Icons.campaign_rounded;
+        label = 'Convocatoria';
+        color = Colors.purple;
+        break;
+      default:
+        icon = Icons.article_rounded;
+        label = 'Publicación';
+        color = colorScheme.primary;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 10,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildCarouselNewsCard(BuildContext context, LegalUpdate update) {
     final colorScheme = Theme.of(context).colorScheme;
     final formattedDate = DateFormat('dd/MM/yyyy').format(update.createdAt);
@@ -506,6 +565,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     ),
                   ),
                 ),
+                const SizedBox(width: 8),
+                _buildTypeChip(context, update.contentType),
                 if (isNew) ...[
                   const SizedBox(width: 8),
                   Container(
@@ -557,15 +618,84 @@ class _HomeViewState extends ConsumerState<HomeView> {
             ),
             const SizedBox(height: 6),
             Expanded(
-              child: Text(
-                update.content,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-                  height: 1.5,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Text(
+                      update.plainContent,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                        height: 1.5,
+                      ),
+                      maxLines: update.contentType == 'evento' || update.contentType == 'convocatoria' ? 2 : 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (update.contentType == 'evento') ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.event, size: 13, color: Colors.green.shade700),
+                        const SizedBox(width: 4),
+                        Text(
+                          update.eventStart != null
+                              ? DateFormat('dd/MM HH:mm').format(update.eventStart!)
+                              : 'Fecha pendiente',
+                          style: TextStyle(fontSize: 11, color: Colors.green.shade700, fontWeight: FontWeight.bold),
+                        ),
+                        if (update.eventLocation != null) ...[
+                          const SizedBox(width: 8),
+                          Icon(Icons.location_on, size: 13, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                          const SizedBox(width: 2),
+                          Expanded(
+                            child: Text(
+                              update.eventLocation!,
+                              style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                  if (update.contentType == 'convocatoria' && update.deadline != null) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.timer_outlined, size: 13, color: Colors.purple),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Límite: ${update.deadline}',
+                          style: const TextStyle(fontSize: 11, color: Colors.purple, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (update.tags.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: update.tags.map((tag) => Container(
+                          margin: const EdgeInsets.only(right: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '#$tag',
+                            style: TextStyle(fontSize: 9, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8)),
+                          ),
+                        )).toList(),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             const SizedBox(height: 4),
@@ -653,6 +783,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  _buildTypeChip(context, update.contentType),
                   if (isNew) ...[
                     const SizedBox(width: 8),
                     Container(
@@ -704,7 +836,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          update.content,
+                          update.plainContent,
                           style: TextStyle(
                             fontSize: 14,
                             color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
@@ -713,6 +845,65 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        if (update.contentType == 'evento') ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Icon(Icons.event, size: 13, color: Colors.green.shade700),
+                              const SizedBox(width: 4),
+                              Text(
+                                update.eventStart != null
+                                    ? DateFormat('dd/MM HH:mm').format(update.eventStart!)
+                                    : 'Fecha pendiente',
+                                style: TextStyle(fontSize: 11, color: Colors.green.shade700, fontWeight: FontWeight.bold),
+                              ),
+                              if (update.eventLocation != null) ...[
+                                const SizedBox(width: 8),
+                                Icon(Icons.location_on, size: 13, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                                const SizedBox(width: 2),
+                                Expanded(
+                                  child: Text(
+                                    update.eventLocation!,
+                                    style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                        if (update.contentType == 'convocatoria' && update.deadline != null) ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              const Icon(Icons.timer_outlined, size: 13, color: Colors.purple),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Límite: ${update.deadline}',
+                                style: const TextStyle(fontSize: 11, color: Colors.purple, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                        if (update.tags.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Wrap(
+                            spacing: 4,
+                            runSpacing: 4,
+                            children: update.tags.map((tag) => Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                '#$tag',
+                                style: TextStyle(fontSize: 9, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8)),
+                              ),
+                            )).toList(),
+                          ),
+                        ],
                       ],
                     ),
                   ),
