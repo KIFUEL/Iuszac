@@ -361,7 +361,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                                   },
                                   borderRadius: BorderRadius.circular(10),
                                   child: Container(
-                                    height: 42,
+                                    height: 48,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
                                       color: isSelected 
@@ -377,8 +377,8 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                                     child: Text(
                                       short,
                                       style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                        fontSize: 13,
+                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                                         color: isSelected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
                                       ),
                                     ),
