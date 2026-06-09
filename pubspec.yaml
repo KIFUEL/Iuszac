@@ -27,10 +27,10 @@ dev_dependencies:
 flutter_launcher_icons:
   android: false
   ios: false
-  image_path: "LuZac.png"
+  image_path: "Documentation/IUZ UAZ.jpeg"
   web:
     generate: true
-    image_path: "LuZac.png"
+    image_path: "Documentation/IUZ UAZ.jpeg"
     background_color: "#1A237E"
     theme_color: "#1A237E"
 
