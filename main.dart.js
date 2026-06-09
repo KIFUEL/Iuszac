@@ -139556,7 +139556,7 @@ i=A.al(12)
 j=B.m.N(0.1)
 k=A.al(12)
 k=A.bm6(new A.dJ(4,n,B.z),s,B.GJ,s,new A.dJ(4,i,new A.aS(j,1,B.B,-1)),new A.dJ(4,A.al(12),B.a7N),B.oz,!0,B.b26,new A.dJ(4,k,B.a7P),new A.dJ(4,A.al(12),B.a7M),!0,A.aj(s,s,B.m.N(0.5),s,s,s,s,s,s,s,s,14,s,s,B.ap,s,s,!0,s,s,s,s,s,s,s,s))
-return new A.Ce(r,"IUZ ZAC",o,A.rk(B.a77,B.b2,new A.tp(s,B.G2,s,s,0,s,new A.ca(p,new A.aS(m,1,B.B,-1))),A.bl5(s,B.oz,s,s,s,s,s,s,s,s,s,B.b4n,B.e7,s,s,s,B.yJ,s,s,new A.ca(A.al(20),new A.aS(B.m.N(0.08),1,B.B,-1)),s,s,s),h,new A.tB(B.m.N(0.07),1,1,s,s,s),s,B.Hg,k,B.aTe,l,!0),q,B.anC,B.amU,!1,s)}}
+return new A.Ce(r,"IUZ UAZ",o,A.rk(B.a77,B.b2,new A.tp(s,B.G2,s,s,0,s,new A.ca(p,new A.aS(m,1,B.B,-1))),A.bl5(s,B.oz,s,s,s,s,s,s,s,s,s,B.b4n,B.e7,s,s,s,B.yJ,s,s,new A.ca(A.al(20),new A.aS(B.m.N(0.08),1,B.B,-1)),s,s,s),h,new A.tB(B.m.N(0.07),1,1,s,s,s),s,B.Hg,k,B.aTe,l,!0),q,B.anC,B.amU,!1,s)}}
 A.kq.prototype={
 fs(){var s=this
 return A.S(["id",s.a,"post_id",s.b,"user_id",s.c,"content",s.d,"created_at",s.e.jt()],t.N,t.z)}}
@@ -141788,7 +141788,7 @@ k=A.c([new A.bO(0,B.a4,s.N(0.15),B.jo,16)],k)
 r=o.e
 k=A.bB(A.au(p,A.bB(A.bc(B.fd,r==null?o.c:r,p,48),p,p),B.j,p,p,new A.as(i,p,p,p,k,p,p,B.bG),p,96,p,p,p,p,96),p,p)
 i=A.q(a).ok.e
-i=A.E("IUZ ZAC",p,p,p,p,i==null?p:i.afk(s,B.v,2),B.b0,p,p)
+i=A.E("IUZ UAZ",p,p,p,p,i==null?p:i.afk(s,B.v,2),B.b0,p,p)
 s=A.q(a).ok.z
 r=t.p
 s=A.c([k,B.dJ,i,B.cs,A.E("Ingresa a tu cuenta",p,p,p,p,s==null?p:s.aVQ(B.aC,0.3),B.b0,p,p),B.de,A.fG(q.x,p,B.Am,!1,B.xn,"Correo Electr\xf3nico",p,new A.b5f()),B.V,A.fG(q.y,p,B.ki,!0,p,"Contrase\xf1a",p,new A.b5g()),B.bD,new A.dW(B.bW,p,p,A.dU(!1,B.b7D,p,p,!0,p,new A.b5h(),p,p),p),B.aT],r)
@@ -141997,7 +141997,7 @@ $0(){return A.cD(this.a).eJ(0,"/login",null)},
 $S:0}
 A.DM.prototype={
 F(a){var s,r,q,p,o=null,n=A.q(a).ax,m=n.b,l=A.bc(B.fd,m,o,80),k=A.q(a).ok.e
-k=A.E("IUZ ZAC",o,o,o,o,k==null?o:k.afk(m,B.v,1.2),o,o,o)
+k=A.E("IUZ UAZ",o,o,o,o,k==null?o:k.afk(m,B.v,1.2),o,o,o)
 s=A.q(a).ok.w
 s=A.E("Derecho Digital \xb7 Zacatecas",o,o,o,o,s==null?o:s.zU(n.y,B.d0),o,o,o)
 r=A.q(a).ok.y
@@ -161140,7 +161140,7 @@ B.b6r=new A.ay("Preferencias de notificaci\xf3n guardadas correctamente",null,nu
 B.b_S=new A.fi(B.b6r,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
 B.b77=new A.ay("Por favor escribe un comentario para tu rese\xf1a.",null,null,null,null,null,null,null,null,null,null)
 B.b_T=new A.fi(B.b77,B.bC,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
-B.b7W=new A.ay("\xa1Gracias por instalar IUZ ZAC!",null,null,null,null,null,null,null,null,null,null)
+B.b7W=new A.ay("\xa1Gracias por instalar IUZ UAZ!",null,null,null,null,null,null,null,null,null,null)
 B.b_U=new A.fi(B.b7W,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
 B.b6K=new A.ay("Publicaci\xf3n eliminada correctamente",null,null,null,null,null,null,null,null,null,null)
 B.b_V=new A.fi(B.b6K,B.aj,null,null,null,null,null,null,null,null,null,null,null,B.av,!1,null,null,null,B.A,null)
@@ -161620,7 +161620,7 @@ B.b6o=new A.ay("TEXTO ANTERIOR",null,B.DK,null,null,null,null,null,null,null,nul
 B.b6p=new A.ay("Cambiar Contrase\xf1a",null,B.DJ,null,null,null,null,null,null,null,null)
 B.b6q=new A.ay("Alertas",null,null,null,null,null,null,null,null,null,null)
 B.a5v=new A.ay("\xbfEliminar publicaci\xf3n?",null,null,null,null,null,null,null,null,null,null)
-B.b6x=new A.ay("Registro IUZ ZAC",null,null,null,null,null,null,null,null,null,null)
+B.b6x=new A.ay("Registro IUZ UAZ",null,null,null,null,null,null,null,null,null,null)
 B.b6y=new A.ay("Intenta cambiar los t\xe9rminos de b\xfasqueda.",null,B.DH,null,null,null,null,null,null,null,null)
 B.b6z=new A.ay("Marcar como asunto urgente",null,B.DG,null,null,null,null,null,null,null,null)
 B.b6A=new A.ay("NUEVO",null,B.DC,null,null,null,null,null,null,null,null)
@@ -161708,7 +161708,7 @@ B.b87=new A.ay("\xbfAplicar suspensi\xf3n?",null,null,null,null,null,null,null,n
 B.b88=new A.ay("Describe los hechos detalladamente y utiliza hashtags para categorizar tu consulta.",null,B.DL,B.b0,null,null,null,null,null,null,null)
 B.b89=new A.ay("Detalle de Mentor\xeda",null,null,null,null,null,null,null,null,null,null)
 B.b3W=new A.A(!0,B.m,null,null,null,null,17,B.v,null,null,null,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b8a=new A.ay("\xa1Instala IUZ ZAC!",null,B.b3W,null,null,null,null,null,null,null,null)
+B.b8a=new A.ay("\xa1Instala IUZ UAZ!",null,B.b3W,null,null,null,null,null,null,null,null)
 B.a5B=new A.pi(0,"system")
 B.b8b=new A.pi(2,"dark")
 B.aUb=new A.k(0.056,0.024)
