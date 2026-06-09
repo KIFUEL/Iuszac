@@ -203,7 +203,7 @@ class MentorshipDetailView extends ConsumerWidget {
                           const SizedBox(height: 20),
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               color: colorScheme.primary.withValues(alpha: 0.04),
                               borderRadius: BorderRadius.circular(16),
@@ -217,14 +217,14 @@ class MentorshipDetailView extends ConsumerWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Icon(Icons.calendar_month_outlined, color: colorScheme.primary, size: 20),
+                                    Icon(Icons.calendar_month_outlined, color: colorScheme.primary, size: 22),
                                     const SizedBox(width: 10),
                                     Text(
                                       'Horarios Programados',
                                       style: TextStyle(
                                         color: colorScheme.primary,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14,
+                                        fontSize: 16,
                                       ),
                                     ),
                                   ],
@@ -592,8 +592,8 @@ class MentorshipDetailView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 90,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                width: 110,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -604,7 +604,7 @@ class MentorshipDetailView extends ConsumerWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.primary,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -617,14 +617,14 @@ class MentorshipDetailView extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(vertical: 2.0),
                     child: Row(
                       children: [
-                        Icon(Icons.access_time, size: 14, color: Colors.grey.shade600),
-                        const SizedBox(width: 6),
+                        Icon(Icons.access_time, size: 16, color: Colors.grey.shade600),
+                        const SizedBox(width: 8),
                         Text(
                           t,
                           style: TextStyle(
                             color: Colors.grey.shade800,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
