@@ -287,7 +287,7 @@ class ProfileView extends ConsumerWidget {
                               Icons.edit_outlined,
                               onTap: () => context.go('/profile/edit'),
                             ),
-                            if (profile.role == 'admin')
+                            if (profile.isAdmin || profile.canPublish || profile.canModerate || profile.canManageUsers)
                               _MenuTileData(
                                 'Panel de Administración',
                                 Icons.admin_panel_settings_outlined,
