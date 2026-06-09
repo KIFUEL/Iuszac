@@ -551,7 +551,7 @@ class MentorshipDetailView extends ConsumerWidget {
 
   Widget _buildScheduleList(dynamic schedule, ColorScheme colorScheme) {
     if (schedule == null) {
-      return const Text('Sin horario especificado', style: TextStyle(color: Colors.grey, fontSize: 13));
+      return Text('Sin horario especificado', style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13));
     }
     
     final Map<String, List<String>> grouped = {};
@@ -578,7 +578,7 @@ class MentorshipDetailView extends ConsumerWidget {
     }
     
     if (grouped.isEmpty) {
-      return const Text('Sin horario especificado', style: TextStyle(color: Colors.grey, fontSize: 13));
+      return Text('Sin horario especificado', style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13));
     }
 
     final daysOrder = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -617,12 +617,12 @@ class MentorshipDetailView extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(vertical: 2.0),
                     child: Row(
                       children: [
-                        Icon(Icons.access_time, size: 16, color: Colors.grey.shade600),
+                        Icon(Icons.access_time, size: 16, color: colorScheme.onSurface.withValues(alpha: 0.6)),
                         const SizedBox(width: 8),
                         Text(
                           t,
                           style: TextStyle(
-                            color: Colors.grey.shade800,
+                            color: colorScheme.onSurface,
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
