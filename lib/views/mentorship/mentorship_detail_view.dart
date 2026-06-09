@@ -202,30 +202,35 @@ class MentorshipDetailView extends ConsumerWidget {
                           ),
                           const SizedBox(height: 20),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: colorScheme.primary.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(10),
+                              color: colorScheme.primary.withValues(alpha: 0.04),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: colorScheme.primary.withValues(alpha: 0.25),
+                                color: colorScheme.primary.withValues(alpha: 0.15),
                                 width: 1,
                               ),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.access_time_outlined, color: colorScheme.primary, size: 20),
-                                const SizedBox(width: 10),
-                                Text(
-                                  session.scheduleDisplay.isNotEmpty
-                                      ? 'Horario: ${session.scheduleDisplay}'
-                                      : 'Horario no especificado',
-                                  style: TextStyle(
-                                    color: colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_month_outlined, color: colorScheme.primary, size: 20),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      'Horarios Programados',
+                                      style: TextStyle(
+                                        color: colorScheme.primary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                const SizedBox(height: 14),
+                                _buildScheduleList(session.schedule, colorScheme),
                               ],
                             ),
                           ),
@@ -541,6 +546,96 @@ class MentorshipDetailView extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
       ),
+    );
+  }
+
+  Widget _buildScheduleList(dynamic schedule, ColorScheme colorScheme) {
+    if (schedule == null) {
+      return const Text('Sin horario especificado', style: TextStyle(color: Colors.grey, fontSize: 13));
+    }
+    
+    final Map<String, List<String>> grouped = {};
+    if (schedule is List) {
+      for (var item in schedule) {
+        if (item is Map) {
+          final day = item['day'] as String?;
+          final start = item['startTime'] as String?;
+          final end = item['endTime'] as String?;
+          if (day != null && start != null && end != null) {
+            grouped.putIfAbsent(day, () => []).add('$start - $end');
+          }
+        }
+      }
+    } else if (schedule is Map) {
+      final days = schedule['days'] as List<dynamic>?;
+      final start = schedule['startTime'] as String?;
+      final end = schedule['endTime'] as String?;
+      if (days != null && start != null && end != null) {
+        for (var d in days) {
+          grouped.putIfAbsent(d.toString(), () => []).add('$start - $end');
+        }
+      }
+    }
+    
+    if (grouped.isEmpty) {
+      return const Text('Sin horario especificado', style: TextStyle(color: Colors.grey, fontSize: 13));
+    }
+
+    final daysOrder = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: daysOrder.where((d) => grouped.containsKey(d)).map((day) {
+        final times = grouped[day]!;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 90,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: colorScheme.primary.withValues(alpha: 0.2)),
+                ),
+                child: Text(
+                  day,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.primary,
+                    fontSize: 12,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: times.map((t) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.access_time, size: 14, color: Colors.grey.shade600),
+                        const SizedBox(width: 6),
+                        Text(
+                          t,
+                          style: TextStyle(
+                            color: Colors.grey.shade800,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )).toList(),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
