@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/database_provider.dart';
+import '../../models/profile.dart';
 import '../../widgets/common_widgets.dart';
 
 class ProfileView extends ConsumerWidget {
@@ -40,7 +41,7 @@ class ProfileView extends ConsumerWidget {
           return CustomScrollView(
             slivers: [
               SliverAppBar(
-                expandedHeight: 260,
+                expandedHeight: 285,
                 pinned: true,
                 stretch: true,
                 flexibleSpace: FlexibleSpaceBar(
@@ -50,11 +51,7 @@ class ProfileView extends ConsumerWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [
-                          colorScheme.primary,
-                          colorScheme.primary.withValues(alpha: 0.75),
-                          colorScheme.secondary.withValues(alpha: 0.6),
-                        ],
+                        colors: _getGradientColors(profile, colorScheme),
                       ),
                     ),
                     child: SafeArea(
@@ -62,38 +59,43 @@ class ProfileView extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 10),
-                          // Píldora de Nivel de Acceso (Usuario / Mentor / Admin)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  profile.isAdmin 
-                                      ? Icons.admin_panel_settings_rounded 
-                                      : (profile.canMentor ? Icons.school_rounded : Icons.person_rounded),
-                                  size: 16, 
+                          // Píldoras de Acceso y Permisos
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
+                            children: [
+                              if (profile.isAdmin)
+                                _buildPermissionHeaderChip(
+                                  label: 'ADMINISTRADOR',
+                                  icon: Icons.admin_panel_settings_rounded,
                                   color: Colors.white,
                                 ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  profile.isAdmin 
-                                      ? 'ADMINISTRADOR' 
-                                      : (profile.canMentor ? 'MENTOR' : 'USUARIO'),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.2,
-                                  ),
+                              if (profile.canMentor)
+                                _buildPermissionHeaderChip(
+                                  label: 'MENTOR',
+                                  icon: Icons.school_rounded,
+                                  color: Colors.white,
                                 ),
-                              ],
-                            ),
+                              if (profile.canPublish)
+                                _buildPermissionHeaderChip(
+                                  label: 'EDITOR',
+                                  icon: Icons.newspaper_rounded,
+                                  color: Colors.white,
+                                ),
+                              if (profile.canModerate)
+                                _buildPermissionHeaderChip(
+                                  label: 'MODERADOR',
+                                  icon: Icons.shield_rounded,
+                                  color: Colors.white,
+                                ),
+                              if (!profile.isAdmin && !profile.canMentor && !profile.canPublish && !profile.canModerate)
+                                _buildPermissionHeaderChip(
+                                  label: 'USUARIO',
+                                  icon: Icons.person_rounded,
+                                  color: Colors.white,
+                                ),
+                            ],
                           ),
                           const SizedBox(height: 14),
                           Container(
@@ -467,8 +469,76 @@ class ProfileView extends ConsumerWidget {
       ),
     );
   }
+  List<Color> _getGradientColors(Profile profile, ColorScheme colorScheme) {
+    if (profile.isAdmin) {
+      return [
+        const Color(0xFF1E0E62), // Dark violet
+        const Color(0xFF0D1B4B), // IUZ ZAC Navy
+        const Color(0xFF3E1256), // Deep plum
+      ];
+    } else if (profile.canMentor && profile.canPublish && profile.canModerate) {
+      return [
+        const Color(0xFF003D33), // Extra dark teal
+        const Color(0xFF0D1B4B), // IUZ ZAC Navy
+        const Color(0xFF1A237E), // Indigo
+      ];
+    } else if (profile.canMentor) {
+      return [
+        const Color(0xFF004D40), // Deep teal
+        const Color(0xFF1B5E20), // Forest green
+        const Color(0xFF2E7D32), // Emerald
+      ];
+    } else if (profile.canPublish) {
+      return [
+        const Color(0xFF880E4F), // Deep wine
+        const Color(0xFFE65100), // Dark orange
+        const Color(0xFFFF8F00), // Amber
+      ];
+    } else if (profile.canModerate) {
+      return [
+        const Color(0xFF0D47A1), // Deep blue
+        const Color(0xFF1A237E), // Indigo
+        const Color(0xFF4A148C), // Purple
+      ];
+    } else {
+      return [
+        colorScheme.primary,
+        colorScheme.primary.withValues(alpha: 0.75),
+        colorScheme.secondary.withValues(alpha: 0.6),
+      ];
+    }
+  }
 
-
+  Widget _buildPermissionHeaderChip({
+    required String label,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _MenuTileData {
