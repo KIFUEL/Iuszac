@@ -331,34 +331,60 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                             fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            'Lunes',
-                            'Martes',
-                            'Miércoles',
-                            'Jueves',
-                            'Viernes',
-                            'Sábado',
-                            'Domingo'
+                            {'full': 'Lunes', 'short': 'Lun'},
+                            {'full': 'Martes', 'short': 'Mar'},
+                            {'full': 'Miércoles', 'short': 'Mié'},
+                            {'full': 'Jueves', 'short': 'Jue'},
+                            {'full': 'Viernes', 'short': 'Vie'},
+                            {'full': 'Sábado', 'short': 'Sáb'},
+                            {'full': 'Domingo', 'short': 'Dom'},
                           ].map((day) {
-                            final isSelected = _selectedDays.contains(day);
-                            return FilterChip(
-                              label: Text(day),
-                              selected: isSelected,
-                              onSelected: (selected) {
-                                setState(() {
-                                  if (selected) {
-                                    _selectedDays.add(day);
-                                  } else {
-                                    _selectedDays.remove(day);
-                                  }
-                                });
-                              },
-                              selectedColor: colorScheme.primary.withValues(alpha: 0.2),
-                              checkmarkColor: colorScheme.primary,
+                            final full = day['full']!;
+                            final short = day['short']!;
+                            final isSelected = _selectedDays.contains(full);
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isSelected) {
+                                        _selectedDays.remove(full);
+                                      } else {
+                                        _selectedDays.add(full);
+                                      }
+                                    });
+                                  },
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    height: 42,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: isSelected 
+                                          ? colorScheme.primary 
+                                          : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: isSelected 
+                                            ? colorScheme.primary 
+                                            : colorScheme.outline.withValues(alpha: 0.2),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      short,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                        color: isSelected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             );
                           }).toList(),
                         ),
