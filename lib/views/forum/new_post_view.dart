@@ -151,14 +151,23 @@ class _NewPostViewState extends ConsumerState<NewPostView> {
                     maxLines: 8,
                     decoration: InputDecoration(
                       labelText: 'Cuerpo del Post / Hechos',
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.only(bottom: 140),
-                        child: Icon(Icons.description_outlined),
+                      labelStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(bottom: 140),
+                        child: Icon(Icons.description_outlined, color: colorScheme.primary),
                       ),
                       alignLabelWithHint: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.25)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+                      ),
                       filled: true,
-                      fillColor: colorScheme.surface,
+                      fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {

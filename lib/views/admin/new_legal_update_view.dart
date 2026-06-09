@@ -180,13 +180,22 @@ class _NewLegalUpdateViewState extends ConsumerState<NewLegalUpdateView> {
   }
 
   InputDecoration _buildInputDecoration(String label, IconData icon) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
     return InputDecoration(
       labelText: label,
-      prefixIcon: Icon(icon, size: 20),
+      labelStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+      prefixIcon: Icon(icon, size: 20, color: colorScheme.primary),
       filled: true,
-      fillColor: isDark ? const Color(0xFF161B2E) : const Color(0xFFF3F4F8),
+      fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.25)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+      ),
     );
   }
 

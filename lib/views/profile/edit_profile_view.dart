@@ -200,14 +200,23 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                       maxLength: 200,
                       decoration: InputDecoration(
                         labelText: 'Biografía breve',
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.only(bottom: 48),
-                          child: Icon(Icons.notes_outlined),
+                        labelStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(bottom: 48),
+                          child: Icon(Icons.notes_outlined, color: colorScheme.primary),
                         ),
                         alignLabelWithHint: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.25)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+                        ),
                         filled: true,
-                        fillColor: colorScheme.surface,
+                        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                       ),
                     ),
                     const SizedBox(height: 28),

@@ -399,10 +399,19 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                           maxLines: 5,
                           decoration: InputDecoration(
                             labelText: 'Descripción de la sesión',
-                            prefixIcon: const Icon(Icons.description_outlined),
+                            labelStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                            prefixIcon: Icon(Icons.description_outlined, color: colorScheme.primary),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.25)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+                            ),
                             filled: true,
-                            fillColor: colorScheme.surface,
+                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) return 'Requerido';

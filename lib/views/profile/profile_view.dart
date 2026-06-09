@@ -472,33 +472,33 @@ class ProfileView extends ConsumerWidget {
   List<Color> _getGradientColors(Profile profile, ColorScheme colorScheme) {
     if (profile.isAdmin) {
       return [
-        const Color(0xFF1E0E62), // Dark violet
-        const Color(0xFF0D1B4B), // IUZ UAZ Navy
-        const Color(0xFF3E1256), // Deep plum
+        const Color(0xFF3E1A00), // Very dark brown
+        const Color(0xFF63380F), // Primary deep brown
+        const Color(0xFF7B4513), // Saddle brown
       ];
     } else if (profile.canMentor && profile.canPublish && profile.canModerate) {
       return [
-        const Color(0xFF003D33), // Extra dark teal
-        const Color(0xFF0D1B4B), // IUZ UAZ Navy
-        const Color(0xFF1A237E), // Indigo
+        const Color(0xFF4A2800), // Dark amber-brown
+        const Color(0xFF63380F), // Primary deep brown
+        const Color(0xFF8B6914), // Dark goldenrod
       ];
     } else if (profile.canMentor) {
       return [
-        const Color(0xFF004D40), // Deep teal
-        const Color(0xFF1B5E20), // Forest green
-        const Color(0xFF2E7D32), // Emerald
+        const Color(0xFF5D4037), // Brown 800
+        const Color(0xFF795548), // Brown 500
+        const Color(0xFFA1887F), // Brown 300
       ];
     } else if (profile.canPublish) {
       return [
-        const Color(0xFF880E4F), // Deep wine
-        const Color(0xFFE65100), // Dark orange
-        const Color(0xFFFF8F00), // Amber
+        const Color(0xFF8B4513), // Saddle brown
+        const Color(0xFFC07030), // Copper
+        const Color(0xFFE0C69F), // Golden tan (accent)
       ];
     } else if (profile.canModerate) {
       return [
-        const Color(0xFF0D47A1), // Deep blue
-        const Color(0xFF1A237E), // Indigo
-        const Color(0xFF4A148C), // Purple
+        const Color(0xFF4E342E), // Brown 800
+        const Color(0xFF6D4C41), // Brown 600
+        const Color(0xFF8D6E63), // Brown 400
       ];
     } else {
       return [

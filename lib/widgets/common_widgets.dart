@@ -41,7 +41,7 @@ class LawButton extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     primary,
-                    Color.lerp(primary, Colors.indigo.shade900, 0.45)!,
+                    Color.lerp(primary, secondary, 0.35)!,
                   ],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
@@ -167,22 +167,18 @@ class LawTextField extends StatelessWidget {
       keyboardType: keyboardType,
       onChanged: onChanged,
       validator: validator,
-      style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface),
+      style: TextStyle(fontSize: fontSize, color: colorScheme.onSurface),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: fontSize),
-        prefixIcon: Icon(icon, size: iconSize),
+        labelStyle: TextStyle(fontSize: fontSize, color: colorScheme.onSurface.withValues(alpha: 0.6)),
+        prefixIcon: Icon(icon, size: iconSize, color: colorScheme.primary),
         filled: true,
-        fillColor: Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xFF161B2E)
-            : const Color(0xFFF3F4F8),
+        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
         contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white.withValues(alpha: 0.1)
-                : Colors.grey.withValues(alpha: 0.15),
+            color: colorScheme.outline.withValues(alpha: 0.25),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -258,16 +254,14 @@ class LawCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
     // Glassmorphism + subtle elevation for premium look
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2C2C2C).withValues(alpha: 0.85) : Colors.white.withValues(alpha: 0.95),
+        color: Theme.of(context).cardTheme.color?.withValues(alpha: 0.95) ?? colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.07)
-              : Colors.grey.withValues(alpha: 0.12),
+          color: colorScheme.outline.withValues(alpha: 0.12),
           width: 1,
         ),
         boxShadow: [

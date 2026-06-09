@@ -70,7 +70,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
             center: Alignment.center,
             radius: 1.2,
             colors: [
-              const Color(0xFF0D1B4B).withValues(alpha: 0.04),
+              const Color(0xFF63380F).withValues(alpha: 0.04),
               Colors.transparent,
             ],
           ),
