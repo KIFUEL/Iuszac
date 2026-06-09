@@ -56,4 +56,33 @@ class MentorshipSession {
       reviewCount: json['review_count'] ?? 0,
     );
   }
+
+  /// Formats the weekly schedule for display.
+  /// Example: {"days": ["Lunes", "Miércoles"], "startTime": "16:00", "endTime": "18:00"}
+  /// → "Lun, Mié · 16:00 - 18:00"
+  String get scheduleDisplay {
+    if (schedule == null) return '';
+
+    const dayAbbreviations = {
+      'Lunes': 'Lun',
+      'Martes': 'Mar',
+      'Miércoles': 'Mié',
+      'Jueves': 'Jue',
+      'Viernes': 'Vie',
+      'Sábado': 'Sáb',
+      'Domingo': 'Dom',
+    };
+
+    final days = (schedule!['days'] as List<dynamic>?)
+        ?.map((d) => dayAbbreviations[d] ?? d.toString())
+        .join(', ');
+    final startTime = schedule!['startTime'] as String?;
+    final endTime = schedule!['endTime'] as String?;
+
+    if (days == null || days.isEmpty) return '';
+    if (startTime != null && endTime != null) {
+      return '$days · $startTime - $endTime';
+    }
+    return days;
+  }
 }
