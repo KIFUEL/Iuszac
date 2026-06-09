@@ -1,3 +1,3 @@
-# law_app
+# IUZ ZAC
 
-A new Flutter project.
+Una aplicación web para la comunidad legal de Zacatecas.

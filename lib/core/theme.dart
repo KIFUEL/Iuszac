@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LawTheme {
+class IuzZacTheme {
   static const primaryColor = Color(0xFF0D1B4B); // Deeper Navy Blue
   static const accentColor = Color(0xFFB8963E); // Refined Deep Gold
 

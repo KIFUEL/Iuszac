@@ -20,13 +20,13 @@ void main() async {
 
   runApp(
     const ProviderScope(
-      child: LawApp(),
+      child: IuzZacApp(),
     ),
   );
 }
 
-class LawApp extends ConsumerWidget {
-  const LawApp({super.key});
+class IuzZacApp extends ConsumerWidget {
+  const IuzZacApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,8 +35,8 @@ class LawApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'IUZ ZAC',
-      theme: LawTheme.lightTheme,
-      darkTheme: LawTheme.darkTheme,
+      theme: IuzZacTheme.lightTheme,
+      darkTheme: IuzZacTheme.darkTheme,
       themeMode: themeMode,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
