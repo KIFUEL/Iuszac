@@ -8,7 +8,7 @@ class MentorshipSession {
   final String specialty;
   final double price;
   final int availableSlots;
-  final Map<String, dynamic>? schedule;
+  final dynamic schedule;
   final bool isCommunityVerified;
   final DateTime createdAt;
   final DateTime sessionDate;

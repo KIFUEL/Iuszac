@@ -76,9 +76,10 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
             }
           }
         } else if (session.schedule is Map) {
-          final days = session.schedule!['days'] as List<dynamic>?;
-          final start = session.schedule!['startTime'] as String?;
-          final end = session.schedule!['endTime'] as String?;
+          final schedMap = session.schedule as Map;
+          final days = schedMap['days'] as List<dynamic>?;
+          final start = schedMap['startTime'] as String?;
+          final end = schedMap['endTime'] as String?;
           if (days != null && start != null && end != null) {
             for (var d in days) {
               _slots.add({
