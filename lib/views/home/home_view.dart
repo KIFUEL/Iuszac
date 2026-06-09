@@ -94,7 +94,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '¡Instala IusZac!',
+                    '¡Instala IUZ ZAC!',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -127,7 +127,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   }
                   messenger.showSnackBar(
                     const SnackBar(
-                      content: Text('¡Gracias por instalar IusZac!'),
+                      content: Text('¡Gracias por instalar IUZ ZAC!'),
                       backgroundColor: Colors.green,
                     ),
                   );
