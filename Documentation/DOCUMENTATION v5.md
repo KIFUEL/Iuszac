@@ -186,7 +186,7 @@ erDiagram
 | `price` | `NUMERIC` | Costo en MXN. `0` = Gratis. Def: `0`. |
 | `available_slots` | `INT` | Cupos disponibles. Def: `10`. |
 | `session_date` | `TIMESTAMP` | Opcional (NULL). Fecha y hora programada (histórico). |
-| `schedule` | `JSONB` | Estructura del horario semanal recurrente: `{"days": ["Lunes", ...], "startTime": "HH:MM", "endTime": "HH:MM"}`. |
+| `schedule` | `JSONB` | Arreglo de bloques de horario por día: `[{"day": "Lunes", "startTime": "HH:MM", "endTime": "HH:MM"}, ...]`. Admite múltiples horarios por día o partidos. |
 | `expires_at` | `TIMESTAMP` | Fecha límite de vigencia; sesiones pasadas no se muestran. |
 | `created_at` | `TIMESTAMP` | Fecha de creación del registro. |
 
@@ -667,7 +667,7 @@ Directorio de asesorías y sesiones publicadas por usuarios con tipo `mentor`. L
 | Tarjeta de Mentoría | Card Widget | Sí | Mentor, especialidad, fecha de sesión, precio, cupos disponibles. |
 | Badge Gratis | Chip verde | No | Si `price == 0`. |
 | Badge VENCIDA | Chip gris | No | Si `expires_at < NOW()` (solo en pestaña "Mías"). |
-| Fecha de sesión | Texto con ícono | Sí | `schedule` formateado (ej. Lun, Mié · 16:00 - 18:00) a través de `scheduleDisplay`. |
+| Fecha de sesión | Texto con ícono | Sí | `schedule` formateado agrupando por día y mostrando bloques (ej. Lun: 10:00-12:00, 16:00-18:00 | Mié: 15:00-19:00) a través de `scheduleDisplay`. |
 | Cupos disponibles | Texto con ícono | Sí | `available_slots` restantes. |
 | Botón WhatsApp | Botón outlined verde | No | Abre enlace `wa.me/...`. Visible si `phone_whatsapp` disponible. |
 | Botón Inscribirme | Botón primario | Sí | Deshabilitado si `available_slots == 0`. Llama `enrollInSession()`. |
@@ -714,7 +714,7 @@ Formulario para crear o editar una sesión de mentoría. **Solo accesible para u
 | Título de la Sesión | Input Texto | Sí | Título descriptivo. Mínimo 5 caracteres. |
 | Especialidad | Input Texto | Sí | Área del derecho. Este campo es el buscador principal. |
 | Descripción / Temario | TextArea | Sí | Objetivos y requisitos. Mínimo 20 caracteres. |
-| Horario de la Sesión | Custom Selector | Sí | Días de la semana seleccionables (chips Lun-Dom) y selector de Hora de inicio y fin (`schedule`). |
+| Horario de la Sesión | Custom Selector | Sí | Lista dinámica de bloques de horarios y botón modal para agregar bloques de día de la semana, hora de inicio y hora de fin (`schedule`). Permite múltiples bloques por día. |
 | Fecha Límite (Vigencia) | DatePicker | Sí | `expires_at` — date después de la cual no se muestra la sesión. Fecha límite de vigencia de la oferta. |
 | Costo / Precio | Input Numérico | Sí | Solo números ≥ 0. `0` equivale a Gratis. |
 | Cupos Disponibles | Input Numérico | Sí | Cantidad máxima de inscritos. Mínimo 1. |
