@@ -214,10 +214,12 @@ class MentorshipDetailView extends ConsumerWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.calendar_today_outlined, color: colorScheme.primary, size: 20),
+                                Icon(Icons.access_time_outlined, color: colorScheme.primary, size: 20),
                                 const SizedBox(width: 10),
                                 Text(
-                                  'Fecha de la sesión: ${DateFormat('dd/MM/yyyy HH:mm').format(session.sessionDate)}',
+                                  session.scheduleDisplay.isNotEmpty
+                                      ? 'Horario: ${session.scheduleDisplay}'
+                                      : 'Horario no especificado',
                                   style: TextStyle(
                                     color: colorScheme.primary,
                                     fontWeight: FontWeight.bold,
@@ -458,9 +460,7 @@ class MentorshipDetailView extends ConsumerWidget {
                       data: (List<MentorshipReview> reviews) {
                         final currentUserId = ref.watch(userProfileProvider).value?.id;
                         final hasReviewed = reviews.any((r) => r.userId == currentUserId);
-                        final sessionDatePassed = session!.sessionDate.isBefore(DateTime.now());
-                        final showForm = isEnrolled && !hasReviewed && sessionDatePassed;
-                        final showWaitingBanner = isEnrolled && !hasReviewed && !sessionDatePassed;
+                        final showForm = isEnrolled && !hasReviewed;
 
                         return Container(
                           width: double.infinity,
@@ -479,40 +479,7 @@ class MentorshipDetailView extends ConsumerWidget {
                               _buildSectionHeader('Reseñas de participantes', colorScheme),
                               if (showForm) ...[
                                 const SizedBox(height: 16),
-                                _ReviewForm(sessionId: session.id),
-                              ] else if (showWaitingBanner) ...[
-                                const SizedBox(height: 16),
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primaryContainer.withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(
-                                      color: colorScheme.primary.withValues(alpha: 0.3),
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.info_outline_rounded,
-                                        color: colorScheme.primary,
-                                        size: 24,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          'Podrás calificar esta sesión una vez que haya concluido (programada para el ${DateFormat('dd/MM/yyyy HH:mm').format(session.sessionDate)}).',
-                                          style: TextStyle(
-                                            color: colorScheme.onSurfaceVariant,
-                                            fontSize: 14,
-                                            height: 1.5,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                _ReviewForm(sessionId: session!.id),
                               ],
                               const SizedBox(height: 16),
                               if (reviews.isEmpty)

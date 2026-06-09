@@ -22,7 +22,9 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController(text: '0');
   final _slotsController = TextEditingController(text: '10');
-  DateTime? _selectedSessionDate;
+  final List<String> _selectedDays = [];
+  TimeOfDay? _startTime;
+  TimeOfDay? _endTime;
   DateTime? _selectedExpiryDate;
 
   bool _isLoading = false;
@@ -60,8 +62,31 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
       _descriptionController.text = session.description ?? '';
       _priceController.text = session.price.toStringAsFixed(0);
       _slotsController.text = session.availableSlots.toString();
-      _selectedSessionDate = session.sessionDate;
       _selectedExpiryDate = session.expiresAt;
+
+      if (session.schedule != null) {
+        final days = session.schedule!['days'] as List<dynamic>?;
+        if (days != null) {
+          _selectedDays.clear();
+          _selectedDays.addAll(days.map((d) => d.toString()));
+        }
+        
+        final startTimeStr = session.schedule!['startTime'] as String?;
+        if (startTimeStr != null) {
+          final parts = startTimeStr.split(':');
+          if (parts.length == 2) {
+            _startTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+          }
+        }
+        
+        final endTimeStr = session.schedule!['endTime'] as String?;
+        if (endTimeStr != null) {
+          final parts = endTimeStr.split(':');
+          if (parts.length == 2) {
+            _endTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+          }
+        }
+      }
     } catch (e) {
       setState(() {
         _errorMessage = 'Error al cargar sesión: $e';
@@ -71,38 +96,28 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
     }
   }
 
-  Future<void> _selectSessionDate() async {
-    final now = DateTime.now();
-    final pickedDate = await showDatePicker(
+  Future<void> _selectStartTime() async {
+    final pickedTime = await showTimePicker(
       context: context,
-      initialDate: _selectedSessionDate ?? now.add(const Duration(days: 7)),
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365)),
-      helpText: 'Fecha de impartición de la sesión',
+      initialTime: _startTime ?? const TimeOfDay(hour: 16, minute: 0),
+      helpText: 'Hora de inicio de la sesión',
     );
+    if (pickedTime != null) {
+      setState(() {
+        _startTime = pickedTime;
+        _endTime ??= TimeOfDay(hour: (pickedTime.hour + 2) % 24, minute: pickedTime.minute);
+      });
+    }
+  }
 
-    if (pickedDate != null && mounted) {
-      final pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _selectedSessionDate != null
-            ? TimeOfDay.fromDateTime(_selectedSessionDate!)
-            : const TimeOfDay(hour: 10, minute: 0),
-        helpText: 'Hora de la sesión',
-      );
-
-      if (pickedTime != null) {
-        setState(() {
-          _selectedSessionDate = DateTime(
-            pickedDate.year,
-            pickedDate.month,
-            pickedDate.day,
-            pickedTime.hour,
-            pickedTime.minute,
-          );
-          // By default, make expiresAt equal to sessionDate if not set
-          _selectedExpiryDate ??= _selectedSessionDate;
-        });
-      }
+  Future<void> _selectEndTime() async {
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: _endTime ?? const TimeOfDay(hour: 18, minute: 0),
+      helpText: 'Hora de fin de la sesión',
+    );
+    if (pickedTime != null) {
+      setState(() => _endTime = pickedTime);
     }
   }
 
@@ -113,7 +128,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
       initialDate: _selectedExpiryDate ?? now.add(const Duration(days: 7)),
       firstDate: now,
       lastDate: now.add(const Duration(days: 365)),
-      helpText: '¿Hasta cuándo es válida esta mentoría?',
+      helpText: '¿Hasta cuándo está disponible esta oferta?',
     );
 
     if (picked != null) {
@@ -123,12 +138,16 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedSessionDate == null) {
-      setState(() => _errorMessage = 'Por favor selecciona la fecha de la sesión');
+    if (_selectedDays.isEmpty) {
+      setState(() => _errorMessage = 'Por favor selecciona al menos un día para el horario');
+      return;
+    }
+    if (_startTime == null || _endTime == null) {
+      setState(() => _errorMessage = 'Por favor define la hora de inicio y fin del horario');
       return;
     }
     if (_selectedExpiryDate == null) {
-      setState(() => _errorMessage = 'Por favor selecciona una fecha de vigencia');
+      setState(() => _errorMessage = 'Por favor selecciona una fecha límite de disponibilidad');
       return;
     }
 
@@ -136,6 +155,12 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
       _isLoading = true;
       _errorMessage = null;
     });
+
+    final scheduleMap = {
+      'days': _selectedDays,
+      'startTime': '${_startTime!.hour.toString().padLeft(2, '0')}:${_startTime!.minute.toString().padLeft(2, '0')}',
+      'endTime': '${_endTime!.hour.toString().padLeft(2, '0')}:${_endTime!.minute.toString().padLeft(2, '0')}',
+    };
 
     try {
       final dbService = ref.read(databaseServiceProvider);
@@ -148,7 +173,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
           description: _descriptionController.text.trim(),
           price: double.parse(_priceController.text),
           availableSlots: int.parse(_slotsController.text),
-          sessionDate: _selectedSessionDate!,
+          schedule: scheduleMap,
           expiresAt: _selectedExpiryDate,
         );
       } else {
@@ -158,7 +183,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
           description: _descriptionController.text.trim(),
           price: double.parse(_priceController.text),
           availableSlots: int.parse(_slotsController.text),
-          sessionDate: _selectedSessionDate!,
+          schedule: scheduleMap,
           expiresAt: _selectedExpiryDate,
         );
       }
@@ -297,34 +322,113 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                         ),
                         const SizedBox(height: 16),
 
-                        // Selector de Fecha de la Sesión
-                        InkWell(
-                          onTap: _selectSessionDate,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade400),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.calendar_today_outlined, color: colorScheme.primary),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    _selectedSessionDate == null 
-                                        ? 'Fecha y Hora de la sesión' 
-                                        : 'Fecha de sesión: ${DateFormat('dd/MM/yyyy HH:mm').format(_selectedSessionDate!)}',
-                                    style: TextStyle(
-                                      color: _selectedSessionDate == null ? Colors.grey.shade700 : colorScheme.onSurface,
-                                    ),
+                        // Días de la semana
+                        Text(
+                          'Días de la semana para la mentoría',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.primary,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            'Lunes',
+                            'Martes',
+                            'Miércoles',
+                            'Jueves',
+                            'Viernes',
+                            'Sábado',
+                            'Domingo'
+                          ].map((day) {
+                            final isSelected = _selectedDays.contains(day);
+                            return FilterChip(
+                              label: Text(day),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                setState(() {
+                                  if (selected) {
+                                    _selectedDays.add(day);
+                                  } else {
+                                    _selectedDays.remove(day);
+                                  }
+                                });
+                              },
+                              selectedColor: colorScheme.primary.withValues(alpha: 0.2),
+                              checkmarkColor: colorScheme.primary,
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Horario de inicio y fin
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: _selectStartTime,
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey.shade400),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.access_time, color: colorScheme.primary),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          _startTime == null
+                                              ? 'Hora Inicio'
+                                              : 'Inicio: ${_startTime!.format(context)}',
+                                          style: TextStyle(
+                                            color: _startTime == null ? Colors.grey.shade700 : colorScheme.onSurface,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const Icon(Icons.access_time_outlined, color: Colors.grey),
-                              ],
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: InkWell(
+                                onTap: _selectEndTime,
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey.shade400),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.access_time_filled, color: colorScheme.primary),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          _endTime == null
+                                              ? 'Hora Fin'
+                                              : 'Fin: ${_endTime!.format(context)}',
+                                          style: TextStyle(
+                                            color: _endTime == null ? Colors.grey.shade700 : colorScheme.onSurface,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 16),
 

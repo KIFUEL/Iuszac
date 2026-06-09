@@ -220,7 +220,7 @@ class DatabaseService {
     required String specialty,
     required double price,
     required int availableSlots,
-    required DateTime sessionDate,
+    Map<String, dynamic>? schedule,
     DateTime? expiresAt,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
@@ -237,7 +237,7 @@ class DatabaseService {
           'specialty': specialty,
           'price': price,
           'available_slots': availableSlots,
-          'session_date': sessionDate.toIso8601String(),
+          'schedule': schedule,
           'expires_at': expiresAt?.toIso8601String(),
         })
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
@@ -525,7 +525,7 @@ class DatabaseService {
     required String specialty,
     required double price,
     required int availableSlots,
-    required DateTime sessionDate,
+    Map<String, dynamic>? schedule,
     DateTime? expiresAt,
   }) async {
     final response = await _supabase
@@ -536,7 +536,7 @@ class DatabaseService {
           'specialty': specialty,
           'price': price,
           'available_slots': availableSlots,
-          'session_date': sessionDate.toIso8601String(),
+          'schedule': schedule,
           'expires_at': expiresAt?.toIso8601String(),
         })
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')

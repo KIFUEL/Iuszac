@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/database_provider.dart';
@@ -232,7 +231,7 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
     final mentorName = session.mentor?.fullName ?? 'Mentor';
     final phone = session.mentor?.phoneWhatsapp;
     final hasPhone = phone != null && phone.trim().isNotEmpty;
-    final isExpired = session.sessionDate.isBefore(DateTime.now());
+    final isExpired = session.expiresAt != null ? session.expiresAt!.isBefore(DateTime.now()) : false;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
@@ -360,10 +359,10 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
                   ),
                 ),
                 const Spacer(),
-                Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey.shade600),
+                Icon(Icons.access_time_outlined, size: 16, color: Colors.grey.shade600),
                 const SizedBox(width: 4),
                 Text(
-                  'Sesión: ${DateFormat('dd/MM HH:mm').format(session.sessionDate)}',
+                  session.scheduleDisplay.isNotEmpty ? session.scheduleDisplay : 'Sin horario',
                   style: TextStyle(
                     color: Colors.grey.shade600,
                     fontSize: 13,
