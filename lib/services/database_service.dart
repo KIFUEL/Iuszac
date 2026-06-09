@@ -220,7 +220,7 @@ class DatabaseService {
     required String specialty,
     required double price,
     required int availableSlots,
-    Map<String, dynamic>? schedule,
+    dynamic schedule,
     DateTime? expiresAt,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
@@ -525,7 +525,7 @@ class DatabaseService {
     required String specialty,
     required double price,
     required int availableSlots,
-    Map<String, dynamic>? schedule,
+    dynamic schedule,
     DateTime? expiresAt,
   }) async {
     final response = await _supabase

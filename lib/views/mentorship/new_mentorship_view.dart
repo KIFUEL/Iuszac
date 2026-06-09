@@ -22,9 +22,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController(text: '0');
   final _slotsController = TextEditingController(text: '10');
-  final List<String> _selectedDays = [];
-  TimeOfDay? _startTime;
-  TimeOfDay? _endTime;
+  final List<Map<String, String>> _slots = [];
   DateTime? _selectedExpiryDate;
 
   bool _isLoading = false;
@@ -65,25 +63,30 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
       _selectedExpiryDate = session.expiresAt;
 
       if (session.schedule != null) {
-        final days = session.schedule!['days'] as List<dynamic>?;
-        if (days != null) {
-          _selectedDays.clear();
-          _selectedDays.addAll(days.map((d) => d.toString()));
-        }
-        
-        final startTimeStr = session.schedule!['startTime'] as String?;
-        if (startTimeStr != null) {
-          final parts = startTimeStr.split(':');
-          if (parts.length == 2) {
-            _startTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+        _slots.clear();
+        if (session.schedule is List) {
+          final list = session.schedule as List;
+          for (var item in list) {
+            if (item is Map) {
+              _slots.add({
+                'day': (item['day'] ?? '').toString(),
+                'startTime': (item['startTime'] ?? '').toString(),
+                'endTime': (item['endTime'] ?? '').toString(),
+              });
+            }
           }
-        }
-        
-        final endTimeStr = session.schedule!['endTime'] as String?;
-        if (endTimeStr != null) {
-          final parts = endTimeStr.split(':');
-          if (parts.length == 2) {
-            _endTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+        } else if (session.schedule is Map) {
+          final days = session.schedule!['days'] as List<dynamic>?;
+          final start = session.schedule!['startTime'] as String?;
+          final end = session.schedule!['endTime'] as String?;
+          if (days != null && start != null && end != null) {
+            for (var d in days) {
+              _slots.add({
+                'day': d.toString(),
+                'startTime': start,
+                'endTime': end,
+              });
+            }
           }
         }
       }
@@ -96,29 +99,130 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
     }
   }
 
-  Future<void> _selectStartTime() async {
-    final pickedTime = await showTimePicker(
-      context: context,
-      initialTime: _startTime ?? const TimeOfDay(hour: 16, minute: 0),
-      helpText: 'Hora de inicio de la sesión',
-    );
-    if (pickedTime != null) {
-      setState(() {
-        _startTime = pickedTime;
-        _endTime ??= TimeOfDay(hour: (pickedTime.hour + 2) % 24, minute: pickedTime.minute);
-      });
-    }
-  }
+  Future<void> _showAddSlotDialog() async {
+    String selectedDay = 'Lunes';
+    TimeOfDay startTime = const TimeOfDay(hour: 16, minute: 0);
+    TimeOfDay endTime = const TimeOfDay(hour: 18, minute: 0);
 
-  Future<void> _selectEndTime() async {
-    final pickedTime = await showTimePicker(
+    await showDialog(
       context: context,
-      initialTime: _endTime ?? const TimeOfDay(hour: 18, minute: 0),
-      helpText: 'Hora de fin de la sesión',
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            final colorScheme = Theme.of(context).colorScheme;
+            return AlertDialog(
+              title: const Text('Agregar Bloque de Horario'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedDay,
+                    decoration: const InputDecoration(
+                      labelText: 'Día de la semana',
+                      prefixIcon: Icon(Icons.calendar_today),
+                    ),
+                    items: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+                        .map((day) => DropdownMenuItem(
+                              value: day,
+                              child: Text(day),
+                            ))
+                        .toList(),
+                    onChanged: (val) {
+                      if (val != null) {
+                        setDialogState(() => selectedDay = val);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Start Time picker button
+                  InkWell(
+                    onTap: () async {
+                      final picked = await showTimePicker(
+                        context: context,
+                        initialTime: startTime,
+                        helpText: 'Hora de inicio del bloque',
+                      );
+                      if (picked != null) {
+                        setDialogState(() {
+                          startTime = picked;
+                          endTime = TimeOfDay(hour: (picked.hour + 2) % 24, minute: picked.minute);
+                        });
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.access_time, color: colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Text('Inicio: ${startTime.format(context)}'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // End Time picker button
+                  InkWell(
+                    onTap: () async {
+                      final picked = await showTimePicker(
+                        context: context,
+                        initialTime: endTime,
+                        helpText: 'Hora de fin del bloque',
+                      );
+                      if (picked != null) {
+                        setDialogState(() => endTime = picked);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.access_time_filled, color: colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Text('Fin: ${endTime.format(context)}'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _slots.add({
+                        'day': selectedDay,
+                        'startTime': '${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}',
+                        'endTime': '${endTime.hour.toString().padLeft(2, '0')}:${endTime.minute.toString().padLeft(2, '0')}',
+                      });
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Agregar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
-    if (pickedTime != null) {
-      setState(() => _endTime = pickedTime);
-    }
   }
 
   Future<void> _selectExpiryDate() async {
@@ -138,12 +242,8 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedDays.isEmpty) {
-      setState(() => _errorMessage = 'Por favor selecciona al menos un día para el horario');
-      return;
-    }
-    if (_startTime == null || _endTime == null) {
-      setState(() => _errorMessage = 'Por favor define la hora de inicio y fin del horario');
+    if (_slots.isEmpty) {
+      setState(() => _errorMessage = 'Por favor agrega al menos un bloque de horario');
       return;
     }
     if (_selectedExpiryDate == null) {
@@ -156,12 +256,6 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
       _errorMessage = null;
     });
 
-    final scheduleMap = {
-      'days': _selectedDays,
-      'startTime': '${_startTime!.hour.toString().padLeft(2, '0')}:${_startTime!.minute.toString().padLeft(2, '0')}',
-      'endTime': '${_endTime!.hour.toString().padLeft(2, '0')}:${_endTime!.minute.toString().padLeft(2, '0')}',
-    };
-
     try {
       final dbService = ref.read(databaseServiceProvider);
       
@@ -173,7 +267,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
           description: _descriptionController.text.trim(),
           price: double.parse(_priceController.text),
           availableSlots: int.parse(_slotsController.text),
-          schedule: scheduleMap,
+          schedule: _slots,
           expiresAt: _selectedExpiryDate,
         );
       } else {
@@ -183,7 +277,7 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
           description: _descriptionController.text.trim(),
           price: double.parse(_priceController.text),
           availableSlots: int.parse(_slotsController.text),
-          schedule: scheduleMap,
+          schedule: _slots,
           expiresAt: _selectedExpiryDate,
         );
       }
@@ -322,9 +416,9 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                         ),
                         const SizedBox(height: 16),
 
-                        // Días de la semana
+                        // Horarios semanales
                         Text(
-                          'Días de la semana para la mentoría',
+                          'Horarios programados para la mentoría',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: colorScheme.primary,
@@ -332,129 +426,71 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            {'full': 'Lunes', 'short': 'Lun'},
-                            {'full': 'Martes', 'short': 'Mar'},
-                            {'full': 'Miércoles', 'short': 'Mié'},
-                            {'full': 'Jueves', 'short': 'Jue'},
-                            {'full': 'Viernes', 'short': 'Vie'},
-                            {'full': 'Sábado', 'short': 'Sáb'},
-                            {'full': 'Domingo', 'short': 'Dom'},
-                          ].map((day) {
-                            final full = day['full']!;
-                            final short = day['short']!;
-                            final isSelected = _selectedDays.contains(full);
-                            return Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      if (isSelected) {
-                                        _selectedDays.remove(full);
-                                      } else {
-                                        _selectedDays.add(full);
-                                      }
-                                    });
-                                  },
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    height: 48,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: isSelected 
-                                          ? colorScheme.primary 
-                                          : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: isSelected 
-                                            ? colorScheme.primary 
-                                            : colorScheme.outline.withValues(alpha: 0.2),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      short,
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                        color: isSelected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
+                        
+                        if (_slots.isEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: colorScheme.outline.withValues(alpha: 0.15)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.info_outline, color: colorScheme.primary),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'Aún no has agregado ningún bloque de horario. Cada día puede tener horarios distintos o partidos.',
+                                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                                   ),
                                 ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                        const SizedBox(height: 16),
+                              ],
+                            ),
+                          )
+                        else
+                          Column(
+                            children: List.generate(_slots.length, (index) {
+                              final slot = _slots[index];
+                              return Card(
+                                elevation: 0,
+                                margin: const EdgeInsets.only(bottom: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: BorderSide(color: colorScheme.outline.withValues(alpha: 0.15)),
+                                ),
+                                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
+                                child: ListTile(
+                                  dense: true,
+                                  leading: Icon(Icons.access_time_outlined, color: colorScheme.primary),
+                                  title: Text(
+                                    '${slot['day']}',
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                  ),
+                                  subtitle: Text(
+                                    'De ${slot['startTime']} a ${slot['endTime']}',
+                                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                                    onPressed: () => setState(() => _slots.removeAt(index)),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        const SizedBox(height: 12),
 
-                        // Horario de inicio y fin
-                        Row(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: _selectStartTime,
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey.shade400),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.access_time, color: colorScheme.primary),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          _startTime == null
-                                              ? 'Hora Inicio'
-                                              : 'Inicio: ${_startTime!.format(context)}',
-                                          style: TextStyle(
-                                            color: _startTime == null ? Colors.grey.shade700 : colorScheme.onSurface,
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: InkWell(
-                                onTap: _selectEndTime,
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey.shade400),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.access_time_filled, color: colorScheme.primary),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          _endTime == null
-                                              ? 'Hora Fin'
-                                              : 'Fin: ${_endTime!.format(context)}',
-                                          style: TextStyle(
-                                            color: _endTime == null ? Colors.grey.shade700 : colorScheme.onSurface,
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        // Botón para agregar horario
+                        OutlinedButton.icon(
+                          onPressed: _showAddSlotDialog,
+                          icon: const Icon(Icons.add_circle_outline),
+                          label: const Text('Agregar Bloque de Horario'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            side: BorderSide(color: colorScheme.primary),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
                         ),
                         const SizedBox(height: 16),
 
