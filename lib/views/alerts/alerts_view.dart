@@ -378,41 +378,54 @@ class AlertsView extends ConsumerWidget {
 
             // ── Category + time + action button ──
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    alert.category.toUpperCase(),
-                    style: TextStyle(
-                      color: colorScheme.onPrimaryContainer,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.3,
-                    ),
+                Expanded(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          alert.category.toUpperCase(),
+                          style: TextStyle(
+                            color: colorScheme.onPrimaryContainer,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ),
+                      _buildTypeChip(context, alert.contentType),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 14,
+                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            DateFormat('HH:mm').format(alert.createdAt),
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                _buildTypeChip(context, alert.contentType),
-                const SizedBox(width: 10),
-                Icon(
-                  Icons.access_time_rounded,
-                  size: 14,
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  DateFormat('HH:mm').format(alert.createdAt),
-                  style: TextStyle(
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const Spacer(),
+                const SizedBox(width: 12),
                 OutlinedButton.icon(
                   onPressed: () {
                     context.push('/alerts/detail/${alert.id}');
@@ -429,7 +442,7 @@ class AlertsView extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    minimumSize: const Size(0, 48),
+                    minimumSize: const Size(0, 40),
                   ),
                 ),
               ],

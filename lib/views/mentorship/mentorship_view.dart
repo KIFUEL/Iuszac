@@ -338,7 +338,7 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
             ),
             const SizedBox(height: 16),
 
-            // --- Rating & schedule row ---
+            // --- Rating row ---
             Row(
               children: [
                 Icon(Icons.star_rounded, color: Colors.amber.shade700, size: 22),
@@ -354,18 +354,28 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
                 Text(
                   '(${session.reviewCount} reseñas)',
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                     fontSize: 13,
                   ),
                 ),
-                const Spacer(),
-                Icon(Icons.access_time_outlined, size: 16, color: Colors.grey.shade600),
-                const SizedBox(width: 4),
-                Text(
-                  session.scheduleDisplay.isNotEmpty ? session.scheduleDisplay : 'Sin horario',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 13,
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // --- Schedule row (multislot-safe) ---
+            Row(
+              children: [
+                Icon(Icons.access_time_outlined, size: 16, color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    session.scheduleDisplay.isNotEmpty ? session.scheduleDisplay : 'Sin horario',
+                    style: TextStyle(
+                      color: colorScheme.onSurface.withValues(alpha: 0.8),
+                      fontSize: 13,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
