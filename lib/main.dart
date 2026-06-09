@@ -20,13 +20,13 @@ void main() async {
 
   runApp(
     const ProviderScope(
-      child: IuzZacApp(),
+      child: IuzUazApp(),
     ),
   );
 }
 
-class IuzZacApp extends ConsumerWidget {
-  const IuzZacApp({super.key});
+class IuzUazApp extends ConsumerWidget {
+  const IuzUazApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,9 +34,9 @@ class IuzZacApp extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
-      title: 'IUZ ZAC',
-      theme: IuzZacTheme.lightTheme,
-      darkTheme: IuzZacTheme.darkTheme,
+      title: 'IUZ UAZ',
+      theme: IuzUazTheme.lightTheme,
+      darkTheme: IuzUazTheme.darkTheme,
       themeMode: themeMode,
       routerConfig: router,
       debugShowCheckedModeBanner: false,

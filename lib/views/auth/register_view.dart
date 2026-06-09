@@ -115,7 +115,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro IUZ ZAC'),
+        title: const Text('Registro IUZ UAZ'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/splash'),

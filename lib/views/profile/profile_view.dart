@@ -473,13 +473,13 @@ class ProfileView extends ConsumerWidget {
     if (profile.isAdmin) {
       return [
         const Color(0xFF1E0E62), // Dark violet
-        const Color(0xFF0D1B4B), // IUZ ZAC Navy
+        const Color(0xFF0D1B4B), // IUZ UAZ Navy
         const Color(0xFF3E1256), // Deep plum
       ];
     } else if (profile.canMentor && profile.canPublish && profile.canModerate) {
       return [
         const Color(0xFF003D33), // Extra dark teal
-        const Color(0xFF0D1B4B), // IUZ ZAC Navy
+        const Color(0xFF0D1B4B), // IUZ UAZ Navy
         const Color(0xFF1A237E), // Indigo
       ];
     } else if (profile.canMentor) {
