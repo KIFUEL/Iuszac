@@ -25,7 +25,7 @@ class SplashView extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'IUZ UAZ',
+                'IUS ZAC',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.primary,

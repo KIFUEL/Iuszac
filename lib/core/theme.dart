@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class IuzUazTheme {
+class IusZacTheme {
   // ── Palette ──────────────────────────────────────────────
   // Primary: deep brown  |  Secondary: golden tan
   // Surface : parchment  |  Background: cream white

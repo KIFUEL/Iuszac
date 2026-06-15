@@ -1,4 +1,4 @@
-name: iuz_uaz
+name: ius_zac
 description: Una aplicación web para la comunidad legal.
 version: 1.0.0+1
 
@@ -27,10 +27,10 @@ dev_dependencies:
 flutter_launcher_icons:
   android: false
   ios: false
-  image_path: "Documentation/IUZ UAZ.jpeg"
+  image_path: "Documentation/IUS ZAC.jpeg"
   web:
     generate: true
-    image_path: "Documentation/IUZ UAZ.jpeg"
+    image_path: "Documentation/IUS ZAC.jpeg"
     background_color: "#1A237E"
     theme_color: "#1A237E"
 

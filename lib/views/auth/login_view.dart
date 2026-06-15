@@ -135,7 +135,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       const SizedBox(height: 20),
                       // App title with letter spacing
                       Text(
-                        'IUZ UAZ',
+                        'IUS ZAC',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
