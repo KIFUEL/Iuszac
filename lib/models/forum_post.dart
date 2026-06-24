@@ -40,7 +40,7 @@ class ForumPost {
           json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
       isUrgent: json['is_urgent'] ?? false,
       tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
-      replyCount: json['reply_count'] ?? (json['forum_comments'] as List?)?.length ?? 0,
+      replyCount: (json['forum_comments'] as List?)?.length ?? json['reply_count'] ?? 0,
       isClosed: json['is_closed'] ?? false,
       closedAt: json['closed_at'] != null
           ? DateTime.parse(json['closed_at'])
