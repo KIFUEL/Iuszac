@@ -25,6 +25,18 @@ final userProfileProvider = FutureProvider<Profile?>((ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
 
+  try {
+    // Validar activamente con el servidor con un tiempo de gracia extendido.
+    // Garantiza la seguridad (ej. expulsar baneados), pero previene deslogueos por mala red.
+    await Supabase.instance.client.auth.getUser().timeout(const Duration(seconds: 15));
+  } on AuthException catch (_) {
+    // Solo desloguear si Supabase rechaza explícitamente el token (invalido o expirado).
+    await Supabase.instance.client.auth.signOut();
+    return null;
+  } catch (_) {
+    // Si falla por red o timeout, ignorar y permitir que intente cargar.
+  }
+
   // Cargamos el perfil público del usuario desde la base de datos
   final response = await Supabase.instance.client
       .from('profiles')
