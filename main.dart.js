@@ -38122,9 +38122,10 @@ p=h.i(a,j)!=null?A.DB(h.i(a,j)):null
 o=h.i(a,"is_urgent")
 if(o==null)o=!1
 n=h.i(a,"tags")!=null?A.ct(h.i(a,"tags"),!0,t.N):A.c([],t.s)
-m=h.i(a,"reply_count")
-if(m==null){m=t.kc.a(h.i(a,"forum_comments"))
-m=m==null?null:J.c_(m)}if(m==null)m=0
+m=t.kc.a(h.i(a,"forum_comments"))
+m=m==null?null:J.c_(m)
+if(m==null)m=h.i(a,"reply_count")
+if(m==null)m=0
 l=h.i(a,"is_closed")
 if(l==null)l=!1
 return new A.ih(g,f,s,r,q,p,o,n,m,l,h.i(a,i)!=null?A.fZ(h.i(a,i)):null)},
