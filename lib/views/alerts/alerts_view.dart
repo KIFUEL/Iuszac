@@ -7,7 +7,9 @@ import '../../models/publication.dart';
 import '../../widgets/common_widgets.dart';
 
 class AlertsView extends ConsumerWidget {
-  const AlertsView({super.key});
+  final String? filterType;
+  
+  const AlertsView({super.key, this.filterType});
 
   /// Responsive horizontal padding – wider on tablets/desktop
   double _responsivePadding(BuildContext context) {
@@ -25,9 +27,9 @@ class AlertsView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Alertas de Reforma',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          _getTitle(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
@@ -41,7 +43,11 @@ class AlertsView extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(publicationsProvider),
         child: alertsAsync.when(
-          data: (alerts) {
+          data: (allAlerts) {
+            final alerts = filterType != null
+                ? allAlerts.where((a) => a.contentType == filterType).toList()
+                : allAlerts;
+                
             if (alerts.isEmpty) {
               return Center(
                 child: Padding(
@@ -139,6 +145,21 @@ class AlertsView extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _getTitle() {
+    switch (filterType) {
+      case 'noticia':
+        return 'Noticias';
+      case 'evento':
+        return 'Eventos';
+      case 'convocatoria':
+        return 'Convocatorias';
+      case 'reforma':
+        return 'Reformas';
+      default:
+        return 'Publicaciones';
+    }
   }
 
   Widget _buildDateHeader(BuildContext context, String label) {

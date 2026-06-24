@@ -155,7 +155,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/alerts',
-            builder: (context, state) => const AlertsView(),
+            builder: (context, state) {
+              final type = state.uri.queryParameters['type'];
+              return AlertsView(filterType: type);
+            },
             routes: [
               GoRoute(
                 path: 'detail/:id',

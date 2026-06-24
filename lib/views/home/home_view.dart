@@ -246,7 +246,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         if (news.isNotEmpty) ...[
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: hPad),
-                            child: _buildSectionHeader(context, 'Últimas Noticias', Icons.newspaper, () => context.go('/alerts')),
+                            child: _buildSectionHeader(context, 'Últimas Noticias', Icons.newspaper, () => context.go('/alerts?type=noticia')),
                           ),
                           const SizedBox(height: 8),
                           ...news.map((u) => Padding(
@@ -263,7 +263,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         if (events.isNotEmpty) ...[
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: hPad),
-                            child: _buildSectionHeader(context, 'Próximos Eventos', Icons.event, () => context.go('/alerts')),
+                            child: _buildSectionHeader(context, 'Próximos Eventos', Icons.event, () => context.go('/alerts?type=evento')),
                           ),
                           const SizedBox(height: 8),
                           ...events.map((u) => Padding(
@@ -280,7 +280,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         if (reforms.isNotEmpty) ...[
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: hPad),
-                            child: _buildSectionHeader(context, 'Últimas Reformas', Icons.gavel, () => context.go('/alerts')),
+                            child: _buildSectionHeader(context, 'Últimas Reformas', Icons.gavel, () => context.go('/alerts?type=reforma')),
                           ),
                           const SizedBox(height: 8),
                           ...reforms.map((u) => Padding(
