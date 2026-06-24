@@ -16,11 +16,12 @@ class DatabaseService {
 
   // 1. Publicaciones (Noticias / Reformas / Eventos)
   Future<List<Publication>> getPublications() async {
+    final nowStr = DateTime.now().toIso8601String();
     final response = await _supabase
         .from('publications')
         .select('*, profiles(*)')
-        .eq('status', 'published')
-        .order('created_at', ascending: false);
+        .or('status.eq.published,and(status.eq.scheduled,published_at.lte.$nowStr)')
+        .order('published_at', ascending: false);
 
     return (response as List)
         .map((json) => Publication.fromJson(json))
@@ -43,10 +44,12 @@ class DatabaseService {
   }
 
   Future<List<Publication>> getScheduledUpdates() async {
+    final nowStr = DateTime.now().toIso8601String();
     final response = await _supabase
         .from('publications')
         .select('*, profiles(*)')
         .eq('status', 'scheduled')
+        .gt('published_at', nowStr)
         .order('published_at', ascending: true);
 
     return (response as List)
