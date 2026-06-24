@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../providers/database_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/large_update_card.dart';
+import '../../widgets/auto_carousel.dart';
 import '../../utils/pwa_helper.dart';
 
 class HomeView extends ConsumerStatefulWidget {
@@ -273,22 +274,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             child: _buildSectionHeader(context, 'Destacados', Icons.star, null),
                           ),
                           const SizedBox(height: 16),
-                          SizedBox(
-                            height: 380, // Aproximadamente el alto de LargeUpdateCard
-                            child: PageView.builder(
-                              controller: PageController(viewportFraction: 0.92),
-                              itemCount: carouselUpdates.length,
-                              itemBuilder: (context, index) {
-                                final update = carouselUpdates[index];
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                  child: LargeUpdateCard(
-                                    update: update,
-                                    onTap: () => context.push('/alerts/detail/${update.id}'),
-                                  ),
-                                );
-                              },
-                            ),
+                          AutoCarousel(
+                            publications: carouselUpdates,
+                            duration: const Duration(seconds: 5),
                           ),
                           const SizedBox(height: 32),
                         ],
