@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../providers/database_provider.dart';
 import '../../widgets/common_widgets.dart';
 
 class GlobalSearchView extends ConsumerStatefulWidget {
@@ -14,19 +15,6 @@ class _GlobalSearchViewState extends ConsumerState<GlobalSearchView> {
   final _searchController = TextEditingController();
   final _focusNode = FocusNode();
   String _searchQuery = '';
-
-  final List<String> _recentSearches = [
-    'Art. 14',
-    'Código Penal Zacatecas',
-    'Reforma Laboral',
-    'Ley de Amparo'
-  ];
-
-  final List<Map<String, String>> _popularArticles = [
-    {'title': 'Art. 14', 'subtitle': 'Constitución Política'},
-    {'title': 'Art. 250', 'subtitle': 'Código Penal Zacatecas'},
-    {'title': 'Art. 61', 'subtitle': 'Ley de Amparo'},
-  ];
 
   @override
   void initState() {
@@ -48,94 +36,159 @@ class _GlobalSearchViewState extends ConsumerState<GlobalSearchView> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: LawTextField(
-          label: 'Buscar...',
-          icon: Icons.search,
-          controller: _searchController,
-          focusNode: _focusNode,
-          onChanged: (val) => setState(() => _searchQuery = val.trim()),
+        title: Hero(
+          tag: 'search_bar',
+          child: Material(
+            type: MaterialType.transparency,
+            child: LawTextField(
+              label: 'Buscar artículos, foros, eventos...',
+              icon: Icons.search,
+              controller: _searchController,
+              focusNode: _focusNode,
+              onChanged: (val) => setState(() => _searchQuery = val.trim()),
+            ),
+          ),
         ),
         actions: [
           TextButton(
-            onPressed: () => context.go('/'),
-            child: const Text('Cancelar'),
+            onPressed: () => context.pop(),
+            child: const Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           const SizedBox(width: 8),
         ],
       ),
-      body: _searchQuery.isEmpty ? _buildSuggestions() : _buildResults(),
+      body: _searchQuery.isEmpty ? _buildSuggestions(context) : _buildResults(context),
     );
   }
 
-  Widget _buildSuggestions() {
+  Widget _buildSuggestions(BuildContext context) {
+    final tagsAsync = ref.watch(popularTagsProvider);
+    final publicationsAsync = ref.watch(publicationsProvider);
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        if (_recentSearches.isNotEmpty) ...[
-          const Text(
-            'Búsquedas Recientes',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            children: _recentSearches.map((s) => _buildChip(s)).toList(),
-          ),
-          const SizedBox(height: 32),
-        ],
+        tagsAsync.when(
+          data: (tags) {
+            if (tags.isEmpty) return const SizedBox.shrink();
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Búsquedas Populares',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: tags.take(8).map((tag) => _buildChip(tag, colorScheme)).toList(),
+                ),
+                const SizedBox(height: 32),
+              ],
+            );
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
         const Text(
-          'Artículos Populares',
+          'Publicaciones Recientes',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 12),
-        ..._popularArticles.map((a) => ListTile(
-              leading: const Icon(Icons.trending_up, color: Colors.blue),
-              title: Text(a['title']!),
-              subtitle: Text(a['subtitle']!),
-              onTap: () {},
-            )),
+        publicationsAsync.when(
+          data: (pubs) {
+            if (pubs.isEmpty) return const Text('No hay sugerencias.');
+            return Column(
+              children: pubs.take(4).map((pub) {
+                IconData icon;
+                Color iconColor;
+                switch (pub.contentType) {
+                  case 'noticia':
+                    icon = Icons.newspaper;
+                    iconColor = Colors.orange;
+                    break;
+                  case 'evento':
+                  case 'convocatoria':
+                    icon = Icons.event;
+                    iconColor = Colors.green;
+                    break;
+                  case 'reforma':
+                    icon = Icons.gavel;
+                    iconColor = Colors.blue;
+                    break;
+                  default:
+                    icon = Icons.article;
+                    iconColor = colorScheme.primary;
+                }
+
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: iconColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(icon, color: iconColor, size: 20),
+                  ),
+                  title: Text(pub.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: Text(pub.category, style: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7), fontSize: 13)),
+                  trailing: const Icon(Icons.chevron_right, size: 20),
+                  onTap: () {
+                    context.push('/alerts/detail/${pub.id}');
+                  },
+                );
+              }).toList(),
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
       ],
     );
   }
 
-  Widget _buildChip(String label) {
-    return Chip(
-      label: Text(label, style: const TextStyle(fontSize: 12)),
-      onDeleted: () {
-        setState(() => _recentSearches.remove(label));
+  Widget _buildChip(String label, ColorScheme colorScheme) {
+    return ActionChip(
+      label: Text(label),
+      labelStyle: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: colorScheme.primary,
+      ),
+      backgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
+      side: BorderSide(color: colorScheme.primary.withValues(alpha: 0.2)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      onPressed: () {
+        _searchController.text = label;
+        setState(() => _searchQuery = label);
       },
     );
   }
 
-  Widget _buildResults() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.description_outlined)),
-          title: Text('Art. ${index + 100} - Ejemplo de resultado'),
-          subtitle: const Text('Código Civil del Estado de Zacatecas'),
-          trailing: index == 1
-              ? Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'REFORMA',
-                    style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )
-              : const Icon(Icons.chevron_right),
-          onTap: () {},
-        );
-      },
+  Widget _buildResults(BuildContext context) {
+    // Aquí podrías filtrar las publicaciones, foros o artículos en base a _searchQuery
+    // Por ahora dejaremos un placeholder estético
+    final colorScheme = Theme.of(context).colorScheme;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.search_off_rounded, size: 64, color: colorScheme.outline.withValues(alpha: 0.5)),
+          const SizedBox(height: 16),
+          Text(
+            'Buscando: "$_searchQuery"',
+            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'La búsqueda global completa se conectará pronto.',
+            style: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7), fontSize: 14),
+          ),
+        ],
+      ),
     );
   }
 }

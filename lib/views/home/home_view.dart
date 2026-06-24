@@ -210,14 +210,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                       ),
                                     ),
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.primary.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(Icons.tune_rounded, color: colorScheme.primary, size: 20),
-                                  ),
                                 ],
                               ),
                             ),
