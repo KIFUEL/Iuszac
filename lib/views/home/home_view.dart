@@ -103,71 +103,130 @@ class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
+    final profile = ref.watch(userProfileProvider).value;
     final updatesAsync = ref.watch(publicationsProvider);
-    final firstName = user?.userMetadata?['full_name'] ?? 'Usuario';
+    final firstName = profile?.fullName.split(' ')[0] ?? user?.userMetadata?['full_name']?.split(' ')[0] ?? 'Usuario';
     final colorScheme = Theme.of(context).colorScheme;
     final hPad = _responsivePadding(context);
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.large(
-            pinned: true,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '${_getGreeting()},',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        height: 1.4,
-                      ),
-                ),
-                Text(
-                  firstName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 8),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 720),
-                  child: GestureDetector(
-                    onTap: () => context.go('/search'),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: colorScheme.outlineVariant.withOpacity(0.4),
-                          width: 1,
+              padding: EdgeInsets.fromLTRB(hPad, 24, hPad, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: colorScheme.primaryContainer,
+                        backgroundImage: profile?.avatarUrl != null ? NetworkImage(profile!.avatarUrl!) : null,
+                        child: profile?.avatarUrl == null
+                            ? Icon(Icons.person, color: colorScheme.onPrimaryContainer, size: 28)
+                            : null,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _getGreeting(),
+                              style: TextStyle(
+                                color: colorScheme.onSurfaceVariant,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            Text(
+                              firstName,
+                              style: TextStyle(
+                                color: colorScheme.onSurface,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.search, color: colorScheme.onSurfaceVariant, size: 24),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Busca artículos, códigos o foros...',
-                            style: TextStyle(
-                              color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-                              fontSize: 15,
-                              height: 1.4,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: () => context.push('/profile/settings'),
+                          icon: const Icon(Icons.settings_outlined),
+                          color: colorScheme.onSurfaceVariant,
+                          tooltip: 'Ajustes',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 28),
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 720),
+                      child: GestureDetector(
+                        onTap: () => context.go('/search'),
+                        child: Hero(
+                          tag: 'search_bar',
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                              decoration: BoxDecoration(
+                                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: colorScheme.shadow.withValues(alpha: 0.05),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  )
+                                ],
+                                border: Border.all(
+                                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.search_rounded, color: colorScheme.primary, size: 26),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      'Buscar artículos, foros, eventos...',
+                                      style: TextStyle(
+                                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.primary.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(Icons.tune_rounded, color: colorScheme.primary, size: 20),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
