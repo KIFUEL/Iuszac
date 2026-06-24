@@ -16,7 +16,8 @@ final authStateProvider = StreamProvider<AuthState>((ref) {
 
 // Provider para obtener los datos del usuario actual de Supabase Auth
 final currentUserProvider = Provider<User?>((ref) {
-  return ref.watch(authServiceProvider).currentUser;
+  final authState = ref.watch(authStateProvider).value;
+  return authState?.session?.user ?? Supabase.instance.client.auth.currentUser;
 });
 
 // Provider para obtener el perfil extendido del usuario desde la tabla 'profiles'
@@ -24,17 +25,7 @@ final userProfileProvider = FutureProvider<Profile?>((ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
 
-  try {
-    // 1. Validar activamente con el servidor que la cuenta siga existiendo y sea válida.
-    // Esto previene que usuarios borrados sigan navegando con una sesión local "fantasma".
-    await Supabase.instance.client.auth.getUser();
-  } catch (e) {
-    // Si el servidor rechaza el token (ej. usuario eliminado o baneado), destruimos la sesión local.
-    await Supabase.instance.client.auth.signOut();
-    return null;
-  }
-
-  // 2. Si el usuario es válido en el servidor, cargamos su perfil público.
+  // Cargamos el perfil público del usuario desde la base de datos
   final response = await Supabase.instance.client
       .from('profiles')
       .select()
