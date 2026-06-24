@@ -12,23 +12,43 @@ class ReformDetailView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alertsAsync = ref.watch(legalUpdatesProvider);
+    final alertsAsync = ref.watch(publicationsProvider);
+    final draftsAsync = ref.watch(myDraftsProvider);
+    final scheduledAsync = ref.watch(scheduledUpdatesProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detalle de Reforma'),
-      ),
-      body: alertsAsync.when(
-        data: (alerts) {
-          final alert = alerts.firstWhere((a) => a.id == alertId);
-          final publishDate = DateFormat('dd/MM/yyyy').format(alert.createdAt);
+    if (alertsAsync.isLoading || draftsAsync.isLoading || scheduledAsync.isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Cargando...')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final allUpdates = [
+      ...alertsAsync.value ?? [],
+      ...draftsAsync.value ?? [],
+      ...scheduledAsync.value ?? [],
+    ];
+
+    if (allUpdates.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Detalle')),
+        body: const Center(child: Text('No hay información disponible.')),
+      );
+    }
+
+    try {
+      final alert = allUpdates.firstWhere((a) => a.id == alertId);
+      final publishDate = DateFormat('dd/MM/yyyy').format(alert.createdAt);
 
           final hasComparison = (alert.oldContent != null && alert.oldContent!.trim().isNotEmpty) ||
               (alert.newContent != null && alert.newContent!.trim().isNotEmpty);
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Detalle de Publicación'),
+            ),
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -59,6 +79,19 @@ class ReformDetailView extends ConsumerWidget {
                 ),
                 const SizedBox(height: 24),
 
+                if (alert.imageUrl != null && alert.imageUrl!.trim().isNotEmpty) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      alert.imageUrl!,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+
                 if (hasComparison) ...[
                   // Texto Anterior
                   if (alert.oldContent != null && alert.oldContent!.trim().isNotEmpty) ...[
@@ -82,7 +115,6 @@ class ReformDetailView extends ConsumerWidget {
                       child: Text(
                         alert.oldContent!,
                         style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
                           color: Colors.red,
                           height: 1.5,
                         ),
@@ -153,12 +185,14 @@ class ReformDetailView extends ConsumerWidget {
                     Icons.event, 'Fecha de Publicación', publishDate),
               ],
             ),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
-      ),
-    );
+          ),
+        );
+    } catch (e) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Detalle')),
+        body: const Center(child: Text('Publicación no encontrada.')),
+      );
+    }
   }
 
   Widget _buildMetadataRow(IconData icon, String label, String value) {

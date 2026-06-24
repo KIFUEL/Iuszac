@@ -129,19 +129,39 @@ class _NewPostViewState extends ConsumerState<NewPostView> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Campo de Hashtags
                   LawTextField(
                     label: 'Hashtags (separados por comas)',
                     icon: Icons.tag,
                     controller: _tagsController,
                     keyboardType: TextInputType.text,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 12, top: 4),
-                    child: Text(
-                      'Ej: penal, constitucion, uaz',
-                      style: TextStyle(color: Colors.grey, fontSize: 11),
+                  const SizedBox(height: 8),
+                  ref.watch(popularTagsProvider).when(
+                    data: (tags) => tags.isEmpty ? const SizedBox.shrink() : Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: tags.map((tag) => ActionChip(
+                          label: Text('#$tag', style: const TextStyle(fontSize: 12)),
+                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          onPressed: () {
+                            final current = _tagsController.text.trim();
+                            if (current.isEmpty) {
+                              _tagsController.text = tag;
+                            } else {
+                              final tagsList = current.split(',').map((e) => e.trim()).toList();
+                              if (!tagsList.contains(tag)) {
+                                _tagsController.text = '$current, $tag';
+                              }
+                            }
+                          },
+                        )).toList(),
+                      ),
                     ),
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => const SizedBox.shrink(),
                   ),
                   const SizedBox(height: 20),
                   

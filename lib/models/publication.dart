@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'profile.dart';
 
-class LegalUpdate {
+class Publication {
   final String id;
   final String title;
   final String content;
@@ -10,7 +10,6 @@ class LegalUpdate {
   final DateTime createdAt;
   final String? authorId;
   final Profile? author;
-  final String? articleId;
   final String? oldContent;
   final String? newContent;
   
@@ -24,10 +23,20 @@ class LegalUpdate {
   final DateTime? eventEnd;
   final String? eventLocation;
   final String? eventLink;
+  final String? eventCost;
   final String? deadline;
   final DateTime? publishedAt;
 
-  LegalUpdate({
+  // Destacados
+  final bool isFeatured;
+  final DateTime? featuredUntil;
+
+  // Nuevos campos DOF
+  final String? issuingBody;
+  final DateTime? entryIntoForce;
+  final String? transitoryArticles;
+
+  Publication({
     required this.id,
     required this.title,
     required this.content,
@@ -36,7 +45,6 @@ class LegalUpdate {
     required this.createdAt,
     this.authorId,
     this.author,
-    this.articleId,
     this.oldContent,
     this.newContent,
     this.status = 'published',
@@ -48,37 +56,46 @@ class LegalUpdate {
     this.eventEnd,
     this.eventLocation,
     this.eventLink,
+    this.eventCost,
     this.deadline,
     this.publishedAt,
+    this.isFeatured = false,
+    this.featuredUntil,
+    this.issuingBody,
+    this.entryIntoForce,
+    this.transitoryArticles,
   });
 
-  factory LegalUpdate.fromJson(Map<String, dynamic> json) {
-    return LegalUpdate(
+  factory Publication.fromJson(Map<String, dynamic> json) {
+    return Publication(
       id: json['id'],
       title: json['title'] ?? '',
       content: json['content'] ?? '',
       category: json['category'] ?? 'General',
       imageUrl: json['image_url'],
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : DateTime.now(),
       authorId: json['author_id'],
       author:
           json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
-      articleId: json['article_id'],
       oldContent: json['old_content'],
       newContent: json['new_content'],
       status: json['status'] ?? 'published',
       contentType: json['content_type'] ?? 'reforma',
-      tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? <String>[],
       sourceName: json['source_name'],
       sourceUrl: json['source_url'],
       eventStart: json['event_start'] != null ? DateTime.parse(json['event_start']) : null,
       eventEnd: json['event_end'] != null ? DateTime.parse(json['event_end']) : null,
       eventLocation: json['event_location'],
       eventLink: json['event_link'],
+      eventCost: json['event_cost'],
       deadline: json['deadline'],
       publishedAt: json['published_at'] != null ? DateTime.parse(json['published_at']) : null,
+      isFeatured: json['is_featured'] ?? false,
+      featuredUntil: json['featured_until'] != null ? DateTime.parse(json['featured_until']) : null,
+      issuingBody: json['issuing_body'],
+      entryIntoForce: json['entry_into_force'] != null ? DateTime.parse(json['entry_into_force']) : null,
+      transitoryArticles: json['transitory_articles'],
     );
   }
 
@@ -112,7 +129,6 @@ class LegalUpdate {
       'image_url': imageUrl,
       'created_at': createdAt.toIso8601String(),
       'author_id': authorId,
-      'article_id': articleId,
       'old_content': oldContent,
       'new_content': newContent,
       'status': status,
@@ -126,6 +142,9 @@ class LegalUpdate {
       'event_link': eventLink,
       'deadline': deadline,
       'published_at': publishedAt?.toIso8601String(),
+      'issuing_body': issuingBody,
+      'entry_into_force': entryIntoForce?.toIso8601String(),
+      'transitory_articles': transitoryArticles,
     };
   }
 }

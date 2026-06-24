@@ -11,7 +11,7 @@ class MainLayout extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final location = GoRouterState.of(context).uri.toString();
-    final updatesAsync = ref.watch(legalUpdatesProvider);
+    final updatesAsync = ref.watch(publicationsProvider);
     
     // Obtener el conteo de alertas recientes (últimos 7 días)
     final alertsCount = updatesAsync.maybeWhen(

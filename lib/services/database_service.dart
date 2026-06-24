@@ -1,5 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/legal_update.dart';
+import '../models/publication.dart';
 import '../models/profile.dart';
 import '../models/forum_post.dart';
 import '../models/forum_comment.dart';
@@ -14,47 +14,47 @@ import '../models/mentorship_review.dart';
 class DatabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  // 1. Actualizaciones Legales (Noticias / Reformas / Eventos)
-  Future<List<LegalUpdate>> getLegalUpdates() async {
+  // 1. Publicaciones (Noticias / Reformas / Eventos)
+  Future<List<Publication>> getPublications() async {
     final response = await _supabase
-        .from('legal_updates')
+        .from('publications')
         .select('*, profiles(*)')
         .eq('status', 'published')
         .order('created_at', ascending: false);
 
     return (response as List)
-        .map((json) => LegalUpdate.fromJson(json))
+        .map((json) => Publication.fromJson(json))
         .toList();
   }
 
-  Future<List<LegalUpdate>> getMyDrafts() async {
+  Future<List<Publication>> getMyDrafts() async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) return [];
     final response = await _supabase
-        .from('legal_updates')
+        .from('publications')
         .select('*, profiles(*)')
         .eq('status', 'draft')
         .eq('author_id', userId)
         .order('created_at', ascending: false);
 
     return (response as List)
-        .map((json) => LegalUpdate.fromJson(json))
+        .map((json) => Publication.fromJson(json))
         .toList();
   }
 
-  Future<List<LegalUpdate>> getScheduledUpdates() async {
+  Future<List<Publication>> getScheduledUpdates() async {
     final response = await _supabase
-        .from('legal_updates')
+        .from('publications')
         .select('*, profiles(*)')
         .eq('status', 'scheduled')
         .order('published_at', ascending: true);
 
     return (response as List)
-        .map((json) => LegalUpdate.fromJson(json))
+        .map((json) => Publication.fromJson(json))
         .toList();
   }
 
-  Future<LegalUpdate> createLegalUpdate({
+  Future<Publication> createPublication({
     required String title,
     required String content,
     required String category,
@@ -68,12 +68,17 @@ class DatabaseService {
     DateTime? eventEnd,
     String? eventLocation,
     String? eventLink,
+    String? eventCost,
     String? deadline,
     DateTime? publishedAt,
+    bool isFeatured = false,
+    DateTime? featuredUntil,
     // Específico de reformas
-    String? articleId,
     String? oldContent,
     String? newContent,
+    String? issuingBody,
+    DateTime? entryIntoForce,
+    String? transitoryArticles,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -81,7 +86,7 @@ class DatabaseService {
     }
 
     final response = await _supabase
-        .from('legal_updates')
+        .from('publications')
         .insert({
           'author_id': userId,
           'title': title,
@@ -97,16 +102,117 @@ class DatabaseService {
           'event_end': eventEnd?.toIso8601String(),
           'event_location': eventLocation,
           'event_link': eventLink,
+          'event_cost': eventCost,
           'deadline': deadline,
           'published_at': publishedAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
-          'article_id': articleId,
           'old_content': oldContent,
           'new_content': newContent,
+          'issuing_body': issuingBody,
+          'entry_into_force': entryIntoForce?.toIso8601String(),
+          'transitory_articles': transitoryArticles,
+          'is_featured': isFeatured,
+          'featured_until': featuredUntil?.toIso8601String(),
         })
         .select('*, profiles(*)')
         .single();
 
-    return LegalUpdate.fromJson(response);
+    return Publication.fromJson(response);
+  }
+
+  Future<Publication> updatePublication({
+    required String id,
+    required String title,
+    required String content,
+    required String category,
+    required String status,
+    required String contentType,
+    List<String> tags = const [],
+    String? imageUrl,
+    String? sourceName,
+    String? sourceUrl,
+    DateTime? eventStart,
+    DateTime? eventEnd,
+    String? eventLocation,
+    String? eventLink,
+    String? eventCost,
+    String? deadline,
+    DateTime? publishedAt,
+    bool isFeatured = false,
+    DateTime? featuredUntil,
+    String? oldContent,
+    String? newContent,
+    String? issuingBody,
+    DateTime? entryIntoForce,
+    String? transitoryArticles,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw Exception('Inicia sesión para poder editar una publicación');
+    }
+
+    final response = await _supabase
+        .from('publications')
+        .update({
+          'title': title,
+          'content': content,
+          'category': category,
+          'status': status,
+          'content_type': contentType,
+          'tags': tags,
+          'image_url': imageUrl,
+          'source_name': sourceName,
+          'source_url': sourceUrl,
+          'event_start': eventStart?.toIso8601String(),
+          'event_end': eventEnd?.toIso8601String(),
+          'event_location': eventLocation,
+          'event_link': eventLink,
+          'event_cost': eventCost,
+          'deadline': deadline,
+          'published_at': publishedAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
+          'old_content': oldContent,
+          'new_content': newContent,
+          'issuing_body': issuingBody,
+          'entry_into_force': entryIntoForce?.toIso8601String(),
+          'transitory_articles': transitoryArticles,
+          'is_featured': isFeatured,
+          'featured_until': featuredUntil?.toIso8601String(),
+        })
+        .eq('id', id)
+        .select('*, profiles(*)')
+        .single();
+
+    return Publication.fromJson(response);
+  }
+
+  Future<List<String>> getPopularTags({int limit = 8}) async {
+    try {
+      final response = await _supabase.from('publications').select('tags');
+      final tagCounts = <String, int>{};
+      for (var row in response as List) {
+        if (row['tags'] != null) {
+          final tags = List<String>.from(row['tags']);
+          for (var tag in tags) {
+            final trimmed = tag.trim();
+            if (trimmed.isNotEmpty) {
+              tagCounts[trimmed] = (tagCounts[trimmed] ?? 0) + 1;
+            }
+          }
+        }
+      }
+      final sortedTags = tagCounts.entries.toList()
+        ..sort((a, b) => b.value.compareTo(a.value));
+        
+      final result = sortedTags.take(limit).map((e) => e.key).toList();
+      
+      // Si no hay etiquetas guardadas, devolvemos unas por defecto para que la UI no quede vacía
+      if (result.isEmpty) {
+        return ['Laboral', 'Fiscal', 'Penal', 'Amparo', 'Civil', 'Constitucional'];
+      }
+      
+      return result;
+    } catch (e) {
+      return ['Laboral', 'Fiscal', 'Penal', 'Amparo'];
+    }
   }
 
   // 2. Foro (Publicaciones)
@@ -412,8 +518,8 @@ class DatabaseService {
   }
 
   /// Elimina una actualización legal/noticia por su ID
-  Future<void> deleteLegalUpdate(String id) async {
-    await _supabase.from('legal_updates').delete().eq('id', id);
+  Future<void> deletePublication(String id) async {
+    await _supabase.from('publications').delete().eq('id', id);
   }
 
   // ── 8. Gestión de Usuarios y Roles (Admin/Mentor) ─────────────────────────

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/database_service.dart';
-import '../models/legal_update.dart';
+import '../models/publication.dart';
 import '../models/forum_post.dart';
 import '../models/forum_comment.dart';
 import '../models/mentor.dart';
@@ -19,19 +19,25 @@ final databaseServiceProvider = Provider<DatabaseService>((ref) {
 });
 
 // Proveedor para obtener la lista de Reformas / Actualizaciones Legales
-final legalUpdatesProvider = FutureProvider<List<LegalUpdate>>((ref) async {
+final publicationsProvider = FutureProvider<List<Publication>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
-  return await dbService.getLegalUpdates();
+  return await dbService.getPublications();
+});
+
+// Proveedor para obtener las etiquetas más populares (usadas en publicaciones)
+final popularTagsProvider = FutureProvider<List<String>>((ref) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getPopularTags();
 });
 
 // Proveedor para obtener los borradores del usuario actual
-final myDraftsProvider = FutureProvider<List<LegalUpdate>>((ref) async {
+final myDraftsProvider = FutureProvider<List<Publication>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
   return await dbService.getMyDrafts();
 });
 
 // Proveedor para obtener las publicaciones programadas (requiere ser admin o tener permiso de publicador, aunque la BD debería filtrarlo o nosotros lo validamos visualmente)
-final scheduledUpdatesProvider = FutureProvider<List<LegalUpdate>>((ref) async {
+final scheduledUpdatesProvider = FutureProvider<List<Publication>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
   return await dbService.getScheduledUpdates();
 });

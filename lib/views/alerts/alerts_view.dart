@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../providers/database_provider.dart';
-import '../../models/legal_update.dart';
+import '../../models/publication.dart';
 import '../../widgets/common_widgets.dart';
 
 class AlertsView extends ConsumerWidget {
@@ -19,7 +19,7 @@ class AlertsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alertsAsync = ref.watch(legalUpdatesProvider);
+    final alertsAsync = ref.watch(publicationsProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final hPad = _responsivePadding(context);
 
@@ -39,7 +39,7 @@ class AlertsView extends ConsumerWidget {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () async => ref.invalidate(legalUpdatesProvider),
+        onRefresh: () async => ref.invalidate(publicationsProvider),
         child: alertsAsync.when(
           data: (alerts) {
             if (alerts.isEmpty) {
@@ -89,7 +89,7 @@ class AlertsView extends ConsumerWidget {
             }
 
             // Agrupar por fecha
-            final Map<String, List<LegalUpdate>> groupedAlerts = {};
+            final Map<String, List<Publication>> groupedAlerts = {};
             for (var alert in alerts) {
               final dateStr = DateFormat('dd/MM/yyyy').format(alert.createdAt);
               final today = DateFormat('dd/MM/yyyy').format(DateTime.now());
@@ -240,7 +240,7 @@ class AlertsView extends ConsumerWidget {
     );
   }
 
-  Widget _buildAlertCard(BuildContext context, LegalUpdate alert) {
+  Widget _buildAlertCard(BuildContext context, Publication alert) {
     final colorScheme = Theme.of(context).colorScheme;
     final isNew = DateTime.now().difference(alert.createdAt).inHours < 24;
 

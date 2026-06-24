@@ -7,7 +7,7 @@ import '../views/forum/forum_view.dart';
 import '../views/forum/new_post_view.dart';
 import '../views/forum/post_detail_view.dart';
 import '../views/alerts/alerts_view.dart';
-import '../views/alerts/reform_detail_view.dart';
+import '../views/alerts/content_detail_wrapper.dart';
 import '../views/mentorship/mentorship_view.dart';
 import '../views/mentorship/mentorship_detail_view.dart';
 import '../views/mentorship/new_mentorship_view.dart';
@@ -24,13 +24,15 @@ import '../views/codes/articles_list_view.dart';
 import '../views/codes/article_detail_view.dart';
 import '../views/search/global_search_view.dart';
 import '../views/admin/admin_dashboard_view.dart';
-import '../views/admin/new_legal_update_view.dart';
+import '../views/admin/content_manager_view.dart';
+import '../views/admin/new_publication_view.dart';
 import '../views/admin/admin_users_view.dart';
 import '../views/admin/admin_moderation_view.dart';
 import '../views/admin/admin_suspend_view.dart';
 import '../widgets/main_layout.dart';
 import '../providers/auth_provider.dart';
 import '../models/profile.dart';
+import '../models/publication.dart';
 
 class RouterRefreshNotifier extends ChangeNotifier {
   void refresh() {
@@ -159,7 +161,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'detail/:id',
                 builder: (context, state) {
                   final alertId = state.pathParameters['id']!;
-                  return ReformDetailView(alertId: alertId);
+                  return ContentDetailWrapper(updateId: alertId);
                 },
               ),
             ],
@@ -236,8 +238,19 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const AdminDashboardView(),
             routes: [
               GoRoute(
+                path: 'content-manager',
+                builder: (context, state) => const ContentManagerView(),
+              ),
+              GoRoute(
                 path: 'new-update',
-                builder: (context, state) => const NewLegalUpdateView(),
+                builder: (context, state) => const NewPublicationView(),
+              ),
+              GoRoute(
+                path: 'edit-update/:id',
+                builder: (context, state) {
+                  final update = state.extra as Publication?;
+                  return NewPublicationView(existingUpdate: update);
+                },
               ),
               GoRoute(
                 path: 'users',
