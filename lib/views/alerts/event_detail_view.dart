@@ -47,19 +47,6 @@ class EventDetailView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (update.imageUrl != null && update.imageUrl!.isNotEmpty)
-                Image.network(
-                  update.imageUrl!,
-                  width: double.infinity,
-                  height: 250,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    width: double.infinity,
-                    height: 250,
-                    color: colorScheme.surfaceContainerHighest,
-                    child: const Icon(Icons.event, size: 50, color: Colors.grey),
-                  ),
-                ),
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -95,8 +82,26 @@ class EventDetailView extends ConsumerWidget {
                       ),
                     ),
                     
+                    if (update.imageUrl != null && update.imageUrl!.isNotEmpty) ...[
+                      const SizedBox(height: 24),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.network(
+                          update.imageUrl!,
+                          width: double.infinity,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            width: double.infinity,
+                            height: 250,
+                            color: colorScheme.surfaceContainerHighest,
+                            child: const Icon(Icons.event, size: 50, color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                    ],
+
                     if (update.tags.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 24),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
