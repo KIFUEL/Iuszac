@@ -161,7 +161,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
-                          onPressed: () => context.push('/profile/settings'),
+                          onPressed: () => context.go('/profile'),
                           icon: const Icon(Icons.settings_outlined),
                           color: colorScheme.onSurfaceVariant,
                           tooltip: 'Ajustes',
