@@ -174,7 +174,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 720),
                       child: GestureDetector(
-                        onTap: () => context.go('/search'),
+                        onTap: () => context.push('/search'),
                         child: Hero(
                           tag: 'search_bar',
                           child: Material(
