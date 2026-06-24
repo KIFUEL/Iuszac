@@ -84,17 +84,43 @@ class EventDetailView extends ConsumerWidget {
                     
                     if (update.imageUrl != null && update.imageUrl!.isNotEmpty) ...[
                       const SizedBox(height: 24),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          update.imageUrl!,
-                          width: double.infinity,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => Container(
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Scaffold(
+                                backgroundColor: Colors.black,
+                                appBar: AppBar(
+                                  backgroundColor: Colors.black,
+                                  iconTheme: const IconThemeData(color: Colors.white),
+                                ),
+                                body: Center(
+                                  child: InteractiveViewer(
+                                    panEnabled: true,
+                                    minScale: 0.5,
+                                    maxScale: 4.0,
+                                    child: Image.network(
+                                      update.imageUrl!,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            update.imageUrl!,
                             width: double.infinity,
-                            height: 250,
-                            color: colorScheme.surfaceContainerHighest,
-                            child: const Icon(Icons.event, size: 50, color: Colors.grey),
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              width: double.infinity,
+                              height: 250,
+                              color: colorScheme.surfaceContainerHighest,
+                              child: const Icon(Icons.event, size: 50, color: Colors.grey),
+                            ),
                           ),
                         ),
                       ),
