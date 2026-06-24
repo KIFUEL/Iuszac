@@ -35,7 +35,6 @@ class _GlobalSearchViewState extends ConsumerState<GlobalSearchView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Hero(
           tag: 'search_bar',
           child: Material(
