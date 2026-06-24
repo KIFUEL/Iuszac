@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/database_provider.dart';
 
 class ReformDetailView extends ConsumerWidget {
@@ -183,6 +184,29 @@ class ReformDetailView extends ConsumerWidget {
                 const SizedBox(height: 12),
                 _buildMetadataRow(
                     Icons.event, 'Fecha de Publicación', publishDate),
+
+                if (alert.sourceUrl != null && alert.sourceUrl!.isNotEmpty) ...[
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        try {
+                          final uri = Uri.parse(alert.sourceUrl!);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          }
+                        } catch (_) {}
+                      },
+                      icon: const Icon(Icons.picture_as_pdf),
+                      label: const Text('Ver Documento Original'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

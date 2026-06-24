@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/database_provider.dart';
 import 'reform_detail_view.dart'; // Para reutilizar QuillContentViewer
 
@@ -188,8 +189,13 @@ class EventDetailView extends ConsumerWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            // En una app real usar url_launcher
+                          onPressed: () async {
+                            try {
+                              final uri = Uri.parse(update.eventLink!);
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                              }
+                            } catch (_) {}
                           },
                           icon: const Icon(Icons.link),
                           label: const Text('Ir al enlace de registro'),

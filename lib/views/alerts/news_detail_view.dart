@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/database_provider.dart';
 import 'reform_detail_view.dart'; // Para reutilizar QuillContentViewer
 
@@ -138,6 +139,29 @@ class NewsDetailView extends ConsumerWidget {
 
                     // Content
                     QuillContentViewer(content: update.content),
+
+                    if (update.sourceUrl != null && update.sourceUrl!.isNotEmpty) ...[
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            try {
+                              final uri = Uri.parse(update.sourceUrl!);
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                              }
+                            } catch (_) {}
+                          },
+                          icon: const Icon(Icons.open_in_browser),
+                          label: const Text('Ir a la fuente original'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ),
+                    ],
 
                     const SizedBox(height: 32),
                     if (update.sourceName != null && update.sourceName!.isNotEmpty) ...[
