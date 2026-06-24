@@ -19,6 +19,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late TextEditingController _bioCtrl;
   late TextEditingController _institutionCtrl;
   late TextEditingController _phoneCtrl;
+  late TextEditingController _avatarCtrl;
   String? _selectedRole;
   String? _selectedSemester;
   bool _isSaving = false;
@@ -54,6 +55,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _bioCtrl.dispose();
     _institutionCtrl.dispose();
     _phoneCtrl.dispose();
+    _avatarCtrl.dispose();
     super.dispose();
   }
 
@@ -64,6 +66,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _bioCtrl = TextEditingController(text: profile.bio ?? '');
     _institutionCtrl = TextEditingController(text: profile.institution ?? '');
     _phoneCtrl = TextEditingController(text: profile.phoneWhatsapp ?? '');
+    _avatarCtrl = TextEditingController(text: profile.avatarUrl ?? '');
 
     // Inicializar dropdowns buscando concordancia en las listas
     if (profile.label != null && _roles.contains(profile.label)) {
@@ -116,18 +119,29 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                         child: CircleAvatar(
                           radius: 46,
                           backgroundColor: colorScheme.primaryContainer,
-                          child: Text(
+                          backgroundImage: profile.avatarUrl != null && profile.avatarUrl!.isNotEmpty 
+                              ? NetworkImage(profile.avatarUrl!) 
+                              : null,
+                          child: profile.avatarUrl == null || profile.avatarUrl!.isEmpty ? Text(
                             (profile.fullName.isNotEmpty ? profile.fullName[0] : 'U').toUpperCase(),
                             style: TextStyle(
                               fontSize: 34,
                               fontWeight: FontWeight.bold,
                               color: colorScheme.onPrimaryContainer,
                             ),
-                          ),
+                          ) : null,
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
+
+                    // Campo de URL Foto de Perfil
+                    LawTextField(
+                      label: 'URL de Foto de Perfil',
+                      icon: Icons.image_outlined,
+                      controller: _avatarCtrl,
+                    ),
+                    const SizedBox(height: 16),
 
                     // Campo de Nombre
                     LawTextField(
@@ -240,6 +254,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                             semesterDegree: _selectedSemester,
                             phoneWhatsapp: _phoneCtrl.text.trim(),
                             label: _selectedRole,
+                            avatarUrl: _avatarCtrl.text.trim().isEmpty ? null : _avatarCtrl.text.trim(),
                           );
                           ref.invalidate(userProfileProvider);
                           ref.invalidate(profileStatsProvider);

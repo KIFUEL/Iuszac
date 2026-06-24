@@ -113,14 +113,17 @@ class ProfileView extends ConsumerWidget {
                             child: CircleAvatar(
                               radius: 46,
                               backgroundColor: colorScheme.primaryContainer,
-                              child: Text(
+                              backgroundImage: profile.avatarUrl != null && profile.avatarUrl!.isNotEmpty 
+                                  ? NetworkImage(profile.avatarUrl!) 
+                                  : null,
+                              child: profile.avatarUrl == null || profile.avatarUrl!.isEmpty ? Text(
                                 initials,
                                 style: TextStyle(
                                   fontSize: 34,
                                   fontWeight: FontWeight.bold,
                                   color: colorScheme.onPrimaryContainer,
                                 ),
-                              ),
+                              ) : null,
                             ),
                           ),
                           const SizedBox(height: 14),

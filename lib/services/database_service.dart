@@ -399,7 +399,6 @@ class DatabaseService {
 
   // ── 6. Perfil de Usuario ────────────────────────────────────────────────────
 
-  /// Actualiza los datos editables del perfil (nombre, bio, institución, etc.)
   Future<void> updateProfile({
     required String userId,
     String? fullName,
@@ -409,6 +408,7 @@ class DatabaseService {
     String? semesterDegree,
     String? phoneWhatsapp,
     String? label,
+    String? avatarUrl,
   }) async {
     final updates = <String, dynamic>{};
     if (fullName != null) updates['full_name'] = fullName;
@@ -418,6 +418,7 @@ class DatabaseService {
     if (semesterDegree != null) updates['semester_degree'] = semesterDegree;
     if (phoneWhatsapp != null) updates['phone_whatsapp'] = phoneWhatsapp;
     if (label != null) updates['label'] = label;
+    if (avatarUrl != null) updates['avatar_url'] = avatarUrl;
     if (updates.isEmpty) return;
 
     await _supabase.from('profiles').update(updates).eq('id', userId);
