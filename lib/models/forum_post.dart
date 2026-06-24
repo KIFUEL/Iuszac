@@ -28,23 +28,26 @@ class ForumPost {
   });
 
   factory ForumPost.fromJson(Map<String, dynamic> json) {
+    int parsedReplyCount = json['reply_count'] ?? 0;
+    
+    if (json['forum_comments'] != null) {
+      if (json['forum_comments'] is List) {
+        parsedReplyCount = (json['forum_comments'] as List).length;
+      }
+    }
+
     return ForumPost(
       id: json['id'],
-      title: json['title'] ?? '',
-      content: json['content'] ?? '',
+      title: json['title'],
+      content: json['content'],
       userId: json['user_id'],
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
-      author:
-          json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
-      isUrgent: json['is_urgent'] ?? false,
-      tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
-      replyCount: (json['forum_comments'] as List?)?.length ?? json['reply_count'] ?? 0,
+      author: json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
       isClosed: json['is_closed'] ?? false,
-      closedAt: json['closed_at'] != null
-          ? DateTime.parse(json['closed_at'])
-          : null,
+      isUrgent: json['is_urgent'] ?? false,
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']).toLocal() : DateTime.now().toLocal(),
+      closedAt: json['closed_at'] != null ? DateTime.parse(json['closed_at']).toLocal() : null,
+      replyCount: parsedReplyCount,
     );
   }
 

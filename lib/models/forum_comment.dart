@@ -26,8 +26,8 @@ class ForumComment {
       userId: json['user_id'],
       content: json['content'] ?? '',
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
+          ? DateTime.parse(json['created_at']).toLocal()
+          : DateTime.now().toLocal(),
       author:
           json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
       isSolution: json['is_solution'] ?? false,
