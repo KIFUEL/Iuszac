@@ -10,10 +10,15 @@ class Profile {
   final String? semesterDegree;
   final String? phoneWhatsapp;
   // Permissions
-  final bool canMentor;
-  final bool canPublish;
-  final bool canModerate;
-  final bool canManageUsers;
+  final bool _canMentor;
+  final bool _canPublish;
+  final bool _canModerate;
+  final bool _canManageUsers;
+
+  bool get canMentor => _canMentor || isAdmin;
+  bool get canPublish => _canPublish || isAdmin;
+  bool get canModerate => _canModerate || isAdmin;
+  bool get canManageUsers => _canManageUsers || isAdmin;
   // Suspension
   final bool isSuspended;
   final DateTime? suspendedUntil;
@@ -38,10 +43,10 @@ class Profile {
     this.institution,
     this.semesterDegree,
     this.phoneWhatsapp,
-    this.canMentor = false,
-    this.canPublish = false,
-    this.canModerate = false,
-    this.canManageUsers = false,
+    bool canMentor = false,
+    bool canPublish = false,
+    bool canModerate = false,
+    bool canManageUsers = false,
     this.isSuspended = false,
     this.suspendedUntil,
     this.suspensionReason,
@@ -51,7 +56,10 @@ class Profile {
     this.notifMentoria = true,
     this.rating = 0,
     this.reviewCount = 0,
-  });
+  }) : _canMentor = canMentor,
+       _canPublish = canPublish,
+       _canModerate = canModerate,
+       _canManageUsers = canManageUsers;
 
   String get role => userType;
   bool get isAdmin => userType == 'admin';
@@ -99,10 +107,10 @@ class Profile {
       'institution': institution,
       'semester_degree': semesterDegree,
       'phone_whatsapp': phoneWhatsapp,
-      'can_mentor': canMentor,
-      'can_publish': canPublish,
-      'can_moderate': canModerate,
-      'can_manage_users': canManageUsers,
+      'can_mentor': _canMentor,
+      'can_publish': _canPublish,
+      'can_moderate': _canModerate,
+      'can_manage_users': _canManageUsers,
       'is_suspended': isSuspended,
       'suspended_until': suspendedUntil?.toIso8601String(),
       'suspension_reason': suspensionReason,
@@ -149,10 +157,10 @@ class Profile {
       institution: institution ?? this.institution,
       semesterDegree: semesterDegree ?? this.semesterDegree,
       phoneWhatsapp: phoneWhatsapp ?? this.phoneWhatsapp,
-      canMentor: canMentor ?? this.canMentor,
-      canPublish: canPublish ?? this.canPublish,
-      canModerate: canModerate ?? this.canModerate,
-      canManageUsers: canManageUsers ?? this.canManageUsers,
+      canMentor: canMentor ?? _canMentor,
+      canPublish: canPublish ?? _canPublish,
+      canModerate: canModerate ?? _canModerate,
+      canManageUsers: canManageUsers ?? _canManageUsers,
       isSuspended: isSuspended ?? this.isSuspended,
       suspendedUntil: suspendedUntil ?? this.suspendedUntil,
       suspensionReason: suspensionReason ?? this.suspensionReason,
