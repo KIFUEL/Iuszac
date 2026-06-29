@@ -15,6 +15,7 @@ import '../views/profile/profile_view.dart';
 import '../views/profile/edit_profile_view.dart';
 import '../views/profile/notification_settings_view.dart';
 import '../views/profile/security_settings_view.dart';
+import '../views/profile/about_project_view.dart';
 import '../views/auth/login_view.dart';
 import '../views/auth/register_view.dart';
 import '../views/auth/splash_view.dart';
@@ -208,6 +209,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'security',
                 builder: (context, state) => const SecuritySettingsView(),
+              ),
+              GoRoute(
+                path: 'about',
+                builder: (context, state) => const AboutProjectView(),
               ),
             ],
           ),

@@ -306,6 +306,11 @@ class ProfileView extends ConsumerWidget {
                               Icons.help_outline_rounded,
                               onTap: () {},
                             ),
+                            _MenuTileData(
+                              'Acerca del proyecto',
+                              Icons.info_outline_rounded,
+                              onTap: () => context.go('/profile/about'),
+                            ),
                           ]),
 
                           const SizedBox(height: 32),
