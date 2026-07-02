@@ -30,6 +30,7 @@ import '../views/admin/new_publication_view.dart';
 import '../views/admin/admin_users_view.dart';
 import '../views/admin/admin_moderation_view.dart';
 import '../views/admin/admin_suspend_view.dart';
+import '../views/admin/admin_mentorships_view.dart';
 import '../widgets/main_layout.dart';
 import '../providers/auth_provider.dart';
 import '../models/profile.dart';
@@ -267,6 +268,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'moderation',
                 builder: (context, state) => const AdminModerationView(),
+              ),
+              GoRoute(
+                path: 'mentorships-manager',
+                builder: (context, state) => const AdminMentorshipsView(),
               ),
               GoRoute(
                 path: 'suspend/:userId',

@@ -24,6 +24,24 @@ final publicationsProvider = FutureProvider<List<Publication>>((ref) async {
   return await dbService.getPublications();
 });
 
+// Proveedor en tiempo real para contar alertas no leídas
+final unreadAlertsCountProvider = StreamProvider<int>((ref) {
+  final dbService = ref.watch(databaseServiceProvider);
+  final profileAsync = ref.watch(userProfileProvider);
+  
+  final lastRead = profileAsync.value?.lastReadAlertsAt ?? DateTime(2000);
+  
+  return dbService.getPublicationsStream().map((publications) {
+    // Solo contar aquellas que estén publicadas y cuya fecha de publicación sea mayor a la última vez que el usuario las vio
+    final unread = publications.where((p) => 
+      p.status == 'published' && 
+      p.publishedAt != null && 
+      p.publishedAt!.isAfter(lastRead)
+    ).length;
+    return unread;
+  });
+});
+
 // Proveedor para obtener las etiquetas más populares (usadas en publicaciones)
 final popularTagsProvider = FutureProvider<List<String>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
@@ -65,7 +83,13 @@ final mentorsProvider = FutureProvider<List<Mentor>>((ref) async {
 final mentorshipSessionsProvider =
     FutureProvider<List<MentorshipSession>>((ref) async {
   final dbService = ref.watch(databaseServiceProvider);
-  return await dbService.getMentorshipSessions();
+  return await dbService.getMentorshipSessions(onlyActive: true);
+});
+
+final adminMentorshipSessionsProvider =
+    FutureProvider<List<MentorshipSession>>((ref) async {
+  final dbService = ref.watch(databaseServiceProvider);
+  return await dbService.getMentorshipSessions(onlyActive: false);
 });
 
 // Proveedor para obtener las sesiones donde participa el usuario

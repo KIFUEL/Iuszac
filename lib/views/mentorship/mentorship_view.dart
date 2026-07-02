@@ -246,14 +246,19 @@ class _MentorshipViewState extends ConsumerState<MentorshipView> {
                 CircleAvatar(
                   radius: 26,
                   backgroundColor: colorScheme.primaryContainer,
-                  child: Text(
-                    mentorName.isNotEmpty ? mentorName[0] : 'U',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                  ),
+                  backgroundImage: session.mentor?.avatarUrl != null && session.mentor!.avatarUrl!.isNotEmpty 
+                      ? NetworkImage(session.mentor!.avatarUrl!) 
+                      : null,
+                  child: session.mentor?.avatarUrl == null || session.mentor!.avatarUrl!.isEmpty
+                      ? Text(
+                          mentorName.isNotEmpty ? mentorName[0] : 'U',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
+                        )
+                      : null,
                 ),
                 const SizedBox(width: 14),
                 Expanded(

@@ -272,6 +272,19 @@ class AlertsView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (alert.imageUrl != null && alert.imageUrl!.isNotEmpty)
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                height: 160,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                    image: NetworkImage(alert.imageUrl!),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             // ── Title row with NEW badge ──
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,

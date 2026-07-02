@@ -146,6 +146,14 @@ class AdminDashboardView extends ConsumerWidget {
                         colorScheme.error,
                         () => context.push('/admin/moderation'),
                       ),
+                    if (profile?.isAdmin ?? false)
+                      _buildActionButton(
+                        context,
+                        'Gestión de Mentorías',
+                        Icons.school_rounded,
+                        Colors.orange,
+                        () => context.push('/admin/mentorships-manager'),
+                      ),
                   ],
                 );
               },

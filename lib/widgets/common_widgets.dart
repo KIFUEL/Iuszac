@@ -140,6 +140,8 @@ class LawTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
   final FocusNode? focusNode;
+  final String? helperText;
+  final String? suffixText;
 
   const LawTextField({
     super.key,
@@ -151,6 +153,8 @@ class LawTextField extends StatelessWidget {
     this.keyboardType,
     this.onChanged,
     this.focusNode,
+    this.helperText,
+    this.suffixText,
   });
 
   @override
@@ -175,6 +179,8 @@ class LawTextField extends StatelessWidget {
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
         contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+        helperText: helperText,
+        suffixText: suffixText,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(

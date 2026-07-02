@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/database_provider.dart';
+import '../providers/auth_provider.dart';
 
 class MainLayout extends ConsumerWidget {
   final Widget child;
@@ -11,16 +12,8 @@ class MainLayout extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final location = GoRouterState.of(context).uri.toString();
-    final updatesAsync = ref.watch(publicationsProvider);
-    
-    // Obtener el conteo de alertas recientes (últimos 7 días)
-    final alertsCount = updatesAsync.maybeWhen(
-      data: (updates) {
-        final now = DateTime.now();
-        return updates.where((u) => now.difference(u.createdAt).inDays <= 7).length;
-      },
-      orElse: () => 0,
-    );
+    final unreadAlertsAsync = ref.watch(unreadAlertsCountProvider);
+    final alertsCount = unreadAlertsAsync.value ?? 0;
     
     int getIndex() {
       if (location == '/') return 0;
@@ -97,10 +90,16 @@ class MainLayout extends ConsumerWidget {
                   ],
                   selectedIndex: getIndex(),
                   onDestinationSelected: (index) {
+                    if (index == 2) {
+                      ref.read(databaseServiceProvider).markAlertsAsRead().then((_) {
+                        ref.invalidate(userProfileProvider);
+                      });
+                      context.go('/alerts');
+                      return;
+                    }
                     switch (index) {
                       case 0: context.go('/'); break;
                       case 1: context.go('/forum'); break;
-                      case 2: context.go('/alerts'); break;
                       case 3: context.go('/mentorship'); break;
                       case 4: context.go('/profile'); break;
                     }
@@ -118,10 +117,16 @@ class MainLayout extends ConsumerWidget {
               surfaceTintColor: colorScheme.primary,
               selectedIndex: getIndex(),
               onDestinationSelected: (index) {
+                if (index == 2) {
+                  ref.read(databaseServiceProvider).markAlertsAsRead().then((_) {
+                    ref.invalidate(userProfileProvider);
+                  });
+                  context.go('/alerts');
+                  return;
+                }
                 switch (index) {
                   case 0: context.go('/'); break;
                   case 1: context.go('/forum'); break;
-                  case 2: context.go('/alerts'); break;
                   case 3: context.go('/mentorship'); break;
                   case 4: context.go('/profile'); break;
                 }

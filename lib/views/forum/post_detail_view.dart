@@ -705,14 +705,19 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
                                       child: CircleAvatar(
                                         radius: 22,
                                         backgroundColor: Colors.transparent,
-                                        child: Text(
-                                          postAuthor.isNotEmpty ? postAuthor[0].toUpperCase() : 'U',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                          ),
-                                        ),
+                                        backgroundImage: post.author?.avatarUrl != null && post.author!.avatarUrl!.isNotEmpty
+                                            ? NetworkImage(post.author!.avatarUrl!)
+                                            : null,
+                                        child: post.author?.avatarUrl == null || post.author!.avatarUrl!.isEmpty
+                                            ? Text(
+                                                postAuthor.isNotEmpty ? postAuthor[0].toUpperCase() : 'U',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                              )
+                                            : null,
                                       ),
                                     ),
                                     const SizedBox(width: 12),
@@ -1157,10 +1162,15 @@ class _PostDetailViewState extends ConsumerState<PostDetailView> {
                     child: CircleAvatar(
                       radius: 14,
                       backgroundColor: Colors.transparent,
-                      child: Text(
-                        authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
-                        style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
+                      backgroundImage: comment.author?.avatarUrl != null && comment.author!.avatarUrl!.isNotEmpty
+                          ? NetworkImage(comment.author!.avatarUrl!)
+                          : null,
+                      child: comment.author?.avatarUrl == null || comment.author!.avatarUrl!.isEmpty
+                          ? Text(
+                              authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
+                              style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
+                            )
+                          : null,
                     ),
                   ),
                   const SizedBox(width: 8),

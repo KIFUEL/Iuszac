@@ -104,6 +104,19 @@ class ContentManagerView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (update.imageUrl != null && update.imageUrl!.isNotEmpty)
+              Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                height: 140,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                    image: NetworkImage(update.imageUrl!),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

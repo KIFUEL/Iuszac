@@ -31,6 +31,7 @@ class Profile {
   // Calificación agregada (para mentores)
   final double rating;
   final int reviewCount;
+  final DateTime? lastReadAlertsAt;
 
   Profile({
     required this.id,
@@ -56,6 +57,7 @@ class Profile {
     this.notifMentoria = true,
     this.rating = 0,
     this.reviewCount = 0,
+    this.lastReadAlertsAt,
   }) : _canMentor = canMentor,
        _canPublish = canPublish,
        _canModerate = canModerate,
@@ -92,6 +94,9 @@ class Profile {
       notifMentoria: json['notif_mentoria'] ?? true,
       rating: (json['rating'] ?? 0).toDouble(),
       reviewCount: json['review_count'] ?? 0,
+      lastReadAlertsAt: json['last_read_alerts_at'] != null 
+          ? DateTime.parse(json['last_read_alerts_at']).toLocal() 
+          : null,
     );
   }
 
@@ -120,6 +125,7 @@ class Profile {
       'notif_mentoria': notifMentoria,
       'rating': rating,
       'review_count': reviewCount,
+      if (lastReadAlertsAt != null) 'last_read_alerts_at': lastReadAlertsAt!.toUtc().toIso8601String(),
     };
   }
 
@@ -145,6 +151,7 @@ class Profile {
     bool? notifMentoria,
     double? rating,
     int? reviewCount,
+    DateTime? lastReadAlertsAt,
   }) {
     return Profile(
       id: id,
@@ -170,6 +177,7 @@ class Profile {
       notifMentoria: notifMentoria ?? this.notifMentoria,
       rating: rating ?? this.rating,
       reviewCount: reviewCount ?? this.reviewCount,
+      lastReadAlertsAt: lastReadAlertsAt ?? this.lastReadAlertsAt,
     );
   }
 }

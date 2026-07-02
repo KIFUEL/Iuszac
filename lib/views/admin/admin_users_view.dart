@@ -193,7 +193,12 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView> {
                   backgroundColor: user.isAdmin ? colorScheme.primary : colorScheme.outlineVariant,
                   foregroundColor: user.isAdmin ? colorScheme.onPrimary : colorScheme.onSurface,
                   radius: 24,
-                  child: Text(user.fullName.isNotEmpty ? user.fullName.substring(0, 1).toUpperCase() : 'U'),
+                  backgroundImage: user.avatarUrl != null && user.avatarUrl!.isNotEmpty 
+                      ? NetworkImage(user.avatarUrl!) 
+                      : null,
+                  child: user.avatarUrl == null || user.avatarUrl!.isEmpty
+                      ? Text(user.fullName.isNotEmpty ? user.fullName.substring(0, 1).toUpperCase() : 'U')
+                      : null,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -296,6 +301,7 @@ class _PermissionsBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _PermissionsBottomSheetState extends ConsumerState<_PermissionsBottomSheet> {
+  late bool _isAdmin;
   late bool _canMentor;
   late bool _canPublish;
   late bool _canModerate;
@@ -304,6 +310,7 @@ class _PermissionsBottomSheetState extends ConsumerState<_PermissionsBottomSheet
   @override
   void initState() {
     super.initState();
+    _isAdmin = widget.user.isAdmin;
     _canMentor = widget.user.canMentor;
     _canPublish = widget.user.canPublish;
     _canModerate = widget.user.canModerate;
@@ -319,6 +326,13 @@ class _PermissionsBottomSheetState extends ConsumerState<_PermissionsBottomSheet
         _canPublish,
         _canModerate,
       );
+      
+      // Update the user_type for Admin status
+      await dbService.updateProfile(
+        userId: widget.user.id,
+        userType: _isAdmin ? 'admin' : 'user',
+      );
+
       ref.invalidate(allUsersProvider);
       if (mounted) {
         context.pop();
@@ -366,9 +380,18 @@ class _PermissionsBottomSheetState extends ConsumerState<_PermissionsBottomSheet
             style: TextStyle(fontSize: 16, color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 24),
-          if (widget.user.isAdmin)
+          SwitchListTile(
+            title: const Text('👑 Administrador General'),
+            subtitle: const Text('Otorga todos los permisos por defecto'),
+            value: _isAdmin,
+            onChanged: (val) => setState(() => _isAdmin = val),
+            activeTrackColor: colorScheme.primary,
+          ),
+          const Divider(),
+          if (_isAdmin)
             Container(
               padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(8),

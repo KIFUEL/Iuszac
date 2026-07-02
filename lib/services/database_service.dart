@@ -28,6 +28,14 @@ class DatabaseService {
         .toList();
   }
 
+  Stream<List<Publication>> getPublicationsStream() {
+    return _supabase
+        .from('publications')
+        .stream(primaryKey: ['id'])
+        .order('published_at', ascending: false)
+        .map((list) => list.map((json) => Publication.fromJson(json)).toList());
+  }
+
   Future<List<Publication>> getMyDrafts() async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) return [];
@@ -285,13 +293,18 @@ class DatabaseService {
     return (response as List).map((json) => Mentor.fromJson(json)).toList();
   }
 
-  Future<List<MentorshipSession>> getMentorshipSessions() async {
+  Future<List<MentorshipSession>> getMentorshipSessions({bool onlyActive = true}) async {
     final now = DateTime.now().toIso8601String();
-    final response = await _supabase
+    var query = _supabase
         .from('mentorship_sessions')
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
-        .or('expires_at.is.null,expires_at.gt.$now')
-        .order('created_at', ascending: false);
+        .or('expires_at.is.null,expires_at.gt.$now');
+
+    if (onlyActive) {
+      query = query.eq('is_active', true);
+    }
+
+    final response = await query.order('created_at', ascending: false);
 
     return (response as List)
         .map((json) => MentorshipSession.fromJson(json))
@@ -409,6 +422,7 @@ class DatabaseService {
     String? phoneWhatsapp,
     String? label,
     String? avatarUrl,
+    String? userType,
   }) async {
     final updates = <String, dynamic>{};
     if (fullName != null) updates['full_name'] = fullName;
@@ -419,12 +433,22 @@ class DatabaseService {
     if (phoneWhatsapp != null) updates['phone_whatsapp'] = phoneWhatsapp;
     if (label != null) updates['label'] = label;
     if (avatarUrl != null) updates['avatar_url'] = avatarUrl;
+    if (userType != null) updates['user_type'] = userType;
     if (updates.isEmpty) return;
 
     await _supabase.from('profiles').update(updates).eq('id', userId);
   }
 
   /// Actualiza las preferencias de notificación del perfil
+  Future<void> markAlertsAsRead() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return;
+    await _supabase
+        .from('profiles')
+        .update({'last_read_alerts_at': DateTime.now().toUtc().toIso8601String()})
+        .eq('id', userId);
+  }
+
   Future<void> updateNotificationPreferences({
     required String userId,
     required bool notifAlertsReforma,
@@ -627,6 +651,13 @@ class DatabaseService {
     await _supabase.from('mentorship_sessions').delete().eq('id', sessionId);
   }
 
+  Future<void> toggleMentorshipActive(String sessionId, bool isActive) async {
+    await _supabase
+        .from('mentorship_sessions')
+        .update({'is_active': isActive})
+        .eq('id', sessionId);
+  }
+
   /// Actualiza una sesión de mentoría
   Future<MentorshipSession> updateMentorshipSession({
     required String sessionId,
@@ -649,6 +680,7 @@ class DatabaseService {
           'schedule': schedule,
           'expires_at': expiresAt?.toIso8601String(),
         })
+        .eq('id', sessionId)
         .select('*, profiles:profiles!mentorship_sessions_mentor_id_fkey(*)')
         .single();
 

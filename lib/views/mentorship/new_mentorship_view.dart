@@ -529,16 +529,23 @@ class _NewMentorshipViewState extends ConsumerState<NewMentorshipView> {
                         Row(
                           children: [
                             Expanded(
-                              child: LawTextField(
-                                label: 'Precio (MXN)',
-                                icon: Icons.attach_money,
-                                controller: _priceController,
-                                keyboardType: TextInputType.number,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) return 'Requerido';
-                                  final price = double.tryParse(value);
-                                  if (price == null || price < 0) return 'Precio inválido';
-                                  return null;
+                              child: ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: _priceController,
+                                builder: (context, value, _) {
+                                  final isGratis = value.text == '0' || value.text == '0.0';
+                                  return LawTextField(
+                                    label: 'Precio (MXN)',
+                                    icon: Icons.attach_money,
+                                    controller: _priceController,
+                                    keyboardType: TextInputType.number,
+                                    helperText: isGratis ? 'GRATIS' : null,
+                                    validator: (val) {
+                                      if (val == null || val.isEmpty) return 'Requerido';
+                                      final price = double.tryParse(val);
+                                      if (price == null || price < 0) return 'Precio inválido';
+                                      return null;
+                                    },
+                                  );
                                 },
                               ),
                             ),

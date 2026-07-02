@@ -16,6 +16,7 @@ class MentorshipSession {
   final Profile? mentor;
   final double rating;
   final int reviewCount;
+  final bool isActive;
 
   MentorshipSession({
     required this.id,
@@ -33,6 +34,7 @@ class MentorshipSession {
     this.mentor,
     this.rating = 0,
     this.reviewCount = 0,
+    this.isActive = true,
   });
 
   factory MentorshipSession.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class MentorshipSession {
       mentor: json['profiles'] != null ? Profile.fromJson(json['profiles']) : null,
       rating: (json['rating'] ?? 0).toDouble(),
       reviewCount: json['review_count'] ?? 0,
+      isActive: json['is_active'] ?? true,
     );
   }
 

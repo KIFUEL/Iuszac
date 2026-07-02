@@ -98,14 +98,19 @@ class MentorshipDetailView extends ConsumerWidget {
                           CircleAvatar(
                             radius: 34,
                             backgroundColor: colorScheme.primaryContainer,
-                            child: Text(
-                              mentorName[0],
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.onPrimaryContainer,
-                              ),
-                            ),
+                            backgroundImage: session!.mentor?.avatarUrl != null && session!.mentor!.avatarUrl!.isNotEmpty 
+                                ? NetworkImage(session!.mentor!.avatarUrl!) 
+                                : null,
+                            child: session!.mentor?.avatarUrl == null || session!.mentor!.avatarUrl!.isEmpty
+                                ? Text(
+                                    mentorName[0],
+                                    style: TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                      color: colorScheme.onPrimaryContainer,
+                                    ),
+                                  )
+                                : null,
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -525,6 +530,7 @@ class MentorshipDetailView extends ConsumerWidget {
                                       reviewerName,
                                       review.comment ?? '',
                                       review.rating,
+                                      review.user?.avatarUrl,
                                     );
                                   },
                                 ),
@@ -662,7 +668,7 @@ class MentorshipDetailView extends ConsumerWidget {
     );
   }
 
-  Widget _buildReviewTile(BuildContext context, String name, String comment, int rating) {
+  Widget _buildReviewTile(BuildContext context, String name, String comment, int rating, [String? avatarUrl]) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -682,13 +688,16 @@ class MentorshipDetailView extends ConsumerWidget {
               CircleAvatar(
                 radius: 16,
                 backgroundColor: Colors.grey.withValues(alpha: 0.15),
-                child: Text(
-                  name[0],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
+                backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
+                child: avatarUrl == null || avatarUrl.isEmpty
+                    ? Text(
+                        name[0],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      )
+                    : null,
               ),
               const SizedBox(width: 10),
               Expanded(
