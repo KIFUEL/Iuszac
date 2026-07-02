@@ -29,9 +29,10 @@ final userProfileProvider = FutureProvider<Profile?>((ref) async {
     // Validar activamente con el servidor con un tiempo de gracia extendido.
     // Garantiza la seguridad (ej. expulsar baneados), pero previene deslogueos por mala red.
     await Supabase.instance.client.auth.getUser().timeout(const Duration(seconds: 15));
-  } on AuthException catch (_) {
-    // Solo desloguear si Supabase rechaza explícitamente el token (invalido o expirado).
-    await Supabase.instance.client.auth.signOut();
+  } on AuthException catch (e) {
+    // A veces en móviles (especialmente iOS/Safari), al despertar la app sin buena conexión, 
+    // Supabase puede arrojar un error. Quitamos el signOut automático para evitar 
+    // que te cierre la sesión accidentalmente por un error de red camuflado.
     return null;
   } catch (_) {
     // Si falla por red o timeout, ignorar y permitir que intente cargar.
